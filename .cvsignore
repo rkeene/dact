@@ -12,3 +12,6 @@ autom4te.cache
 *.so
 libdact.a
 dact.exe
+libdact.dll
+libdact.dll.a
+libdact.dll.def
