@@ -150,12 +150,13 @@ char *parse_url_subst(const char *src, const char *fname) {
 	static struct utsname system_info;
 	static int sysinfo_init=0;
 	uint32_t cmd=0, x, strsz;
-	const char *loc=src, *ploc=loc;
+	const char *loc=src, *ploc=loc, *eloc;
 	char *ret, *ret_s, found=0, *smbuf;
 
 	if (!strstr((char *) src,"@@")) return(strdup(src));
 
 	ret_s=ret=calloc(1024,1);
+	eloc=src+strlen(src);
 
 	if (!sysinfo_init) {
 		uname(&system_info);
@@ -165,9 +166,11 @@ char *parse_url_subst(const char *src, const char *fname) {
 	}
 
 
+	ret[0]='\0';
 	while (strstr(loc,"@@")) {
 		cmd=elfcrc(0, loc=strstr(loc, "@@")+2, 4);
 		loc+=6;
+		if (loc>=eloc) { loc=eloc-1; continue; }
 
 		strsz=(loc-ploc-8);
 		memcpy(ret, ploc, strsz);
