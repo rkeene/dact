@@ -7,6 +7,8 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
+AC_CHECK_TOOL(AR, ar, [#])
+AC_CHECK_TOOL(RANLIB, ranlib, [#])
 
 DC_PROG_GCC
 

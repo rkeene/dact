@@ -21,7 +21,7 @@
 
 #include "dact.h"
 #include "module.h"
-#ifdef HAVE_DLOPEN
+#ifdef USE_MODULES
 #ifdef HAVE_DLFCN_H
 #include <dlfcn.h>
 #endif
