@@ -5,14 +5,14 @@
 #endif
 
 int uname(struct utsname *buf) {
-#ifdef _DACT_USE_WIN32_
+#ifdef _USE_WIN32_
 	uint32_t winver;
 	SYSTEM_INFO winsysinfo;
 #endif
 
 	if (buf==NULL) return(-1);
 
-#ifdef _DACT_USE_WIN32_
+#ifdef _USE_WIN32_
 	GetSystemInfo(&winsysinfo);
 	winver=GetVersion();
                         

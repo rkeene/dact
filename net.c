@@ -85,7 +85,7 @@ struct dact_url_info dact_urls[256];
 
 /* Do things required for network access. */
 int dact_init_net(void) {
-#ifdef _DACT_USE_WIN32_  
+#ifdef _USE_WIN32_  
 	WSADATA wsaData;
 
 	if (WSAStartup(MAKEWORD(2, 0), &wsaData)!=0) {
