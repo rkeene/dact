@@ -1,8 +1,0 @@
-[rkeene@unleaded work]$ tar -cf bob.tar Makefile
-[rkeene@unleaded work]$ tar -xOf bob.tar Makefile
-all:
-        cd ../; make all
-
-%:
-        cd ../; make $@
-
