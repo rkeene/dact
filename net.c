@@ -48,6 +48,11 @@
 #include "parse.h"
 #include "crc.h"
 
+#ifndef O_BINARY
+#define O_BINARY 0x0
+#endif
+
+
 //extern int errno;
 struct dact_url_info {
 	char *url;
@@ -290,7 +295,7 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 		free(read_buf_s);
 		close(fd);
 	} else {
-		fd=open(pathname,flags,mode);
+		fd=open(pathname,flags|O_BINARY,mode);
 		if (dact_urls[fd].url!=NULL) free(dact_urls[fd].url);
 		dact_urls[fd].url=strdup(pathname);
 		dact_urls[fd].flags=flags;
@@ -319,11 +324,15 @@ off_t lseek_net(int filedes, off_t offset, int whence) {
 }
 
 #else
+#ifndef O_BINARY
+#define O_BINARY 0x0
+#endif
+
 int createlisten(int port) { return(-1); }
 void closeconnection(int sockfd) { return; }
 int createconnection_tcp(char *host, int port) { return(-1); }
 int open_net(const char *pathname, int flags, mode_t mode) {
-	return(open(pathname,flags,mode));
+	return(open(pathname,flags|O_BINARY,mode));
 }
 off_t lseek_net(int filedes, off_t offset, int whence) {
 	return(lseek(filedes,offset,whence));

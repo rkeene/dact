@@ -732,13 +732,14 @@ int main(int argc, char **argv) {
 		if (in_file!=NULL) {
 /* Determine resulting file name */
 			if (out_file==NULL) out_file=dact_getoutfilename(in_file,mode);
-			if (!strcmp("-",in_file)) {
+			if (strcmp("-",in_file)==0) {
 				in_fd=STDIN_FILENO;
 			} else {
-				stat(in_file, &stat_buf);
-				if (S_ISDIR(stat_buf.st_mode)) {
-					fprintf(stderr, "dact: %s is a directory.",in_file);
-					continue;
+				if (stat(in_file, &stat_buf)>=0) {
+					if (S_ISDIR(stat_buf.st_mode)) {
+						fprintf(stderr, "dact: %s is a directory.\n",in_file);
+						continue;
+					}
 				}
 				if ((in_fd=open_net(in_file, O_RDONLY, 0))<0) {
 					fprintf(stderr, "dact: Can't open %s.\n",in_file);

@@ -115,6 +115,7 @@ depend: Makefile.dep
 
 Makefile.dep: *.c *.h Makefile
 	@echo "building Makefile.dep"
-	@$(CC) $(CFLAGS) $(CPPFLAGS) -MM $(ALGO) $(OBJS:.o=.c) $(MODS:.so=.c) dact.c  | tee Makefile.dep | sed -e "s/^\([^ ]*\)\.o: /\1.so: /g" >> Makefile.dep
+	@$(CC) $(CFLAGS) $(CPPFLAGS) -MM $(ALGO) $(OBJS:.o=.c) $(MODS:.so=.c) dact.c > Makefile.dep
+	@$(CC) $(CFLAGS) $(CPPFLAGS) -MM $(ALGO) $(OBJS:.o=.c) $(MODS:.so=.c) dact.c  | sed -e "s/^\([^ ]*\)\.o: /\1.so: /g" >> Makefile.dep
 
 include Makefile.dep

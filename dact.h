@@ -25,9 +25,15 @@
 #include "config.h"
 #endif
 
-#if (defined(WIN32) || defined(__WIN32__)) && !defined(__MINGW32__)
+#if defined(WIN32) || defined(__WIN32__)
+#ifndef __MINGW32__
 #warning Including WIN32.H !
 #include "win32.h"
+#endif
+
+#include <stdarg.h>
+#include <windef.h>
+#include <winbase.h>
 #endif
 
 #include "comp_fail.h"

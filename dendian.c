@@ -40,13 +40,12 @@ int write_de(const int dst, const uint32_t num, const int sze) {
 	}
 
 	for (i=0;i<sze;i++) {
-		if ((v=write(dst, &buf[i], 1))<0) {
+		if ((v=write(dst, &buf[i], 1))<=0) {
 			PERROR("write");
 			return(-1);
 		}
 		x+=v;
 	}
-
 
 	return(x);
 }
@@ -57,13 +56,13 @@ int read_de(const int src, void *dest, const int sze, const int out_sze) {
 	int i;
 
 	for (i=0;i<sze;i++) {
-		if (read(src, &ch, 1)<1) {
+		if (read(src, &ch, 1)<=0) {
 			PERROR("read");
 			return(-1);
 		}
 		ret|=ch<<(8*(sze-i-1));
 	}
-
 	memcpy(dest, &ret, out_sze);
+
 	return(sze);
 }

@@ -171,9 +171,25 @@ char *parse_url_subst(const char *src, const char *fname) {
 		strtolower(system_info.sysname);
 		strtolower(system_info.machine);
 #else
+#ifdef __WIN32__
+		system_info.sysname="windows";
+		{
+			uint32_t winver;
+			SYSTEM_INFO winsysinfo;
+
+			GetSystemInfo(&winsysinfo);
+			winver=GetVersion();
+
+			system_info.release=malloc(32);
+			system_info.machine=malloc(64);
+			snprintf(system_info.release, 32, "%i.%i", winver&0xff, (winver&0xff00)>>8);
+			snprintf(system_info.machine, 64, "%lu", (unsigned long) winsysinfo.dwProcessorType);
+		}
+#else
 		system_info.sysname="(unknown)";
 		system_info.machine="(unknown)";
 		system_info.release="0.0";
+#endif
 #endif
 		sysinfo_init=1;
 	}
