@@ -31,11 +31,7 @@ no compression) and use algorithm on a per block basis.
 
 5. Horror Stories:
 
-	a. Comp_range didn't compile under Solaris 8 using C WorkShop 6.0.
-
-	b. Compiled Successfully, but shared binary didn't work.
-
-	c. Failed to make a Static binary under Slackware 7.0.
+	a. Submit yours today!
 
 6. Bugs:
 
