@@ -28,6 +28,7 @@
 #include <unistd.h>
 #endif
 
+int dact_init_net(void);
 int createlisten(int port);
 void closeconnection(int sockfd);
 int createconnection_tcp(char *host, int port);

@@ -83,11 +83,28 @@ struct dact_url_info {
 };
 struct dact_url_info dact_urls[256];
 
+/* Do things required for network access. */
+int dact_init_net(void) {
+#ifdef _DACT_USE_WIN32_  
+	WSADATA wsaData;
+
+	if (WSAStartup(MAKEWORD(2, 0), &wsaData)!=0) {
+		return(-1);                           
+	}
+	if (wsaData.wVersion!=MAKEWORD(2, 0)) {
+		/* Cleanup Winsock stuff */    
+		WSACleanup();              
+		return(-1);  
+	}
+#endif
+	return(0);
+}
+
+
 /*
  *	Create a listening port on tcp port PORT
  */
-int createlisten(int port)
-{
+int createlisten(int port) {
 	struct sockaddr_in localname;
 	int sockFd;
 	sockFd=socket(AF_INET,SOCK_STREAM,IPPROTO_IP);
@@ -381,6 +398,7 @@ off_t lseek_net(int filedes, off_t offset, int whence) {
 #define O_LARGEFILE 0x0
 #endif
 
+int dact_init_net(void) { return(-1); }
 int createlisten(int port) { return(-1); }
 void closeconnection(int sockfd) { return; }
 int createconnection_tcp(char *host, int port) { return(-1); }
