@@ -61,9 +61,6 @@
 #ifdef HAVE_STDIO_H
 #include <stdio.h>
 #endif
-#ifdef HAVE_WINSOCK2_H
-#include <winsock2.h>
-#endif
 #include "parse.h"
 #include "crc.h"
 

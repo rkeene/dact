@@ -4325,10 +4325,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4373,10 +4374,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4421,10 +4423,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4469,10 +4472,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4517,10 +4521,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4565,10 +4570,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4613,10 +4619,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4661,10 +4668,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4709,10 +4717,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4757,10 +4766,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4805,10 +4815,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4845,6 +4856,8 @@ rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext;
   fi
   LDFLAGS="$ADD_LDFLAGS $OLD_LDFLAGS"
+
+
 
 	if test "$HAVEDLOPEN" = yes -a -n "$SHARED"; then
 	  echo "$as_me:$LINENO: result: yes" >&5
@@ -4883,10 +4896,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4931,10 +4945,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -4979,10 +4994,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -5027,10 +5043,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -5075,10 +5092,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -5123,10 +5141,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -5171,10 +5190,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -5219,10 +5239,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -5267,10 +5288,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -5315,10 +5337,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -5363,10 +5386,11 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <stdio.h>
+int unrestst(void);
 int
 main ()
 {
- printf("okay\n"); return(0);
+ printf("okay\n"); unrestst(); return(0);
   ;
   return 0;
 }
@@ -5403,6 +5427,8 @@ rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext;
   fi
   LDFLAGS="$ADD_LDFLAGS $OLD_LDFLAGS"
+
+
 
 	if test "$HAVEDLOPEN" = yes -a -n "$SHARED"; then
 	  echo "$as_me:$LINENO: result: yes" >&5

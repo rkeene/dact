@@ -1,4 +1,4 @@
-#if !defined(_LOCAL_WIN32_H) && defined(__WIN32__)
+#if !defined(_LOCAL_WIN32_H) && defined(__WIN32__) && !defined(__CYGWIN__)
 #define _LOCAL_WIN32_H
 
 #ifdef HAVE_CONFIG_H
@@ -29,6 +29,6 @@
 #  include <winsock2.h>
 #endif
 
-
+#define _DACT_USE_WIN32_ 1
 
 #endif /* _LOCAL_WIN32_H */

@@ -124,47 +124,58 @@ AC_DEFUN(DC_GET_SHARED, [
   SHARED=""
   if test -z "$SHARED"; then
     LDFLAGS="$OLD_LDFLAGS -shared -Wl,-G,-z,textoff -rdynamic -fPIC"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-shared -Wl,-G,-z,textoff -fPIC"; ADD_LDFLAGS="-rdynamic" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-shared -Wl,-G,-z,textoff -fPIC"; ADD_LDFLAGS="-rdynamic" ], SHARED="", SHARED="");
   fi
   if test -z "$SHARED"; then
     LDFLAGS="$OLD_LDFLAGS -shared -Wl,-G,-z,textoff -rdynamic"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-shared -Wl,-G,-z,textoff"; ADD_LDFLAGS="-rdynamic" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-shared -Wl,-G,-z,textoff"; ADD_LDFLAGS="-rdynamic" ], SHARED="", SHARED="");
   fi
   if test -z "$SHARED"; then
     LDFLAGS="$OLD_LDFLAGS -shared -Wl,-G,-z,textoff -fPIC"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-shared -Wl,-G,-z,textoff -fPIC"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-shared -Wl,-G,-z,textoff -fPIC"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
   fi
   if test -z "$SHARED"; then
     LDFLAGS="$OLD_LDFLAGS -shared -Wl,-G,-z,textoff"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-shared -Wl,-G,-z,textoff"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-shared -Wl,-G,-z,textoff"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
   fi
   if test -z "$SHARED"; then
     LDFLAGS="$OLD_LDFLAGS -Wl,-G,-z,textoff -rdynamic -fPIC"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-Wl,-G,-z,textoff -fPIC"; ADD_LDFLAGS="-rdynamic" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-Wl,-G,-z,textoff -fPIC"; ADD_LDFLAGS="-rdynamic" ], SHARED="", SHARED="");
   fi
   if test -z "$SHARED"; then
     LDFLAGS="$OLD_LDFLAGS -Wl,-G,-z,textoff -rdynamic"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-Wl,-G,-z,textoff"; ADD_LDFLAGS="-rdynamic" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-Wl,-G,-z,textoff"; ADD_LDFLAGS="-rdynamic" ], SHARED="", SHARED="");
   fi
   if test -z "$SHARED"; then
     LDFLAGS="$OLD_LDFLAGS -Wl,-G,-z,textoff -fPIC"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-Wl,-G,-z,textoff -fPIC"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-Wl,-G,-z,textoff -fPIC"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
   fi
   if test -z "$SHARED"; then
     LDFLAGS="$OLD_LDFLAGS -Wl,-G,-z,textoff"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-Wl,-G,-z,textoff"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-Wl,-G,-z,textoff"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
   fi
   if test -z "$SHARED"; then
     LDFLAGS="$LDFLAGS -shared -rdynamic -fPIC"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-shared -fPIC"; ADD_LDFLAGS="-rdynamic" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-shared -fPIC"; ADD_LDFLAGS="-rdynamic" ], SHARED="", SHARED="");
   fi
   if test -z "$SHARED"; then
     LDFLAGS="$OLD_LDFLAGS -shared -fPIC"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-shared -fPIC"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-shared -fPIC"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
   fi
   if test -z "$SHARED"; then
     LDFLAGS="$OLD_LDFLAGS -shared"
-    AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-shared"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
+    AC_TRY_LINK([#include <stdio.h>
+int unrestst(void);], [ printf("okay\n"); unrestst(); return(0); ], [ SHARED="-shared"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
   fi
   LDFLAGS="$ADD_LDFLAGS $OLD_LDFLAGS"
 
