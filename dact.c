@@ -443,7 +443,6 @@ uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const
  *  -- Roy Keene <dact@rkeene.org>
  */
 	if (lseek_net(src, 0, SEEK_SET)<0) {
-		PRINTERR("This should not be happening.");
 /*
  * lseek_net() should make this obsolete.
  *  ... EXCEPT! when reading from stdin.
@@ -462,7 +461,6 @@ uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const
 		free(buf);
 	}
 #if defined(HAVE_LIBZ) && defined(HAVE_GZDOPEN)
-
 
 	if ((magic&0xffff0000)==0x1f8b0000) { /* gzip */
 		dact_ui_status(DACT_UI_LVL_GEN, "Gunzipping...");
