@@ -21,17 +21,38 @@
 #include "dact.h"
 #include "crc.h"
 
-uint32_t ELFCRC(const uint32_t start, const unsigned char *name, const uint32_t n) {
-	uint32_t i,h,g;
+uint32_t elfcrc(const uint32_t start, const unsigned char *name, const uint32_t n) {
+	uint32_t i, h, g=0;
 
-	h=start;
+	h = start;
 	for (i=0;i<n;i++) {
 		h = (h << 4) + (*name++);
-		if ((g = (h & 0xf0000000)))
-			h ^= (g >> 24);
+		g = h & 0xf0000000;
+		if (g) h ^= (g >> ((sizeof(g)*8)-8));
 		h &= ~g;
 	}
 
 	return(h);
 }
 
+/* Adler-32 is composed of two sums accumulated per byte: s1 is the sum
+   of all bytes, s2 is the sum of all s1 values. Both sums are done
+   modulo 65521. s1 is initialised to 1, s2 to zero. 
+*/
+uint32_t crc(const uint32_t prev, unsigned char *val, const uint32_t n) {
+	uint32_t ret=prev, i;
+	uint16_t s1, s2;
+	unsigned char *s=val;
+
+	if (ret==0) ret=1;
+
+	s1=ret&0xffff;
+	s2=(ret>>16)&0xffff;
+	for (i=0; i<n; i++) {
+		s1 = (s1 + *s) % 65521;
+		s2 = (s1 + s2) % 65521;
+		*s++;
+	}
+	ret=(s2<<16)|s1;
+	return(ret);
+}

@@ -107,14 +107,6 @@ int print_help(int argc, char **argv) {
 	return(0);
 }
 
-int dact_blksize_calc(int fsize) {
-	if (fsize==0) return(DACT_BLK_SIZE_DEF);
-	if (fsize<(204800)) {
-		return(fsize+5);
-	}
-	return(((int) ((((float) fsize)/102400.0)-(0.9999999)))*65535);
-}
-
 int dact_upgrade_file(const char *name, const char *url_get, const char *url_ver, uint32_t version, const char *dest, const char *options) {
 	int newver, ifd=-1, ofd=-1, x=-1;
 	char *real_dest, *real_url_get, buf[4096];
@@ -581,7 +573,7 @@ int main(int argc, char **argv) {
 				break;
 			case 'b':
 				i=atoi2(optarg);
-				if (i<DACT_BLK_SIZE_MAX) dact_blk_size=i;
+				if (i<DACT_BLK_SIZE_ABSMAX) dact_blk_size=i;
 				break;
 			case 'v':
 				options[DACT_OPT_VERB]++;

@@ -52,7 +52,11 @@ int write_de(const int dst, const uint32_t num, const int sze) {
 
 int read_de(const int src, void *dest, const int sze, const int out_sze) {
 	unsigned char ch;
-	uint32_t ret=0;
+	uint64_t ret=0;
+	uint64_t tmpvar64;
+	uint32_t tmpvar32;
+	uint16_t tmpvar16;
+	uint8_t tmpvar8;
 	int i;
 
 	for (i=0;i<sze;i++) {
@@ -62,7 +66,12 @@ int read_de(const int src, void *dest, const int sze, const int out_sze) {
 		}
 		ret|=ch<<(8*(sze-i-1));
 	}
-	memcpy(dest, &ret, out_sze);
+	switch (out_sze) {
+		case 1: tmpvar8=ret; memcpy(dest, &tmpvar8, out_sze); break;
+		case 2: tmpvar16=ret; memcpy(dest, &tmpvar16, out_sze); break;
+		case 4: tmpvar32=ret; memcpy(dest, &tmpvar32, out_sze); break;
+		case 8: tmpvar64=ret; memcpy(dest, &tmpvar64, out_sze); break;
+	};
 
 	return(sze);
 }

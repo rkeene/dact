@@ -60,6 +60,18 @@
 #include <bzlib.h>
 #endif
 
+uint32_t dact_blksize_calc(int fsize) {
+	uint32_t ret=0;
+
+	if (fsize==0) return(DACT_BLK_SIZE_DEF);
+	if (fsize<(204800)) {
+		ret=(fsize+5);
+	}
+	if (ret==0) ret=(((int) ((((float) fsize)/102400.0)-(0.9999999)))*65535);
+	if (ret>DACT_BLK_SIZE_MAX) ret=DACT_BLK_SIZE_MAX;
+	return(ret);
+}
+
 int dact_config_execute(const char *cmd, char *options, uint32_t *blksize) {
 	char *line=NULL, *line_s, *item_buf[4]={NULL, NULL, NULL, NULL};
 	int i;
@@ -74,7 +86,7 @@ int dact_config_execute(const char *cmd, char *options, uint32_t *blksize) {
 	}
 	if (item_buf[0]==NULL || item_buf[1]==NULL) return(0); /* This means all commands must have arguments. */
 
-	switch (ELFCRC(0, item_buf[0], strlen(item_buf[0]))) {
+	switch (elfcrc(0, item_buf[0], strlen(item_buf[0]))) {
 		case 164209419: /* binary_check */
 			options[DACT_OPT_BINCHK]=!!strcmp(item_buf[1],"off");
 			break;
@@ -126,7 +138,7 @@ int dact_config_execute(const char *cmd, char *options, uint32_t *blksize) {
 			break;
 #ifdef DEBUG
 		default:
-			fprintf(stderr, "Unknown command %s (%i)\n",item_buf[0],ELFCRC(0,item_buf[0],strlen(item_buf[0])));
+			fprintf(stderr, "Unknown command %s (%i)\n",item_buf[0],elfcrc(0,item_buf[0],strlen(item_buf[0])));
 			break;
 #endif
 	}
@@ -232,7 +244,7 @@ uint32_t dact_blk_compress(char *algo, char *ret, const char *srcbuf, const uint
 	return(smallest_size);
 }
 
-uint32_t dact_process_file(const int src, const int dest, const int mode, const char *options, const char *filename, uint32_t *crcs, uint32_t dact_blksize, int cipher) {
+uint64_t dact_process_file(const int src, const int dest, const int mode, const char *options, const char *filename, uint32_t *crcs, uint32_t dact_blksize, int cipher) {
 	struct stat filestats;
 	FILE *extd_urlfile;
 	char *file_extd_urls[256];
@@ -242,7 +254,8 @@ uint32_t dact_process_file(const int src, const int dest, const int mode, const 
 	char version[3]={DACT_VER_MAJOR, DACT_VER_MINOR, DACT_VER_REVISION};
 	char file_opts=0;
 	uint32_t bytes_read, retsize;
-	uint32_t filesize=0, blk_cnt=0, file_extd_size=0, blksize=0, fileoutsize=0, out_bufsize=0;
+	uint64_t filesize=0, fileoutsize=0, out_bufsize=0;
+	uint32_t blk_cnt=0, file_extd_size=0, blksize=0, blksize_uncomp=0;
 	uint32_t magic=0, file_extd_read=0, file_extd_urlcnt=0;
 	int blksize_size;
 	int x=0, new_fd, canlseek=0;
@@ -325,10 +338,10 @@ uint32_t dact_process_file(const int src, const int dest, const int mode, const 
 				dact_ui_status(DACT_UI_LVL_GEN, "Algorithm ");
 				dact_ui_status_append(DACT_UI_LVL_GEN,algorithm_names[algo]);
 
-				crcs[0]=ELFCRC(crcs[0], out_buf, retsize);
-/* Do not generate a CRC of the plaintext if encrypting */
+				crcs[0]=crc(crcs[0], out_buf, retsize);
+				/* Do not generate a CRC of the plaintext if encrypting */
 				if (cipher==-1) {
-					crcs[1]=ELFCRC(crcs[1], in_buf, blksize);
+					crcs[1]=crc(crcs[1], in_buf, blksize);
 				}
 
 				if (!options[DACT_OPT_HDONLY]) {
@@ -398,7 +411,7 @@ uint32_t dact_process_file(const int src, const int dest, const int mode, const 
 		read(src, &version[2], 1);
 		read_de(src, &filesize, 4, sizeof(filesize));
 		read_de(src, &blk_cnt, 4, sizeof(blk_cnt));
-		read_de(src, &blksize, 4, sizeof(blksize));
+		read_de(src, &blksize_uncomp, 4, sizeof(blksize_uncomp));
 		read(src, &file_opts, 1);
 		read_de(src, &file_extd_size, 4, sizeof(file_extd_size));
 
@@ -490,7 +503,7 @@ XXX: Todo, make this do something...
 				close(src);
 				crcs[4]=crcs[2];
 				crcs[5]=crcs[3];
-				return(dact_process_file(new_fd, dest, mode, options, filename, crcs, blksize, cipher));
+				return(dact_process_file(new_fd, dest, mode, options, filename, crcs, blksize_uncomp, cipher));
 			}
 		}
 
@@ -520,16 +533,15 @@ XXX: Todo, make this do something...
 			}
 		}
 
-		out_bufsize=blksize;
-		if (((out_buf=malloc(out_bufsize))==NULL) ) {
-				PERROR("malloc");
-				return(0);
+		out_bufsize=blksize_uncomp;
+		if (((out_buf=malloc(out_bufsize))==NULL)) {
+			PERROR("malloc");
+			return(0);
 		}
 
+		blksize_size=BYTESIZE(blksize_uncomp);
 
-		blksize_size=BYTESIZE(blksize);
-
-		dact_ui_setup((int)(((float) filesize/(float) blksize)+0.9999));
+		dact_ui_setup((int)(((float) filesize/(float) blksize_uncomp)+0.9999));
 
 		if (cipher!=-1) {
 			keybuf=malloc(DACT_KEY_SIZE);
@@ -553,7 +565,15 @@ XXX: Todo, make this do something...
 
 			read_f(src, in_buf, blksize);
 
-			crcs[0]=ELFCRC(crcs[0],in_buf,blksize);
+#ifndef DACT_DONT_SUPPORT_OLDCRC
+			if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 38)) {
+				crcs[0]=elfcrc(crcs[0],in_buf,blksize);
+			} else {
+				crcs[0]=crc(crcs[0],in_buf,blksize);
+			}
+#else
+			crcs[0]=crc(crcs[0],in_buf,blksize);
+#endif
 
 			if (cipher!=-1) {
 				tmpbuf=malloc(blksize*2);
@@ -599,24 +619,28 @@ XXX: Todo, make this do something...
 			}
 			fileoutsize+=bytes_read;
 
-/* If ciphering, don't try to calculate this CRC. */
+/* If ciphering, don't try to calculate this (the plaintext) CRC. */
 			if (cipher==-1) {
-				crcs[1]=ELFCRC(crcs[1],out_buf,bytes_read);
+#ifndef DACT_DONT_SUPPORT_OLDCRC
+				if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 38)) {
+					crcs[1]=elfcrc(crcs[1],out_buf,bytes_read);
+				} else {
+					crcs[1]=crc(crcs[1],out_buf,bytes_read);
+				}
+#else
+				crcs[1]=crc(crcs[1],out_buf,bytes_read);
+#endif
 			}
 
 			dact_ui_incrblkcnt(1);
 
 			if (fileoutsize>filesize && filesize!=0) {
-				write(dest, out_buf, blksize-(fileoutsize-filesize));
+				write(dest, out_buf, blksize_uncomp-(fileoutsize-filesize));
 			} else {
 				write(dest, out_buf, bytes_read);
 			}
 
-
-
 			free(in_buf);
-
-			
 		}
 
 		free(out_buf);
@@ -669,8 +693,8 @@ XXX: Todo, make this do something...
 		printf("Dact Version      :   %i.%i.%i\n",version[0],version[1],version[2]);
 		printf("Block Size        :   %i\n", blksize);
 		printf("Block Header Size :   %i\n", BYTESIZE(blksize)+1);
-		printf("Compressed Size   :   %i\n", fileoutsize);
-		printf("Uncompressed Size :   %i\n", filesize);
+		printf("Compressed Size   :   %llu\n", fileoutsize);
+		printf("Uncompressed Size :   %llu\n", filesize);
 		printf("Ratio             :   %2.3f to 1.0\n", ((float) filesize)/((float) fileoutsize) );
 		lseek_net(src, DACT_HDR_REG_SIZE, SEEK_SET);
 		while (file_extd_read<file_extd_size) {

@@ -12,6 +12,9 @@ AC_CHECK_TOOL(RANLIB, ranlib, [#])
 
 DC_PROG_GCC
 
+dnl Check for largefile support
+AC_SYS_LARGEFILE
+
 dnl Checks for libraries.
 
 DC_CHK_DLOPEN
@@ -38,10 +41,13 @@ dnl Checks for structures.
 
 dnl Checks for compiler characteristics.
 AC_C_INLINE
+AC_CHECK_SIZEOF(long long, 8)
 AC_CHECK_SIZEOF(long, 4)
 AC_CHECK_SIZEOF(int, 4)
 AC_CHECK_SIZEOF(short, 2)
 
+DC_DO_TYPE(uint64_t, unsigned, 8)
+DC_DO_TYPE(int64_t, signed, 8)
 DC_DO_TYPE(uint32_t, unsigned, 4)
 DC_DO_TYPE(int32_t, signed, 4)
 DC_DO_TYPE(uint16_t, unsigned, 2)

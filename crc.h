@@ -22,5 +22,6 @@
 #define _CRC_H
 #include "dact.h"
 
-uint32_t ELFCRC(const uint32_t start, const unsigned char *name, const uint32_t n);
+uint32_t elfcrc(const uint32_t start, const unsigned char *name, const uint32_t n);
+uint32_t crc(const uint32_t prev, unsigned char *val, const uint32_t n);
 #endif

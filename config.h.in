@@ -195,6 +195,9 @@
 /* The size of a `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
+/* The size of a `long long', as computed by sizeof. */
+#undef SIZEOF_LONG_LONG
+
 /* The size of a `short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
@@ -206,6 +209,12 @@
 
 /* Enable use of dynamically loadable modules? */
 #undef USE_MODULES
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+#undef _FILE_OFFSET_BITS
+
+/* Define for large files, on AIX-style hosts. */
+#undef _LARGE_FILES
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
@@ -219,6 +228,9 @@
 /* Define to `signed short' if <sys/types.h> does not define. */
 #undef int32_t
 
+/* Define to `signed short' if <sys/types.h> does not define. */
+#undef int64_t
+
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef uint
 
@@ -227,3 +239,6 @@
 
 /* Define to `unsigned short' if <sys/types.h> does not define. */
 #undef uint32_t
+
+/* Define to `unsigned short' if <sys/types.h> does not define. */
+#undef uint64_t

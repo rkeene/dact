@@ -89,7 +89,11 @@
 #define DACT_HDR_IDXDATA	11
 
 #ifndef DACT_BLK_SIZE_MAX
-#define DACT_BLK_SIZE_MAX 2147483647
+#define DACT_BLK_SIZE_MAX 4194304
+#endif
+
+#ifndef DACT_BLK_SIZE_ABSMAX
+#define DACT_BLK_SIZE_ABSMAX 2147483647
 #endif
 
 #ifndef DACT_BLK_SIZE_DEF
@@ -117,6 +121,8 @@
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
+#else
+#include "dact_stdint.h"
 #endif
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
@@ -182,6 +188,10 @@ struct dact_header {
 #define DACT_VER_PARTS(x) ((x&0xff0000)>>16),((x&0xff00)>>8),(x&0xff)
 #endif
 
+#ifndef DACT_VERS
+#define DACT_VERS(x,y,z) (((x)<<16)|((y)<<8)|(z))
+#endif
+
 #ifndef DACT_BIN_URL
 #define DACT_BIN_URL "http://www.rkeene.org/projects/compression/dact/@@OSNM@@-@@ARCH@@/dact.bin"
 #endif
@@ -209,7 +219,6 @@ struct dact_header {
 
 
 int print_help(int argc, char **argv);
-int dact_blksize_calc(int fsize);
 int dact_upgrade_file_checkver(const char *name, const char *url_ver, const char *options);
 int dact_upgrade_file(const char *name, const char *url_get, const char *url_ver, uint32_t version, const char *dest, const char *options);
 int dact_shutdown(int retval);

@@ -89,6 +89,10 @@ int comp_zlib_compress(unsigned char *prev_block, unsigned char *curr_block, uns
 	if (retval!=Z_OK) return(-1);
 /* Remove the 120,218 header */
 	dest_size-=2;
+	if (out_block[0]!=120 || out_block[1]!=218) {
+		PRINTERR("Error!  Invalid headers, output will most likely be unusable.");
+		return(-1);
+	}
 	memmove(out_block, out_block+2, dest_size);
 
 	return(dest_size);
@@ -96,19 +100,25 @@ int comp_zlib_compress(unsigned char *prev_block, unsigned char *curr_block, uns
 
 int comp_zlib_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	unsigned long dest_size;
+	int real_blksize=blk_size;
 	unsigned char *tmpbuf;
 	int retval;
 
 /* Replant the header. */
-	tmpbuf=malloc(blk_size+2);
-	tmpbuf[0]=120;
-	tmpbuf[1]=218;
-	memcpy(tmpbuf+2, curr_block, blk_size);
+	if (curr_block[0]==120 && curr_block[1]==218) {
+		tmpbuf=curr_block;
+	} else {
+		tmpbuf=malloc(real_blksize+2);
+		tmpbuf[0]=120;
+		tmpbuf[1]=218;
+		memcpy(tmpbuf+2, curr_block, real_blksize);
+		real_blksize+=2;
+	}
 
 	dest_size=bufsize;
-	retval=uncompress(out_block,&dest_size,tmpbuf,blk_size+2);
+	retval=uncompress(out_block, &dest_size, tmpbuf, real_blksize);
 
-	free(tmpbuf);
+	if (tmpbuf!=curr_block) free(tmpbuf);
 
 	if (retval!=Z_OK) return(0);
 

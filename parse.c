@@ -166,7 +166,7 @@ char *parse_url_subst(const char *src, const char *fname) {
 
 
 	while (strstr(loc,"@@")) {
-		cmd=ELFCRC(0, loc=strstr(loc, "@@")+2, 4);
+		cmd=elfcrc(0, loc=strstr(loc, "@@")+2, 4);
 		loc+=6;
 
 		strsz=(loc-ploc-8);
