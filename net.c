@@ -114,25 +114,31 @@ int createconnection_tcp(char *host, int port) {
 	struct sockaddr_in sock;
 
 	if (dact_nonetwork) return(-EPERM);
-	if ((hostinfo=gethostbyname(host))==NULL) {
+
 #ifdef HAVE_INET_ATON
-		if (!inet_aton(host,&sock.sin_addr))
+	if (!inet_aton(host,&sock.sin_addr)) {
+#elif HAVE_INET_ADDR
+	if ( (sock.sin_addr.s_addr=inet_addr(host) )==-1) {
 #else
-		if ( (sock.sin_addr.s_addr=inet_addr(host) )==-1)
+	{
 #endif
-			return(-1);
-	} else {
-/* Should we assign here? */
+		if ((hostinfo=gethostbyname(host))==NULL) return(-EPERM);
 		memcpy(&sock.sin_addr.s_addr,hostinfo->h_addr_list[0],hostinfo->h_length);
 	}
+
 	sock.sin_family=AF_INET;
 	sock.sin_port=htons(port);
-	if ((sockid=socket(AF_INET, SOCK_STREAM, 0))<0)
-		return(-1);
-	if (connect(sockid, (struct sockaddr *) &sock, sizeof(sock))<0) {
-		close(sockid);
-		return(-1);
+	if ((sockid=socket(AF_INET, SOCK_STREAM, 0))<0) {
+		CHECKPOINT;
+		return(-EIO);
 	}
+	if (connect(sockid, (struct sockaddr *) &sock, sizeof(sock))<0) {
+		PERROR("connect");
+		CHECKPOINT;
+		close(sockid);
+		return(-EIO);
+	}
+	CHECKPOINT;
 	return(sockid);
 }
 

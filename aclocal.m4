@@ -167,6 +167,8 @@ AC_DEFUN(DC_GET_SHARED, [
     AC_TRY_LINK([#include <stdio.h>], [ printf("okay\n"); return(0); ], [ SHARED="-shared"; ADD_LDFLAGS="" ], SHARED="", SHARED="");
   fi
   LDFLAGS="$ADD_LDFLAGS $OLD_LDFLAGS"
+
+  
 ])
 
 

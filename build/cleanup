@@ -32,7 +32,7 @@ CROSS=i586-mingw32msvc
 if [ ! -z "${CROSS}" ]; then CROSSCMD="${CROSS}-"; fi
 export CFLAGS LDFLAGS CPPFLAGS
 make distclean
-./configure --host=${CROSS} --prefix=c:/dact/ ${DEBUG} && \
+./configure --host=${CROSS} --prefix="c:/dact/" ${DEBUG} && \
 make && \
 ${CROSSCMD}strip dact.exe
 if [ "${SNAPSHOT}" = "1" ]; then

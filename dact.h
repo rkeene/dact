@@ -124,6 +124,13 @@
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
+#ifdef HAVE_STDIO_H
+#include <stdio.h>
+#endif
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
+#endif
+
 
 #define DACT_MAGIC_NUMBER 0x444354C3
 #define DACT_MAGIC_OFFSET 0
@@ -144,12 +151,10 @@ struct dact_header {
 #define PRINT_LINE /**/
 #endif
 
-#define PERROR(error) { PRINT_LINE; perror("dact: " error); }
-#define PERROR_L(errnum, error) { PRINT_LINE; fprintf(stderr, "%s: %s\n", error, strerror(abs(errnum))); }
+#define PERROR_L(errnum, error) { PRINT_LINE; fprintf(stderr, "dact: %s: %s\n", error, strerror(abs(errnum))); }
 #define PRINTERR(error) { PRINT_LINE; fprintf(stderr, "dact: " error "\n"); }
-
-/* Win32 check here */
-
+#define PERROR(error) PERROR_L(errno, error)
+/* #define PERROR(error) { PRINT_LINE; perror("dact: " error); } */
 
 #ifdef DEBUG
 #define SHOWVAL(x...) { PRINT_LINE; fprintf(stderr, "dact: %s=%li\n", #x, (long) (x)); }
