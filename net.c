@@ -117,10 +117,12 @@ int createconnection_tcp(char *host, int port) {
 
 #ifdef HAVE_INET_ATON
 	if (!inet_aton(host,&sock.sin_addr)) {
-#elif HAVE_INET_ADDR
+#else
+#ifdef HAVE_INET_ADDR
 	if ( (sock.sin_addr.s_addr=inet_addr(host) )==-1) {
 #else
 	{
+#endif
 #endif
 		if ((hostinfo=gethostbyname(host))==NULL) return(-EPERM);
 		memcpy(&sock.sin_addr.s_addr,hostinfo->h_addr_list[0],hostinfo->h_length);

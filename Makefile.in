@@ -67,8 +67,8 @@ libdact.so: $(OBJS) libdact.o
 	@true
 
 libdact.a: $(OBJS) libdact.o
-	$(AR) rcu libdact.a $(filter-out dact.o, $^)
-	$(RANLIB) libdact.a
+	@AR@ rcu libdact.a $(filter-out dact.o, $^)
+	-@RANLIB@ libdact.a
 
 %.so: %.c %.lnk
 	@echo $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ -DAS_MODULE @SHARED@ $< $(filter %.o, $^) `cat $(<:.c=.lnk)`; \
