@@ -1,0 +1,63 @@
+lzo1b_7.lo : \
+ lzo1b_7.c compr1b.h config1b.h ../include/lzo1b.h \
+ ../include/lzoconf.h ../config.h \
+ /usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/limits.h \
+ /usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/syslimits.h \
+ /usr/include/limits.h /usr/include/features.h \
+ /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h \
+ /usr/include/bits/posix1_lim.h /usr/include/bits/local_lim.h \
+ /usr/include/linux/limits.h /usr/include/bits/posix2_lim.h lzo_conf.h \
+ /usr/include/sys/types.h /usr/include/bits/types.h \
+ /usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/stddef.h \
+ /usr/include/time.h /usr/include/endian.h /usr/include/bits/endian.h \
+ /usr/include/sys/select.h /usr/include/bits/select.h \
+ /usr/include/bits/sigset.h /usr/include/sys/sysmacros.h \
+ /usr/include/string.h /usr/include/bits/string.h \
+ /usr/include/bits/string2.h /usr/include/stdlib.h \
+ /usr/include/alloca.h /usr/include/assert.h lzo_ptr.h lzo_util.h \
+ lzo1b_de.h lzo_dict.h stats1b.h lzo1b_cc.h lzo1b_c.ch lzo1b_sm.ch \
+ lzo1b_tm.ch lzo1b_cr.ch lzo1b_cm.ch
+lzo1b_7.c :
+compr1b.h :
+config1b.h :
+../include/lzo1b.h :
+../include/lzoconf.h :
+../config.h :
+/usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/limits.h :
+/usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/syslimits.h :
+/usr/include/limits.h :
+/usr/include/features.h :
+/usr/include/sys/cdefs.h :
+/usr/include/gnu/stubs.h :
+/usr/include/bits/posix1_lim.h :
+/usr/include/bits/local_lim.h :
+/usr/include/linux/limits.h :
+/usr/include/bits/posix2_lim.h :
+lzo_conf.h :
+/usr/include/sys/types.h :
+/usr/include/bits/types.h :
+/usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/stddef.h :
+/usr/include/time.h :
+/usr/include/endian.h :
+/usr/include/bits/endian.h :
+/usr/include/sys/select.h :
+/usr/include/bits/select.h :
+/usr/include/bits/sigset.h :
+/usr/include/sys/sysmacros.h :
+/usr/include/string.h :
+/usr/include/bits/string.h :
+/usr/include/bits/string2.h :
+/usr/include/stdlib.h :
+/usr/include/alloca.h :
+/usr/include/assert.h :
+lzo_ptr.h :
+lzo_util.h :
+lzo1b_de.h :
+lzo_dict.h :
+stats1b.h :
+lzo1b_cc.h :
+lzo1b_c.ch :
+lzo1b_sm.ch :
+lzo1b_tm.ch :
+lzo1b_cr.ch :
+lzo1b_cm.ch :

@@ -1,0 +1,11 @@
+[rkeene@laptop crack-me]$ dact -E subst file001.html
+Key file: file001.key
+[rkeene@laptop crack-me]$ cp file001.html.dct file001.html.out.dct
+[rkeene@laptop crack-me]$ dact -d file001.html.out.dct
+Key file: file001.key
+[rkeene@laptop crack-me]$ diff file001.html file001.html.out
+[rkeene@laptop crack-me]$ rm file001.html.out.dct
+[rkeene@laptop crack-me]$ dact -s file001.html.dct > file001.info
+[rkeene@laptop crack-me]$ ls
+file001.html  file001.html.dct  file001.html.out  file001.info  file001.key
+[rkeene@laptop crack-me]$ 

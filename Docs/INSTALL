@@ -1,0 +1,8 @@
+DACT Installation Guide
+
+$ ./configure
+$ make
+$ su
+$ make install
+   (note, the default installation location is /usr/local,
+    make sure you have proper privileges to write there.)

@@ -1,0 +1,49 @@
+alloc.lo : \
+ alloc.c lzo_conf.h ../include/lzoconf.h ../config.h \
+ /usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/limits.h \
+ /usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/syslimits.h \
+ /usr/include/limits.h /usr/include/features.h \
+ /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h \
+ /usr/include/bits/posix1_lim.h /usr/include/bits/local_lim.h \
+ /usr/include/linux/limits.h /usr/include/bits/posix2_lim.h \
+ /usr/include/sys/types.h /usr/include/bits/types.h \
+ /usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/stddef.h \
+ /usr/include/time.h /usr/include/endian.h /usr/include/bits/endian.h \
+ /usr/include/sys/select.h /usr/include/bits/select.h \
+ /usr/include/bits/sigset.h /usr/include/sys/sysmacros.h \
+ /usr/include/string.h /usr/include/bits/string.h \
+ /usr/include/bits/string2.h /usr/include/stdlib.h \
+ /usr/include/alloca.h /usr/include/assert.h lzo_ptr.h \
+ ../include/lzoutil.h
+alloc.c :
+lzo_conf.h :
+../include/lzoconf.h :
+../config.h :
+/usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/limits.h :
+/usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/syslimits.h :
+/usr/include/limits.h :
+/usr/include/features.h :
+/usr/include/sys/cdefs.h :
+/usr/include/gnu/stubs.h :
+/usr/include/bits/posix1_lim.h :
+/usr/include/bits/local_lim.h :
+/usr/include/linux/limits.h :
+/usr/include/bits/posix2_lim.h :
+/usr/include/sys/types.h :
+/usr/include/bits/types.h :
+/usr/local/lib/gcc-lib/i586-pc-linux-gnu/pgcc-2.95.2/include/stddef.h :
+/usr/include/time.h :
+/usr/include/endian.h :
+/usr/include/bits/endian.h :
+/usr/include/sys/select.h :
+/usr/include/bits/select.h :
+/usr/include/bits/sigset.h :
+/usr/include/sys/sysmacros.h :
+/usr/include/string.h :
+/usr/include/bits/string.h :
+/usr/include/bits/string2.h :
+/usr/include/stdlib.h :
+/usr/include/alloca.h :
+/usr/include/assert.h :
+lzo_ptr.h :
+../include/lzoutil.h :

@@ -1,0 +1,24 @@
+	A Brief Discussion of the History and Operation of
+	the DACT Compression engine.
+
+
+History:
+	DACT started out as a science fair project on "Lossless
+Compression of Arbitrary Data."  A feat which (to me) seemed like it
+should be possible, but I later realized why it could not be[1].  From
+there, I decided that a compression program that knew different file
+types and had a dictionary of compression algorithms to use for each file
+type.  So I began writing a program to do this, but I was too lazy to do
+some magic identification, or base it on the file's extension.  So, this
+program instead compressed each block with all known algorithms, finding
+the smallest overall file size.  The next logical step was to make it test
+each algorithm on each block.
+
+Operation:
+	DACT takes a block (of arbitrary size, specified by the user) from
+a file, compresses it with all of the compression algorithms in it's
+dictionary, finding the one that yields the lowest size. It provides a
+simple interface for creating new algorithms.
+
+Questions?  Comments?  Code/Document Contribution?  Feel free to contact
+me at rkeene@rkeene.org.

@@ -1,0 +1,25 @@
+Finish writing dact.conf options handlers
+
+a. Archive
+b. Pre/Post Install script
+
+# x. Darwin:  Does not set file permissions (fixed)
+y. Does not handle large files
+z. Does not store original file permissions.
+
+i. auto-upgrade for modules
+ii. fix modules everywhere
+iii. sign modules
+iv. default to modules
+v. module version stuff
+vi. commercial modules
+
+1. Get more compression algorithms
+2. factor
+3. --> lha (not GPL)
+4. --> arj (not GPL)
+5. --> rar (not GPL, shareware)
+6. lzw 
+7. Document code.
+...
+n. Write better documentation.

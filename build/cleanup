@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ ! "${SNAPSHOT}" = "1" ]; then
+	VER_MAJ=`echo $VERS | cut -f 1 -d .`
+	VER_MIN=`echo $VERS | cut -f 2 -d .`
+	VER_REV=`echo $VERS | cut -f 3 -d .`
+	printf "%03i%03i%03i\n" $VER_MAJ $VER_MIN $VER_REV > VERSION
+else
+	echo "SNAPSHOT" > VERSION
+fi
+
+rm -f makearch.sh .* *.dct *.bak *.swp *.exe makesnapshot.sh *.o joe* bob* f 2>/dev/null >/dev/null
+for i in *.[ch]; do
+        grep -v -e '^//' -e DPRINTF -e SHOWVAL $i > f
+        mv f $i
+done

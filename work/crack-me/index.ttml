@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>
+<+
+#  Copyright (C) 2001  Roy Keene
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+# 
+#       email: index@rkeene.org
+
+  hgetvars
+  set path [file dirname $ENVS(DOCUMENT_URI)]
+  if {$path=="/"} { set path "" }
+  set path "$path/"
+
+  hputs "http://$ENVS(HTTP_HOST)$path"
+proc convtoext {data} {
+  set output ""
+  for {set i 0} {$i<[string length $data]} {incr i} {
+    set curr [string index $data $i]
+    if {![string match "\[a-z,A-Z,0-9,.\]" $curr]} {
+      set curr [format "%%%x" [ctype ord $curr]]
+    }
+    set output "$output$curr"
+  }
+  return $output
+}
+
+
++>
+</TITLE>
+</HEAD>
+<+
+  set color(tarball) #D00000
+  set color(directory) #0000FF
+  set color(html) "#FF00FF"
+  set color(jpeg) "#FF00FF"
+  set color(text) "#000000"
+  set color(cgi) "#00FF00"
+  set color(tcl) "#00E000"
+  set color(header) "#000000"
+  set color(c) "#000000"
+  set color(makefile) "#000000"
+  set color(readme) "#000000"
+  set color(exe) "#00FF00"
+  set color(mp3) "#FFFF00"
+  set color(default) "#000000"
+  set color(bc) "#808080"
+  set color(zip) "#D00000"
+  set color(gif) "#FF00FF"
+  set types(tarball) *.tar.gz
+  set types(html) *.html
+  set types(text) *.txt
+  set types(cgi) *.cgi
+  set types(jpeg) *.jpg
+  set types(header) *.h
+  set types(c) *.c
+  set types(makefile) \[Mm\]akefile
+  set types(readme) "*\[Rr\]\[Ee\]\[Aa\]\[Dd\]\[Mm\]\[Ee\]*"
+  set types(exe) *.exe
+  set types(tcl) *.tcl
+  set types(mp3) *.mp3
+  set types(zip) *.zip
+  set types(bc) *.bc
+  set types(gif) *.gif
++>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF">
+<TT>
+<+
+  catch { 
+    set fileId [open /web/rkeene/.counter r+]
+    gets $fileId cnt
+    seek $fileId 0 start
+    puts $fileId [expr $cnt+1]
+    close $fileId
+  }
+  if {[info exists cnt]} { hputs $cnt }
++>
+[rkeene@unleaded
+<+
+  if {[string index $path 1]=="~"} {
+    set path [string range $path [expr [string first / [string range $path 1 end]]+1] end]
+  }
+  set path [string range $path 0 [expr [string length $path]-2]]
+  hputs "/home/rkeene$path\]\$ ls -am<BR>"
+
+
+  set files ""
+  hputs "<A HREF=\"./\"><FONT COLOR=\"$color(directory)\">.</FONT>/</A>, <A HREF=\"../\"><FONT COLOR=\"$color(directory)\">..</FONT>/</A>"
+  foreach file [lsort [glob *]] {
+    if {[file type $file]!="link" || [file exists $file\.desc]} {
+      if {[file isdir $file]} { 
+        hputs ", <A HREF=\"[convtoext $file]/\"><FONT COLOR=\"$color(directory)\">$file</FONT>/</A>" 
+        lappend files "$file directory"
+      } else {
+        set DSTcolor default
+        if {[file executable $file]} { set DSTcolor exe }
+        foreach item [lsort [array names types]] {
+          if {[string match $types($item) $file]} {
+            set DSTcolor $item
+            break
+          }
+        }
+        if {![string match "*.\[dt\]\[et\]\[sm\]\[cl\]" $file]} {
+          hputs ", <A HREF=\"[convtoext $file]\"><FONT COLOR=\"$color($DSTcolor)\">$file</FONT></A>"
+          lappend files "$file $DSTcolor"
+        }
+        
+      }
+    }
+  }
+  hputs "<BR>"
+  if {[info exists cnt]} { hputs "[expr $cnt+1] " }
+  hputs "\[rkeene@unleaded /home/rkeene$path\]\$ "
++>
+</TT><HR WIDTH="75%" SIZE=1>
+<+
+  foreach file $files {
+    set tof [lindex $file 1]
+    set file [lindex $file 0]
+    if {[file exists $file\.desc]} {
+      set fileId [open $file\.desc r]
+      set desc ""
+      while {![eof $fileId]} {
+        gets $fileId ln
+        set desc "$desc\n$ln"
+      }
+      set desc [string range $desc 1 end]
+      close $fileId
+      set slash [lindex {{} {/}} [file isdir $file]]
+      hputs "<A HREF=\"$file$slash\"><FONT COLOR=\"$color($tof)\">$file</FONT>$slash</A> $desc<BR>"
+    }
+  }
++>
+<+
+  if {[string tolower $ENVS(SERVER_NAME)]!="www.rkeene.org"} {
+    set directory "~rkeene/"
+  } else { 
+    set directory ""
+  }
+  hputs "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <A HREF=\"/$directory\work/resume-rk.html\">Roy Keene</A> \[<A HREF=\"http://shammack.n-f-d.com/date.html\">0290120002010</A>\] <A HREF=\"mailto:rkeene@rkeene.org\">rkeene@rkeene.org</A>"
++>
+<+
+  if {![info exists ENVS(HTTP_REFERER)]} { set ENVS(HTTP_REFERER) "-" }
+  if {[string match "*shammack*" $ENVS(HTTP_REFERER)]} {
+    
++>
+<HR WIDTH="75%">
+<PRE><A HREF="http://morgus.ddns.org/">morgus</A>:/home/deadduck# ls -l
+...
+l---rwsr--   1 112      11312    18446744073441116198 Dec 31  1969 #63746
+pr-sr-xr-t   1 13403    27757           0 Mar 28  1996 #63809|
+b---r-S---   1 29289    29812    111, 103 Mar  5  2028 #63811
+c--xrw--w-   1 512      26991    108,  32 Jan 24  2026 #63872
+<A HREF="http://morgus.ddns.org/">morgus</A>:/home/deadduck# du -s
+165423528591    .</PRE>
+morgus is <A HREF="http://shammack.n-f-d.com/">Scott</A>'s new machine (It's /home fs has since been repaired.)<BR>
+<+
+  }
+  hputs "<BR><A HREF=\"/$directory\">Home</A><BR>"
++>
+<BR>
+
+<+
+  hputs "<SMALL>date=[clock format [clock seconds] -format 0%d%m%Y%H%M]</SMALL>"
++>
+<BR>
+
+<CENTER><A HREF=http://www.n-f-d.com/><IMG BORDER=0 SRC=http://www.n-f-d.com/random-image/*/<+hputs [clock seconds]+>/ ALT="Netfuel Design"></A>
+<+
+  hputs "<IMG ALT=\"\[ Support Freedom \]\" SRC=\"/$directory\projects/support-freedom/ribbon_small.gif\">"
++>
+</CENTER>
+<BR>
+Hey, you.   Tell me what you think of this site -- <A HREF="mailto:rkeene@rkeene.org">rkeene@rkeene.org</A>
+<BR>
+<FONT SIZE=-7>Documentation is <B>NOT</B> a last resort.  It's <B>FIRST</B> choice.<BR>
+*Click* at the sound of the tone it will be exactly Mon Jan 18 21:14:07 CST 2038.<BR>
+*Click* at the sound of the tone it will be exactly Fri Dec 13 14:45:52 CST 1901.  (Maybe time_t should be unsigned?)<BR>
+Support International Code Cleanup Year !<BR>
+Saturday, 08 September 2001 20:46:40 2001, a second that will live in infamy<BR> 
+</FONT>
+</BODY>
+</HTML>

@@ -1,0 +1,90 @@
+8 General registers (ax[0],bx[1],cx[2],dx[3],ex[4],fx[5],gx[6],hx[7])
+Upto 64 `large' STACKS, atleast 1.
+1 `IN' FIFO, GEN_BUFFER
+1 Condition Bit (cb)
+1 Stack Size Value (st)
+
+OPCODES:
+
+00.n[3]		OUT /reg/	  Write 1 byte from lowest byte of reg"N".
+01.i[5]		JMP /imm/	  Jump signed-imm"I" bytes.
+02.i[5]		JE  /imm/	  Jump signed-imm"I" bytes if CB set.
+03.i[5]		JNE /imm/	  Jump signed-imm"I" bytes if CB not set.
+04.n[3].i[8]	CMP /reg/ /imm/	  Compare lower byte of imm"I" to reg"N".
+05.n[3].i[16]	CMP /reg/ /imm/	  Compare lower word of imm"I" to reg"N".
+06.n[3].i[32]	CMP /reg/ /imm/	  Compare imm"I" to reg"N".
+07.c[1]		LOOP /bit/	  ?"C"=0: Begin loop (if in loop, nest.)
+				  ?"C"=1: End loop(cx--, unless cx=0, then end.)
+08.n[3].s[3]	MOV /reg/ /reg/	  Copy contents of reg"S" to reg"N".
+09.n[3].i[8]	MOV /reg/ /imm/	  Copy imm"I" to reg"N".
+10.n[3].i[16]	MOV /reg/ /imm/	  Copy imm"I" to reg"N".
+11.n[3].i[32]	MOV /reg/ /imm/	  Copy imm"I" to reg"N".
+12.n[3]		PUSH /reg/	  Copy reg"N" to stack #0.
+13.n[3]		POP /reg/	  Move 32 bits from stack #0 to reg"N".
+14.n[3]		POP /reg/	  Move 8 bits from stack #0 to reg"N".
+15.n[3].s[3]	ADD /reg/ /reg/	  Add reg"S" to reg"N" (store in reg"N".)
+16.n[3].i[32]	ADD /reg/ /imm/	  Add imm"I" to reg"N".
+17.n[3].i[16]	ADD /reg/ /imm/	  Add imm"I" to reg"N".
+18.n[3].i[8]	ADD /reg/ /imm/	  Add imm"I" to reg"N".
+19.n[3].s[3]	SUB /reg/ /reg/	  Subtract reg"S" from reg"N" (store in reg"N".)
+20.n[3].i[32]	SUB /reg/ /imm/	  Subtract imm"I" from reg"N".
+21.n[3].i[16]	SUB /reg/ /imm/	  Subtract imm"I" from reg"N".
+22.n[3].i[8]	SUB /reg/ /imm/	  Subtract imm"I" from reg"N".
+23.n[3].s[3]	MUL /reg/ /reg/	  Multiply reg"S" by reg"N" (store in reg"N".)
+24.n[3].i[32]	MUL /reg/ /imm/	  Multiply imm"I" by reg"N".
+25.n[3].i[16]	MUL /reg/ /imm/	  Multiply imm"I" by reg"N".
+26.n[3].i[8]	MUL /reg/ /imm/	  Multiply imm"I" by reg"N".
+27.n[3].s[3]	DIV /reg/ /reg/	  Divide reg"S" by reg"N" (int=reg"N", rem=dx.)
+28.n[3].i[32]	DIV /reg/ /imm/	  Divide imm"I" by reg"N".
+29.n[3].i[16]	DIV /reg/ /imm/	  Divide imm"I" by reg"N".
+30.n[3].i[8]	DIV /reg/ /imm/	  Divide imm"I" by reg"N".
+31.n[3].i[5]	SHR /reg/ /imm/	  Shift reg"N" right imm"I" bits.
+32.n[3].i[5]	SHL /reg/ /imm/	  Shift reg"N" left imm"I" bits.
+33.n[3].s[3]	SHR /reg/ /reg/	  Shift reg"N" right reg"S" bits.
+34.n[3].s[3]	SHL /reg/ /reg/   Shift reg"N" left reg"S" bits.
+35.i[5]		PROC /imm/	  Begin definition of proc imm"I" [Not execd].
+36.i[5]		CALL /imm/	  Run proc imm"I".
+37.null		RET		  End definition of proc.
+38.n[3].s[3]	XOR /reg/ /reg/	  Excl-bws-OR reg"N" with reg"S" sto in reg"N".
+39.n[3].i[32]	XOR /reg/ /imm/	  Excl-bws-OR reg"N" with imm"I".
+40.n[3].i[16]	XOR /reg/ /imm/	  Excl-bws-OR reg"N" with imm"I".
+41.n[3].i[8]	XOR /reg/ /imm/	  Excl-bws-OR reg"N" with imm"I".
+42.n[3].s[3]	OR /reg/ /reg/	  Bws-OR reg"N" with reg"S" sto in reg"N".
+43.n[3].i[32]	OR /reg/ /imm/	  Bws-OR reg"N" with imm"I".
+44.n[3].i[16]	OR /reg/ /imm/	  Bws-OR reg"N" with imm"I".
+45.n[3].i[8]	OR /reg/ /imm/	  Bws-OR reg"N" with imm"I".
+46.n[3].s[3]	AND /reg/ /reg/	  Bws-AND reg"N" with reg"S" sto in reg"N".
+47.n[3].i[32]	AND /reg/ /imm/	  Bws-AND reg"N" with imm"I".
+48.n[3].i[16]	AND /reg/ /imm/	  Bws-AND reg"N" with imm"I".
+49.n[3].i[8]	AND /reg/ /imm/	  Bws-AND reg"N" with imm"I".
+50.n[3].s[3]	EXP /reg/ /reg/	  Raise reg"N" to the reg"S" powr sto in reg"N".
+51.n[3].i[32]	EXP /reg/ /imm/	  Raise reg"N" to the imm"I" power.
+52.n[3].i[16]	EXP /reg/ /imm/	  Raise reg"N" to the imm"I" power.
+53.n[3].i[8]	EXP /reg/ /imm/	  Raise reg"N" to the imm"I" power.
+54.i[6]		NR-STACKS /imm/	  Set # of stacks <ST> to imm"I".
+55.i[|ST|].n[3] PUSH /imm/ /reg/  Copy reg"N" to stack #imm"I".
+56.i[|ST|].n[3]	POP /imm/ /reg/	  Move 32bits from stack #imm"I" to reg"N".
+57.c[1].i[|ST|].n[3] POP /imm/ /imm/ /reg/
+				  ?"C"=0: Move 8bits from stk #imm"I" to reg"N".
+				  ?"C"=1: Move 16bits frm stk #imm"I" to reg"N".
+58.??????????????????????????????????????????????????????????
+59.i[|ST|]	OUT /imm/	  Write stack #imm"I" to disk.
+60.null		OUTREG		  Write all registers to disk in order.
+61.??????????????????????????????????????????????????????????
+62.n[3]		POP /reg/	  Move 16 bits from stack #0 to reg"N".
+63.c[5]		EXT /imm/ /.../	  (Least frequently called functions go here)
+			?"C"=0:		HLT  (compression okay, all done.)
+			?"C"=1: .i[8]; 	DISP Display imm"I" bytes following.
+			?"C"=2: 	ABRT (compression failed, all done.)
+			?"C"=3: .n[3]; 	LOAD Load 1 byte from GEN_BUF to reg"N".
+			?"C"=4: .i[|ST|]; OUTLOW Write lowest order bytes of
+					      stack #imm"I" to disk.
+			?"C"=5: .i[|ST|]; STFLIP Flip stack #imm"I".
+			?"C"=6: .i[1]; 	CWSC (control word size change)
+			  ?"I"=0: Enter 5bit Control Word State.
+			  ?"I"=1: Enter 6bit Control Word State (default).
+			?"C"=7: .i[3].r[6]...; REMAP enter imm"I" bit Control
+					         Word State, with opcodes 
+						 remapped as opcode X=imm"R"_X.
+						 (Example: [3F.07.1.00.3F])
+			?"C"=8:

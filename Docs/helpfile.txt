@@ -1,0 +1,168 @@
+DACT(1)                                                                DACT(1)
+
+
+
+NNAAMMEE
+       dact - compress or expand a file, or stream
+
+SSYYNNOOPPSSIISS
+       ddaacctt  [  --ddssffccvvllnniiCCHHOOSShhVVNNaa  ]  [--bb ssiizzee]  [--ee aallggoo]  [--mm ffiillee] [--oo ffiillee] [--uu uurrll]
+       [--pp uurrll] [--MM ccoommmmaanndd] [--DD ddeesscc] [--II aallggoo] [--UU ffiillee] [--EE cciipphheerr] [ffiillee ......]
+
+DDEESSCCRRIIPPTTIIOONN
+       _D_A_C_T reduces input files by attempting to compress each  block  of  the
+       file  with  several  different  algorithms and selects the best one for
+       each block.
+
+
+OOPPTTIIOONNSS
+       --dd     Decompress the file (or stdin, if no file  is  given),  removing
+              the extention if it has a valid one.
+
+       --ss     Display  statistics  about  the  file,  such as: Magic number of
+              file, DACT version file was compressed with, Block size used  to
+              compress  file, Compressed file size, Original file's size, Com-
+              pression ratio (uncompressed  to  compressed),  File's  original
+              name, CRCs (if available).
+
+       --ff     Force  bad and unsafe things to happen.  Can be combined to make
+              even worse things happen.  One `-f' allows overwriting of exist-
+              ing files, two `-f' allows you to ignore bad magic and CRC check
+              fails.
+
+       --cc     Send output to stdout, this will allow you to force DACT to send
+              compressed  output to a terminal or result of compressing a file
+              to a pipe.
+
+       --vv     Increase verbosity, can be combined to increase verbosity a lot.
+              Currently,  only  up  to 3 makes sense.  One `-v' displays a bar
+              graph.  Two `-v' displays a bar  graph  and  block  information.
+              Three `-v' displays a bar graph and detailed compression statis-
+              tics per block.
+
+       --ll     List compression algorithms available.
+
+       --nn     Toggle use of CRCs.  This option is especially useful when  com-
+              bined  with  the network capabilities of DACT.  It allows you to
+              create a compressed file with only the header pointing to an web
+              page  that  contains the real DACT file (which normally has it's
+              CRCs checked against the compressed header to ensure they're the
+              same  file),  with  this option the files do not have to be from
+              the same source (i.e., you can have an  updated  copy  automati-
+              cally extend itself.)
+
+       --ii     Read  input  from  standard  input instead of /dev/tty.  This is
+              used to read user supplied information like encryption keys  and
+              passwords  from  standard  input instead of the more appropriate
+              method of opening "/dev/tty."
+
+       --CC     Complain  when  compression  errors  occur.   When  a  block  is
+              selected,  it  is  tested to ensure that it decompresses back to
+              the original source.  If it fails, the algorithm  is  not  used,
+              with this option you are informed of the failure.
+
+       --HH     Write  only  header  (no  data).  This option is useful for dis-
+              tributing archives that need only reside on the  internet  some-
+              place.
+
+       --OO     Toggle  writing  original file name in the DACT header. This has
+              no real use that I know of.
+
+       --SS     Use speed-size as a metric rather than size.  This is not imple-
+              mented  yet.  This will make DACT create an optimized compressed
+              file, balancing speed of decompression with size.
+
+       --hh     Give usage synopsis.
+
+       --VV     Display DACT version.
+
+       --NN     Upgrade DACT.  This option will fetch the latest binary from the
+              internet  and place it in $HOME/.dact/ as dact.bin.  If you have
+              `binary_check on' in your dact.conf file, DACT  will  check  for
+              this file and use it.  If you have Debian and run `dact -N'   as
+              root the Debian upgrade procedure will upgrade your entire  sys-
+              tem.
+
+       --aa     DACT  modules.   This  option will fetch the latest modules from
+              the internet and place them in $HOME/.dact/  in  a  subdirectory
+              cooresponding to your Operating System and CPU Architecture.
+
+       --bb ssiizzee
+              Use  the  specified  block  size  to  compress  the  file.  This
+              option's parameters is in bytes.
+
+       --ee nnuumm Exclude an algorithm from being used.  This option is useful  if
+              you  know  your  target will not be able to decompress a certain
+              algorithm (you can get their numbers from the `-l' option.)
+
+       --mm ffiillee
+              Load another config file.  This option will attempt to load  the
+              specified  file  in addition to the normal files, the options in
+              this file will supercede other options.
+
+       --oo ffiillee
+              Alternate output.  This option sends output to a file instead of
+              INFILE.dct.  The file can also be a URL or '-' for standard out.
+
+       --uu uurrll This option will encode an URL in the compressed file's  header,
+              this  URL  will be tried (and CRCs checked) before attempting to
+              decompress the data in the actual file.
+
+       --pp uurrll URLs in DACT can have variables in them that  will  be  expanded
+              when  network  access  is  required, this allows you to test the
+              results of that extrapolation easily.  Variables and their  val-
+              ues are:
+                  @@OSNM@@        OS Name (linux, freebsd, sunos, etc)
+                  @@OSVR@@        OS version (2.2.x, 4.2, 5.8, etc)
+                  @@OSVS@@        OS version (short) (2.2, 4.2, 5.8, etc)
+                  @@ARCH@@        Arch (i386, sparc64, sun4u, sun4m, etc)
+                  @@DIST@@        If OSNM=Linux, distribution of Linux.
+                  @@FILE@@        Name of compressed file.
+                  @@DTVR@@        Version of DACT (maj.min.rev)
+                  @@DTVS@@        Version of DACT (short) (maj.min)
+                  @@PASS@@        Prompt for Password
+                  @@USER@@        Prompt for Username
+                  @@ATSN@@        Put an `@'
+                example:
+                  dact       -p       http://www.rkeene.org/devel/dact/precom-
+              piled/dact-@@OSNM@@-@@OSVS@@-@@ARCH@@.bin
+                  dact:     http://www.rkeene.org/devel/dact/precompiled/dact-
+              linux-2.4-i586.bin
+
+       --MM ccoommmmaanndd
+              This  option  executes  a command from the command line as if it
+              appeared in "dact.conf".
+
+       --DD ddeesscc
+              Encode the description specified into the  header  of  the  com-
+              pressed file.
+
+       --II nnuumm Use  only  1 algorithm (and uncompressed as a fall-back), useful
+              if you want to limit yourself to a certain type of  compression.
+
+       --UU ffiillee
+              Encode  the  specified  file  into  the header of the compressed
+              file.  This file will be searched (line-by-line) for  a  working
+              URL to download compressed content from.  See also `-u.'
+
+       --EE cciipphheerr
+              Enable encryption using the specified algorithm, different algo-
+              rithms use different authentication methods.
+
+
+FFIILLEESS
+         $HOME/.dact/
+         $HOME/.dact/dact.conf
+         /usr/etc/dact.conf
+
+
+SSEEEE AALLSSOO
+       gzip(1), bzip2(1), mcrypt(3)
+
+
+AAUUTTHHOORR
+       Roy Keene _<_d_a_c_t_@_r_k_e_e_n_e_._o_r_g_>
+
+
+
+                                                                       DACT(1)

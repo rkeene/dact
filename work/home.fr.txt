@@ -1,0 +1,107 @@
+
+                              GNU's Not Unix!
+                                      
+                        [image de la Tête d'un GNU] 
+   [ Allemand | Anglais | Catalan | Chinois | Coréen | Danois | Espagnol
+   | Français | Hongrois | Italien | Japonais | Néerlandais | Portugais |
+                              Suédois | Turc ]
+                                      
+   Bienvenue sur le serveur web du projet GNU, www.gnu.org. Le projet GNU
+   a été lancé en 1984 afin de développer un système d'exploitation
+   complet, semblable à Unix et qui soit un logiciel libre: le système
+   GNU. (« GNU » est l'acronyme récursif the « GNU's Not Unix »; on le
+   prononce « gnou » avec un G audible) Des variantes du système
+   d'exploitation GNU, basées sur le noyau « Linux », sont utilisées
+   largement à présent; bien que ces systèmes soient communément appelés
+   par le terme « Linux », ils le seraient plus exactement par
+   « GNU/Linux ».
+   
+     * Ce que nous offrons
+     * Pourquoi nous sommes là
+     * Vers où nous allons
+       
+     * Aidez-nous à y arriver
+     * Qui nous sommes
+     * Ce que les utilisateurs pensent des logiciels GNU
+                                      
+        Répertoire des Logiciels Libres | Agenda | Nos conférenciers
+                                      
+         Commander nos produits | Logiciels GNU | Obtenir de l'aide
+                                      
+   Les licences de logiciels | Le coin des développeurs | Les projets GNU
+                                      
+    Documentation GNU | Autre documentation libre | Les licences pour la
+                               documentation
+                                      
+      Brave GNU World | La reconnaissance de GNU | Information pour la
+                                   presse
+                                      
+    Sites-miroirs | Quoi de neuf | Rechercher | Schéma du site | Liens |
+                                   Humour
+                                      
+Les dépêches de GNU
+
+   Nous invitons les scientifiques à joindre au plus vite la campagne
+   d'écriture de lettres pour la Public Library of Science (Bibliothèque
+   Scientifique Publique).
+   
+   Don Marti lance un appel pour nominer Richard M. Stallman pour le
+   Comité de Consultation Publique de l'Office des Brevets et des Marques
+   déposées des États-Unis dans son essai, Patent Reform Now!. L'échéance
+   tombe le 12 April 2001.
+   
+   Le secrétaire d'État de l'industrie français Christian Pierret est
+   entré dans l'histoire pour son opposition aux brevets sur les
+   logiciels.
+   
+   Voici un liste des toutes dernières versions des logiciels du projet
+   GNU. Nous la mettons à jour durant la nuit.
+   
+   Pour d'autres nouvelles, voyez ce qu'il y a de neuf à l'intérieur et à
+   propos du projet GNU.
+   
+Information supplémentaire
+
+   La Fondation pour le Logiciel Libre est une organisation charitative
+   exemptée de taxe qui rassemble des fonds pour travailler sur le projet
+   GNU.
+   
+   La philosophie et l'historique du projet GNU sont présentées dans
+   l'article de Richard M. Stallman, « Le projet GNU » ainsi que dans
+   plusieurs autres textes de notre section philosophie.
+   
+   La FLL soutient les libertés de parole, de presse et d'association sur
+   l'Internet, le droit d'utiliser l'encryption pour la communication
+   privée ainsi que le droit d'écrire des logiciels sans l'entrave
+   imposée par les monopoles de logiciels.
+   
+Information de contact
+
+   Veuillez envoyez vos questions et commentaires à propos de GNU et de
+   la FLL à
+Free Software Foundation           Téléphone:    +1-617-542-5942
+59 Temple Place - Suite 330        Télécopieur:  +1-617-542-2652
+Boston, MA  02111-1307,  USA       gnu@gnu.org
+                                      
+
+   Merci de votre visite!
+   Les webmestres GNU
+   webmasters@www.gnu.org
+   
+   [ Allemand | Anglais | Catalan | Chinois | Coréen | Danois | Espagnol
+   | Français | Hongrois | Italien | Japonais | Néerlandais | Portugais |
+   Suédois | Turc ]
+     _________________________________________________________________
+   
+   Copyright (C) 1996, 1997, 1998, 1999, 2000 Free Software Foundation,
+   Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA
+   
+   Verbatim copying and distribution of this entire article is permitted
+   in any medium, provided this notice is preserved.
+   
+   La reproduction exacte et la distribution intégrale de cet article est
+   permise sur n'importe quel support d'archivage, pourvu que cette
+   notice est préservée.
+   
+   Dernière mise-à-jour : $Date: 2002/04/30 09:10:06 $ $Author: mohit $
+     _________________________________________________________________

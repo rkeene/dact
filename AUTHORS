@@ -1,0 +1,14 @@
+Roy Keene <dact@rkeene.org>
+	Idea, primary maintainer.
+	dact.[ch], comp_plain.[ch], comp_delta.[ch], buffer.[ch],
+	comp_luck.[ch], comp_zlib.[ch].
+
+Jay Freeman <saurik@saurik.com>
+	CVS help, build scripts, man page.
+	Various patches (strsep(), patch-magic-file).
+
+Toby Collier <tcollier@indifferent.com>
+	README, ChangeLog
+
+Daniel Vignes <dvignes@mac.com>
+	int_sort:sort.[ch]

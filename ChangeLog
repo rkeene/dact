@@ -1,0 +1,152 @@
+20040220
+ * Moved LZO-* out of DEBUG.
+
+20031211
+ * Started maintaining DACT again, version 0.8.31 released.
+
+20010821
+ * Added `-E' option to use with encryption
+ * Added cipher subsystem
+ * Added cipher_chaos.c  (Chaos cipher)
+
+20010614
+ * Added message to be displayed when upgrading DACT (with -N)
+ * Added config option `block_size'
+
+20010601
+ * Added URL parsing support.
+ * Added `-p' option to display the result of parsed URL.
+ * Added `-N' option to upgrade DACT.
+
+20010422
+ * Added URL support.
+ * Added `-H' option to write only the header of a DACT file.
+ * Added extended header support.
+ * Added `-n' option to ignore CRCs.
+ * Added `-I' option to use only a specific algorithm and 0.
+ * Added `-U' option to specify a file that contains a list of URLs.
+ * Added `-u' option to specify an URL to download copy of real data.
+ * Added `-D' option to specify a file description.
+ * Added `-O' option to toggle the writing of original file name.
+ * Added hooks for native `bunzip2' and `gunzip' handling.
+ * Lots of bug fixes.
+ * Version is 0.7.0.
+
+20010325
+ * Fixed bug with newer libbz2's (from Glenn McGrath <bug1@optushome.com.au>)
+ * Changed comp_bzlib to 900k block (from Glenn McGrath <bug1@optushome.com.au>)
+ * Added support for -C option, and decompression checking.
+ * Version is 0.6.6
+
+20010324
+ * Fixed bugs in configure script
+ * Fixed bugs in dact_blk_compress() (possibly causing heap corruption)
+ * Changed magic number to be less likely to occur in a text file
+ * Version is 0.6.5
+
+20010322
+ * Rewrote dact.c.
+ * Made lots of changes to sort.[ch].
+ * Decided to keep current algorithms system.
+ * Changed magic number location in file to offset=0.
+ * Completely dropped support for old DACT files.
+ * New dact.c main(...) functions really similarily to `gzip.'
+ * Using GNU configure stuffs.
+ * comp_range and comp_mzlib2 are not enabled, they broke.
+ * Block size limit is (theoretically) 4GB.
+ * Changed structure of DACT file and block header.
+ * The -C option doesn't work.
+ * DACT doesn't check for a new binary (making a user dact-upgrade.sh
+   pointless at the moment, but this will be fixed. )
+ * Version is 0.6.1.
+ * Began using CVS to break things more quickly.
+ * Several misc bug fixes.
+
+20000922
+ * Added modules !
+ * Converted all stable algorithms to modularizbale form.
+ * Now uses a config file (/etc/dact.conf)
+ * CHECK_VERSION is defined by default now (but disabled in dact.conf)
+ * comp_mzlib2 works now.
+ * Added a '-m' option to specify a config file.
+ * update-version.sh renamed to dact-upgrade.sh and installed by `make install'
+
+20000907
+ * Added precompiled binaries, and a script to automatically upgrade.
+ * Added Docs/helpfile.txt  which needs to be turned into a manpage.
+
+20000905
+ * Added "Bugs" and "Horror Stories" to README.
+ * Fixed 2 bugs in comp_text.c.
+ * Added Docs/  directory.
+ * Changed CHECKSUM to MD5SUM
+ * A VERSION now exists and is consulted to check for latest, use
+   --with-check-version  option on configure script to enable.
+
+20000828
+ * Added backward compatability to <= 0.4.2.
+ * Fixed patch to magic file.
+ * Modified configuration scripts to work under more conditions.
+ * Preliminary testing of endian-neutrality.
+ * comp_mzlib2 modified, and almost works.
+ * int_sort_fast() modified to be even faster.
+ * Added path options to configure options.
+ * Created an installation guide, INSTALL.
+ * Added MD5 Checksum file, CHECKSUM.
+
+20000827
+ * Added preliminary support for endian-neutrality (UNTESTED!)
+ * Added magic number, offset, and size.
+ * Added patch to magic file.
+
+20000720
+ * Added getopt(3) support.
+ * Added '-l' option.
+ * Added '-s' option.
+ * Changed archive name to dact-VER.
+ * int_sort_really_fast added to sort.c.
+ * Added '-e' option.
+ * Fixed configure script to work with Solaris 8 (SunOS 5.8) (but not 7).
+ * Some bugs were possibly fixed and created.
+ * Added variable block size support.
+ * Default block size is now 4088 bytes (Max is 16384).
+ * Default output is to INFILE.dct instead of stdout.
+
+20000526
+ * Fixed several memory leaks.
+ * Added bzlib.h check in configure for later use.
+ * Added int_sort_really_fast to buffer.[ch]
+
+20000515
+ * comp_snibble.[ch] added as algo #6
+ * comp_range.[ch] added as algo #7
+
+20000514
+ * comp_range_compress working (hopefully).
+ * comp_range_decompress partially working.
+ * int_sort_fast added to sort.c.
+ * byte_buffer_* added to buffer.c.
+ * configure script was modified.
+ * comp_mzlib2 was removed from algorithms.h, to be readded as algo #8.
+ * Added `-c' option and compression verification.
+
+20000430
+ * comp_range was modified to begin to get it to work
+ * Modifications to configure script
+ * comp_mzlib2 was started
+ * Added sort.[ch] by Daniel Vignes (dvignes@n-f-d.com)
+
+20000425
+ * Configure no longer relies on sed
+ * Binary filename changed from 'compress' to 'dact.'
+ * Toby Collier (tcollier@n-f-d.com) begins
+   handling documentation and Changelog.
+
+20000421
+ * Name changed from DCL to DACT.
+ * New algorithms added.
+ * Bugs fixed.
+
+20000414
+ * Initial release as DCL by Roy Keene (dact@rkeene.org)
+

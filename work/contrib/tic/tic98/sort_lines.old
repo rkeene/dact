@@ -1,0 +1,191 @@
+/*
+ * Module: sort_lines
+ *
+ * This file contains functions which sort the marks into a
+ * "readable sequence" Sorts the marks by their y baseline then
+ * by their x centroid.
+ *
+ * Author:
+ *   Stuart Inglis (singlis@internz.co.nz)
+ *   (c) 1998
+ */
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+
+#include "marklist.h"
+#include "sort_lines.h"
+
+
+static int CmpOnY(const void *e1, const void *e2)
+{
+    return ( ((marktype*)e1)->baseline - ((marktype*)e2)->baseline);
+}
+				    
+static int CmpOnX(const void *e1, const void *e2)
+{
+    return ( (((marktype*)e1)->xpos+((marktype*)e1)->xcen)  
+	    - (((marktype*)e2)->xpos+((marktype*)e2)->xcen));
+}
+				    
+
+
+
+
+#define LINE_THRESHOLD_mm 1    /* 1mm */
+
+
+marklistptr sortmarks(marklistptr listofmarks, 
+		      const int imagew,
+		      const int imageh,
+		      const double rotated_angle, 
+		      const int DPI)
+{
+    marktype *table;
+    int count=0,i,s,e,j,k,l,cc;
+    marktype *distary;
+    int dist_p,dist;
+    int maxxx,maxxxp;
+    int yy;
+    int pixels=0;
+    int N_NEAREST=7;      /* replace the base line with the mode of the N neighbours */
+    int nx,ny,len;
+    double radians,cosval,sinval;
+
+    if(listofmarks==NULL)
+      return listofmarks;
+
+    if((imagew==0) || (imageh==0))
+      return listofmarks;
+
+    assert((rotated_angle>=-180) &&(rotated_angle<=180));
+    assert(DPI);
+
+    len=marklist_length(listofmarks);
+    pixels=mm2pixels(LINE_THRESHOLD_mm,DPI);
+
+    assert((pixels>=1) && (pixels<=10000));
+
+    CALLOC(table,len,marktype);
+    CALLOC(distary,len,marktype);
+
+
+    /*fprintf(stderr,"sorting: rotating marks by %g degrees...\n",-rotated_angle);*/
+    
+    /* put all the marks into a table, rotate the points, the opposite way */
+    radians =  -(rotated_angle) / ((180.0 / PI));
+    cosval = cos(radians);
+    sinval = sin(radians);
+    
+    count=0;
+    while(listofmarks){
+      table[count]=listofmarks->data;
+      /* 
+       * hide the original x and y positions in the h_runs and v_runs 
+       * variables 
+       */
+      table[count].h_runs=table[count].xpos;  
+      table[count].v_runs=table[count].ypos;
+
+      if(rotated_angle){
+	/* rotate the points around the centre of the image */
+	nx = (int)( (table[count].xpos-imagew/2)*cosval + 
+		    (table[count].ypos-imageh/2)*sinval+0.5)+imagew/2;
+	ny = (int)( (0-(table[count].xpos-imagew/2))*sinval + 
+		    (table[count].ypos-imageh/2)*cosval+0.5)+imageh/2;
+	table[count].xpos=nx;
+	table[count].ypos=ny;
+	
+	if(nx<0){/*if(V)fprintf(stderr,"setting nx=%d to 0\n",nx);*/nx=0;}
+	if(ny<0){/*if(V)fprintf(stderr,"setting ny=%d to 0\n",ny);*/ny=0;}
+	if(nx>=imagew-1){/*if(V)fprintf(stderr,"setting nx=%d to %d\n",nx,imagew-1);*/nx=imagew-1;}
+	if(ny>=imageh-1){/*if(V)fprintf(stderr,"setting ny=%d to %d\n",ny,imageh-1);*/ny=imageh-1;}
+	
+	assert((nx>=0) && (ny>=0));
+	assert((nx<imagew) && (ny<imageh));
+      }
+      
+      marklist_removeat(&listofmarks,0);
+      count++;
+    }
+
+
+    assert(count==len);
+
+    /* set the baseline line to be the lower bounding box position */
+    for(i=0;i<count;i++)
+      table[i].baseline=table[i].ypos+table[i].h-1;
+
+    /* foreach mark, find it's neighbours that the ycentroid is within the y limits... */
+    for(i=0;i<count;i++){ 
+      yy=table[i].ypos+table[i].ycen;
+
+      dist_p=0;
+
+      /* exhaustive! eek! */
+      for(j=0;j<count;j++){ 
+	  if(
+	     ((yy >= table[j].ypos- (2*pixels)) && 
+	      (yy <= table[j].ypos+table[j].h-1+ (2*pixels) )) 
+	     ) {
+	      /* found a mark */
+	      dist=abs((table[i].xpos+table[i].xcen)-(table[j].xpos+table[j].xcen));
+	      
+	      distary[dist_p]=table[j]; 
+	      distary[dist_p].xpos=dist;
+	      distary[dist_p].xcen=0;
+	      distary[dist_p].baseline=table[j].baseline;
+	      dist_p++;
+	  }
+      }
+      /* found a list of marks on the "same line" */
+      qsort((void*)distary,(unsigned int)dist_p,sizeof(*distary),CmpOnX);
+      
+      maxxx=-1;maxxxp=-1;
+      for(k=0;k<MIN(N_NEAREST,dist_p);k++){
+	cc=0;
+	for(l=0;l<MIN(N_NEAREST,dist_p);l++)
+	  if(distary[k].baseline==distary[l].baseline)
+	    cc++;
+	if(cc>maxxx) {maxxx=cc; maxxxp=k;}
+      }
+      
+      assert((maxxx>=0) && (maxxxp>=0));
+      
+      /* mode y position is 'distary[maxxxp]', replace table[i] with this value */
+      table[i].baseline=distary[maxxxp].baseline;
+    }
+    
+    /* sort on the baseline positions */
+    qsort((void*)table, (unsigned int)(count), sizeof(*table), CmpOnY);
+
+
+    /* group the lines if the baselines are with LINE_THRESHOLD_mm of each other */
+    for(s=0;s<count;){
+	int c;
+	for(e=s+1,c=0;  (e<count) && 
+	    ((table[e].baseline)-(table[e-1].baseline) <= pixels); c++,e++);
+
+	if(e<=count && c>=1){
+	  qsort(&table[s], (unsigned int)(e-s), sizeof(*table), CmpOnX);
+	}
+	s=e;
+    }
+
+    /* update the symbol numbers */
+    for(i=0;i<count;i++){
+	table[i].symnum=i;
+	table[i].xpos=table[i].h_runs;  /* use the h_runs for now! */
+	table[i].ypos=table[i].v_runs;
+
+	marklist_addcopy(&listofmarks,table[i]);
+    }
+    
+    FREE(distary);
+    FREE(table);
+
+    return listofmarks;
+}
+	    
+

@@ -1,0 +1,125 @@
+
+TIC98: Textual Image Compression 
+================================
+
+(c) 1994-1999
+
+Stuart Inglis, 
+Internz Ltd.
+Hamilton
+New Zealand
+
+Version 1.01
+
+email: singlis@internz.co.nz
+
+http://www.cs.waikato.ac.nz/~singlis
+
+
+Information
+-----------
+These routines complement the analysis presented in my
+Ph.D. thesis.  The source is C, but should compile cleanly
+using a C++ compiler.
+
+For more information about the system, visit my homepage above 
+and download my Ph.D. thesis (4.4 MB).
+
+On a Unix machine use "make"
+
+tic98
+-----
+
+The form of TIC implemented uses adaptive library encoding and
+averaging.  The marks are encoding using the familiar adaptive
+Mohiuddin/SPM style.  I have extended the model to handle
+equivalence classes and example lists, with optional pruning.
+
+./tic98 -c -i images/A006.pbm -o images/cmp
+./tic98 -d -i images/cmp -o images/decmp
+
+The decompression stage will create a decmp.001 file as we
+have only compressed a single file. If multiple -i options
+were given during the compression stage, they would decompress
+to 001,002,003...
+
+To give the highest compression (Table 9.1 in my thesis) use:
+
+   ./tic98 -c -i file.pbm -o file.tic -Z -m B_SINGLE
+
+This sets the pruning values to those determined by machine
+learning and matches with the best single match. 
+
+**NOTE**: To save space in the output stream the compression
+options are not stored in the compressed file. This means
+that you must specify the -Z -m B_SINGLE options when 
+decompressing as well.
+
+cheers
+Stuart Inglis
+1 July 1999
+
+--------------------------------------------------
+Changes from 1.0 
+
+* Checked *fp != NULL before printing (Stuart)
+
+* Fixed a bug in calc_docstrum_list() (Marvin Brunner)
+
+* Fixed a memory leak in marklist_removeat() (Tim Theobald)
+
+--------------------------------------------------
+Here is Table 9.1 from my Ph.D. thesis.
+
+Image   TIC98   DjVu
+---------------------
+A006	57156	59176
+A034	51614	53770
+A03J	42198	44254
+A04D	62097	65491
+A05E	46065	47390
+C03I	42781	45221
+C048	31522	31831
+D03D	33002	37037
+D03M	11691	12139
+D048	23295	22746
+D04G	45197	48104
+D05N	19339	19804
+D06C	30791	30121
+D06N	45127	46485
+E009	22972	24012
+E00H	32765	32570
+E00M	34297	33835
+E01J	61677	64263
+E037	70858	74824
+E04I	29896	32539
+H00C	14886	14920
+H019	29914	28346
+H041	33289	39436
+H04D	23107	22980
+H04F	48788	48608
+I00J	59277	61992
+I00L	60040	62631
+I037	29087	30597
+J03M	44547	45009
+J04A	41222	44217
+J04K	52054	55949
+K009	33466	34613
+N01A	18424	16838
+N027	17093	15963
+N02A	6796	6224
+N02K	50891	53172
+N03K	23805	23465
+N048	34073	33048
+N05I	39325	38310
+S021	43289	43492
+S03G	51185	51210
+S03R	31227	30288
+S044	38137	36873
+S047	57478	57976
+S048	53619	53554
+S04H	50990	51895
+V004	59305	53186
+V00C	33764	33102
+V00G	47042	46165
+V00N	47630	48279

@@ -1,0 +1,46 @@
+From bugoptushome.com.au Thu May 10 21:40:21 2001
+Date: Sun, 06 May 2001 17:46:35 +1000
+From: Glenn McGrath <bugoptushome.com.au>
+To: Roy Keene <dactrkeene.org>
+Subject: dact: replacing tar
+
+Hello again, some more thoughts for you to consider.
+
+.tar.gz really sucks, im writting some code that works on files inside a
+.tar.gz in busybox and its a real hassle, i have to fork and uncompress
+in a child process and feed the uncompressed data back the main function
+that can untar it.
+
+The problem stems from the fact that the tar file is compressed rather
+than the individual files, if people did .gz.tar that it would be easy
+to work on individual files within the archive, but it wouldnt get as
+good compression due to the probably reduced block size (if the files
+are small).
+
+The loss in compression from appending files compressed with dact
+probably wouldnt be as bad as .tar.gz as dact can take advantage of
+different compresion methods for small files.
+
+The real reason i would like to see this could also tie in well with
+your url idea that you have been working on.
+
+If dact something like an index file that had a list of filenames, their
+offset and compressed size, then it would be possible to download and
+unpack only one file within an archive.
+
+e.g. linux-2.4.4.tar.gz is about 20MB, say i want to look at the
+./README file, to do so i have to download the entire 20MB, uncompress
+it, untar it, then access README.
+
+In would be good to start the download of linux-2.4.4.dct and read
+untill the end of the index section of the file and close the connection
+(or have the index file seperate), then with the index file i would know
+where abouts in the linux-2.4.4.dct the ./README file starts, so we
+could open a connection and start resuming the download from the offset
+of the ./README, rather than from the start of the file.
+
+You have mentioned you had ideas for combining multiple compressed
+files, so hopefully something like this could be worked into your plans.
+
+
+Glenn

@@ -1,0 +1,1 @@
+http://www.rkeene.org/projects/rget/rget.cgi?dist=@@DIST@@&os=@@OSNM@@&osver=@@OSVS@@&arch=@@ARCH@@&request=@@FILE@@&ver=@@DTVS@@

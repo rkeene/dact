@@ -1,0 +1,3 @@
+#! /bin/bash
+
+MANWIDTH=80 man -l -Tascii $1 | sed s/'.[]'/''/g > $1.txt

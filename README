@@ -1,0 +1,42 @@
+1. EXPLANATION:
+
+	Take file, compress each block with 1 of 256 algorithms (including
+no compression) and use algorithm on a per block basis.
+
+
+2. WARNING!  You should never use an algorithm listed in algorithms.h under DEBUG for real data, they are subject to reordering, recoding, and removal.
+
+
+3. FEEDBACK would be appreciated.  Email me, dact@rkeene.org,
+	if you find a flaw in the code, or if you have a suggestion.
+
+
+4. WRITING A COMPRESSION ALGORITHM FOR DACT:
+
+	a. You can use comp_plain.[ch] as an example for the interface.
+	b. Your function must take 5 parameters:
+	        mode            - DACT_MODE_COMPR or DACT_MODE_DECMP
+                	            Determine whether to compress or decompress.
+        	prev_block      - Previous (uncompressed) block.
+	        curr_block      - The data to be compressed.
+	        out_block       - Where to put data after compression.
+	        blk_size        - Size of prev_block and curr_block.
+	c. Add your function's header file to algorithms.h:
+		#include "comp_youralgorithm.h"
+	d. Add your function's call to algorithms[] in algorithms.h, before
+	     the NULL:
+		comp_yourfunction_algo,
+	e. Add your function's code to the Makefile.in (if it has no depencies):
+		ALGO+=comp_yourfunction.o
+
+5. Horror Stories:
+
+	a. Comp_range didn't compile under Solaris 8 using C WorkShop 6.0.
+
+	b. Compiled Successfully, but shared binary didn't work.
+
+	c. Failed to make a Static binary under Slackware 7.0.
+
+6. Bugs:
+
+	a. Please submit all bugs to dact@rkeene.org

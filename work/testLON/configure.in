@@ -1,0 +1,37 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_REVISION($Revision $)
+AC_INIT
+AC_CONFIG_HEADER(config.h)
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+
+DC_PROG_GCC
+
+dnl Checks for libraries.
+
+DC_ASK_NETWORK
+DC_ASK_DEBUG
+
+dnl Checks for header files.
+AC_CHECK_HEADERS(stdint.h sys/socket.h)
+
+dnl Checks for typedefs.
+AC_CHECK_TYPE(uint, unsigned int)
+
+dnl Checks for structures.
+
+dnl Checks for compiler characteristics.
+AC_C_INLINE
+AC_CHECK_SIZEOF(long, 4)
+AC_CHECK_SIZEOF(int, 4)
+AC_CHECK_SIZEOF(short, 2)
+
+dnl Checks for library functions.
+AC_REPLACE_FUNCS(Strsep)
+
+dnl Checks for system services.
+
+AC_OUTPUT(Makefile)

@@ -1,0 +1,66 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:530: checking for gcc
+configure:643: checking whether the C compiler (gcc  ) works
+configure:659: gcc -o conftest    conftest.c  1>&5
+configure:685: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:690: checking whether we are using GNU C
+configure:699: gcc -E conftest.c
+configure:718: checking whether gcc accepts -g
+configure:750: checking whether ln -s works
+configure:772: checking for pow in -lm
+configure:791: gcc -o conftest -g -O2   conftest.c -lm   1>&5
+configure:821: checking for library containing socket
+configure:839: gcc -o conftest -g -O2   conftest.c -lm  1>&5
+configure:883: checking for library containing gethostbyname
+configure:901: gcc -o conftest -g -O2   conftest.c -lm  1>&5
+configure:945: checking for library containing inet_aton
+configure:963: gcc -o conftest -g -O2   conftest.c -lm  1>&5
+configure:1076: checking for dirent.h that defines DIR
+configure:1089: gcc -c -g -O2  conftest.c 1>&5
+configure:1114: checking for opendir in -ldir
+configure:1133: gcc -o conftest -g -O2   conftest.c -ldir  -lm  1>&5
+/usr/bin/ld: cannot open -ldir: No such file or directory
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 1122 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char opendir();
+
+int main() {
+opendir()
+; return 0; }
+configure:1197: checking how to run the C preprocessor
+configure:1218: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1277: checking for ANSI C header files
+configure:1290: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1357: gcc -o conftest -g -O2   conftest.c -lm  1>&5
+configure:1384: checking for fcntl.h
+configure:1394: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1384: checking for unistd.h
+configure:1394: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1384: checking for stdint.h
+configure:1394: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1384: checking for sys/socket.h
+configure:1394: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1422: checking for working const
+configure:1476: gcc -c -g -O2  conftest.c 1>&5
+configure:1497: checking for mode_t
+configure:1530: checking for off_t
+configure:1563: checking for size_t
+configure:1599: checking for socket
+configure:1627: gcc -o conftest -g -O2   conftest.c -lm  1>&5
+configure:1599: checking for strcspn
+configure:1627: gcc -o conftest -g -O2   conftest.c -lm  1>&5
+configure:1599: checking for strdup
+configure:1627: gcc -o conftest -g -O2   conftest.c -lm  1>&5
+configure:1599: checking for strstr
+configure:1627: gcc -o conftest -g -O2   conftest.c -lm  1>&5
+configure:1599: checking for uname
+configure:1627: gcc -o conftest -g -O2   conftest.c -lm  1>&5
+configure:1654: checking for strsep
+configure:1682: gcc -o conftest -g -O2   conftest.c -lm  1>&5

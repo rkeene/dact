@@ -1,0 +1,10 @@
+Makefile.dep
+contrib
+work
+Makefile
+config.h
+dact.conf
+config.log
+config.cache
+config.status
+dact
