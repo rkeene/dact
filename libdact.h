@@ -1,8 +1,5 @@
-#ifndef DACT_LIBDACT_H
-#define DACT_LIBDACT_H
-
-#include "dact.h"
-#include "dact_common.h"
+#ifndef LIBDACT_H
+#define LIBDACT_H
 
 int dact_init(void);
 void *dact_openfile(const char *pathname);

@@ -17,8 +17,13 @@ AC_SYS_LARGEFILE
 AC_FUNC_FSEEKO
 AC_TYPE_OFF_T
 
-dnl Checks for libraries.
+dnl Check host OS info.
+DC_CHK_OS_INFO
 
+dnl Determine how to make shared objects
+DC_GET_SHOBJFLAGS
+
+dnl Checks for libraries.
 DC_CHK_DLOPEN
 DC_CHK_MODULE(z, comp_zlib.c comp_mzlib.c comp_mzlib2.c, HAVE_LIBZ)
 DC_CHK_MODULE(bz2, comp_bzlib.c, HAVE_LIBBZ2)
@@ -66,5 +71,8 @@ AC_REPLACE_FUNCS(getopt strsep getpass mkstemp uname)
 
 dnl Checks for system services.
 DC_DO_WIN32
+
+dnl Sync the SHLIBOBJS with LIBOBJS
+DC_SYNC_SHLIBOBJS
 
 AC_OUTPUT(Makefile)

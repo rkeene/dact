@@ -13,18 +13,22 @@ LOADLIBES =
 LDLIBS += @LIBS@ @MODLIBS@ -lm @NOMODS@ @MODLIBSCOND@
 LDFLAGS += @LDFLAGS@
 
+SHOBJFLAGS = @SHOBJFLAGS@
+SHOBJLDFLAGS = @SHOBJLDFLAGS@
+SHOBJEXT = @SHOBJEXT@
+
 MODLIBS = @MODLIBS@
 
 INSTALL = @INSTALL@
 @SET_MAKE@
 
 prefix = @prefix@
-mandir = @mandir@
-sysconfdir = @sysconfdir@
-datadir = @datadir@
 exec_prefix = @exec_prefix@
-bindir = @bindir@
 libdir = @libdir@
+bindir = @bindir@
+sysconfdir = @sysconfdir@
+mandir = @mandir@
+datadir = @datadir@
 
 CONF = $(sysconfdir)/dact.conf
 CFLAGS += -DDACT_CONFIG_FILE=\"$(CONF)\" -DEXEEXT=\"$(EXEEXT)\"
@@ -33,9 +37,12 @@ CFLAGS += -DDACT_CONFIG_FILE=\"$(CONF)\" -DEXEEXT=\"$(EXEEXT)\"
 
 DEBUGALGO = comp_bitsums.c comp_factor.c comp_textrle.c
 OBJS += dact_common.o comp_fail.o comp_plain.o buffer.o header.o sort.o dact.o module.o parse.o dendian.o crc.o net.o ui.o sfx.o libdact.o @LIBOBJS@
+# Note that the following lacks "dact_shr.o" but otherwise MUST
+# be kept in sync with OBJS
+SHLIBOBJS += dact_common_shr.o comp_fail_shr.o comp_plain_shr.o buffer_shr.o header_shr.o sort_shr.o module_shr.o parse_shr.o dendian_shr.o crc_shr.o net_shr.o ui_shr.o sfx_shr.o libdact_shr.o @SHLIBOBJS@
 ALGO = comp_snibble.c comp_delta.c comp_text.c comp_rle.c cipher_chaos.c cipher_sub.c cipher_psub.c @ALGO@
 
-TOBUILD = dact libdact.so libdact.a dact.conf
+TOBUILD = dact$(EXEEXT) libdact.$(SHOBJEXT) libdact.a dact.conf
 
 all: @DEFAULT@
 
@@ -44,7 +51,7 @@ module: @DEPEND@
 	  $(MAKE) $(TOBUILD)
 
 static: @DEPEND@
-	@OBJS="$(ALGO:.c=.o) $(CR_OBJ)" LDLIBS="$(MODLIBS)" $(MAKE) $(TOBUILD)
+	@OBJS="$(ALGO:.c=.o) $(CR_OBJ)" SHLIBOBJS="$(ALGO:.c=_shr.o)" LDLIBS="$(MODLIBS)" $(MAKE) $(TOBUILD)
 
 dact.conf: Makefile
 	@echo "version_check    off" > dact.conf
@@ -58,24 +65,26 @@ dact.conf: Makefile
 	@echo "module_load_all  off" >> dact.conf
 @MODS@	@for so in $(MODS:.so=); do echo "load_module	$$so" >> dact.conf; done
 
-dact: $(OBJS) $(MODS)
-	$(CC) $(OBJS) $(LDFLAGS) $(LIBS) $(LDLIBS) -o dact$(EXEEXT)
+dact$(EXEEXT): $(OBJS) $(MODS)
+	$(CC) $(OBJS) $(LIBS) -o dact$(EXEEXT) $(LDLIBS) $(LDFLAGS)
 
-libdact.so: $(OBJS)
-@MODS@	@echo $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ @SHARED@ $(filter-out dact.c, $(^:.o=.c)); \
-@MODS@	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ @SHARED@ $(filter-out dact.c, $(^:.o=.c))
-	@true
+libdact.$(SHOBJEXT): $(SHLIBOBJS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(SHOBJFLAGS) -o $@ $^ $(LDLIBS) $(LDFLAGS) $(SHOBJLDFLAGS)
 
 libdact.a: $(OBJS)
 	@AR@ rcu libdact.a $(filter-out dact.o, $^)
 	-@RANLIB@ libdact.a
 
-%.so: %.c %.lnk
-	@echo $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ -DAS_MODULE @SHARED@ $< $(filter %.o, $^) `cat $(<:.c=.lnk)`; \
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ -DAS_MODULE @SHARED@ $< $(filter %.o, $^) `cat $(<:.c=.lnk)`
+%_shr.o: %.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(SHOBJFLAGS) -c -o $@ $?
 
+%.so: %.c %.lnk
+	@echo $(CC) $(CPPFLAGS) $(CFLAGS) $(SHOBJFLAGS) -o $@ -DAS_MODULE $(SHOBJLDFLAGS) $(LDFLAGS) $< $(filter %.o, $^) `cat $(<:.c=.lnk)`; \
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(SHOBJFLAGS) -o $@ -DAS_MODULE $(SHOBJLDFLAGS) $(LDFLAGS) $< $(filter %.o, $^) `cat $(<:.c=.lnk)`
+
+.PHONY: clean distclean install-bin install mrproper install-local install-bin-local uninstall depend
 clean:
-	rm -f dact dact$(EXEEXT) $(OBJS) libdact.so libdact.o libdact.a core *~ $(ALGO:.c=.o) $(ALGO:.c=.so)
+	rm -f dact dact$(EXEEXT) $(OBJS) libdact.$(SHOBJEXT) libdact.$(SHOBJEXT).def libdact.$(SHOBJEXT).a libdact.o libdact.a core *~ $(ALGO:.c=.o) $(ALGO:.c=.so) $(SHLIBOBJS)
 
 distclean: clean
 	rm -f Makefile config.h config.status config.log config.cache
@@ -83,7 +92,7 @@ distclean: clean
 mrproper: distclean
 	rm -rf Makefile.dep configure autom4te.cache/ config.h.in
 
-install-bin: dact
+install-bin: dact$(EXEEXT)
 	-$(INSTALL) -d $(bindir)
 	$(INSTALL) -m 755 dact$(EXEEXT) $(bindir)/dact$(EXEEXT)
 
@@ -94,12 +103,14 @@ install: all install-bin
 	-$(INSTALL) -d $(sysconfdir)
 	$(INSTALL) -m 644 dact.conf $(CONF)
 	$(INSTALL) -m 644 Docs/dact.1 $(mandir)/man1/dact.1
-@MODS@	-$(INSTALL) -m 755 libdact.so $(libdir)/libdact.so
+	-$(INSTALL) -m 755 libdact.$(SHOBJEXT) $(libdir)/libdact.$(SHOBJEXT)
+	-$(INSTALL) -m 644 libdact.$(SHOBJEXT).def $(libdir)/libdact.$(SHOBJEXT).def
+	-$(INSTALL) -m 644 libdact.$(SHOBJEXT).a $(libdir)/libdact.$(SHOBJEXT).a
 	-$(INSTALL) -m 644 libdact.a $(libdir)/libdact.a
 @MODS@	for so in *.so; do $(INSTALL) -m 755 $$so $(datadir)/dact/$$so; done
 	./patch-magic-file $(datadir)/magic
 
-install-bin-local: dact
+install-bin-local: dact$(EXEEXT)
 	-$(INSTALL) -d $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`
 	$(INSTALL) -m 755 dact$(EXEEXT) $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/dact$(EXEEXT)
 
@@ -107,13 +118,13 @@ install-local: all install-bin-local
 	-$(INSTALL) -d $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`
 	$(INSTALL) -m 644 dact.conf $(HOME)/.dact/dact.conf
 	-$(INSTALL) -m 644 libdact.a $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/dact$(EXEEXT)
-@MODS@	-$(INSTALL) -m 755 libdact.so $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/dact$(EXEEXT)
+	-$(INSTALL) -m 755 libdact.$(SHOBJEXT) $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/dact$(EXEEXT)
 @MODS@	for so in *.so; do $(INSTALL) -m 755 $$so $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/$$so; done
 
 uninstall:
 	rm -f $(bindir)/dact$(EXEEXT)
 	rm -f $(mandir)/man1/dact.1 $(CONF)
-	rm -f $(libdir)/libdact.a $(libdir)/libdact.so
+	rm -f $(libdir)/libdact.a $(libdir)/libdact.$(SHOBJEXT)
 @MODS@	rm -rf $(datadir)/dact
 
 depend: Makefile.dep
