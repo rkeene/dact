@@ -43,7 +43,7 @@ char dact_ui_statusvar[128];
 void dact_ui_update(void) {
 	static int drawing=0;
 	float done;
-	char *bar1, *bar2;
+	char *bar1, *bar2, *clean="";
 	int width=80,percent;
 
 	if (!dact_ui_getopt(DACT_UI_OPT_LEVEL)) return; /* LEVEL 0 is Quiet */
@@ -72,10 +72,11 @@ void dact_ui_update(void) {
 	}
 	if (dact_ui_getopt(DACT_UI_OPT_COLOR)) {
 		fprintf(stderr, "=> \033[1;30m[\033[1;32m%s\033[1;37m%s\033[1;30m] \033[1;37m%03i\033[0;31m%%\033[0m",bar1,bar2,percent);
+		clean="\033[K";
 	} else {
-		fprintf(stderr, "=> [%s%s] %03i%%",bar1,bar2,percent);
+		fprintf(stderr, "=> [%s%s] %3i%%",bar1,bar2,percent);
 	}
-	fprintf(stderr, " [%c] | Status: %s\033[K\r",*("|/-\\"+(drawing&3)),dact_ui_statusvar);
+	fprintf(stderr, " [%c] | Status: %s%s\r",*("|/-\\"+(drawing&3)),dact_ui_statusvar, clean);
 	fflush(stderr);
 
 	free(bar2);
