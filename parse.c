@@ -170,7 +170,7 @@ char *parse_url_subst(const char *src, const char *fname) {
 	while (strstr(loc,"@@")) {
 		cmd=elfcrc(0, loc=strstr(loc, "@@")+2, 4);
 		loc+=6;
-		if (loc>=eloc) { loc=eloc-1; continue; }
+		if (loc>eloc) { loc=eloc-1; continue; }
 
 		strsz=(loc-ploc-8);
 		memcpy(ret, ploc, strsz);
