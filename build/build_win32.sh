@@ -1,7 +1,7 @@
 #! /bin/sh
 
 if [ ! -x configure ]; then cd ../; fi
-WIN32="${HOME}/root/windows-i586"
+WIN32="${HOME}/root/windows-i386"
 CFLAGS="-I${WIN32}/include"
 CPPFLAGS="${CFLAGS}"
 LDFLAGS="-L${WIN32}/lib"
