@@ -89,7 +89,7 @@ install-bin: dact
 install: all install-bin
 	$(INSTALL) -m 644 dact.conf $(CONF)
 	$(INSTALL) -m 644 Docs/dact.1 $(mandir)/man1/dact.1
-@MODS@	$(INSTALL) -m 755 libdact.so $(libdir)/libdact.so
+@MODS@	-$(INSTALL) -m 755 libdact.so $(libdir)/libdact.so
 	-$(INSTALL) -m 644 libdact.a $(libdir)/libdact.a
 @MODS@	mkdir -p -m 755 $(datadir)/dact
 @MODS@	for so in *.so; do $(INSTALL) -m 755 $$so $(datadir)/dact/$$so; done
