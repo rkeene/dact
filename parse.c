@@ -147,15 +147,7 @@ int parse_url(const char *url, char *scheme, char *username, char *password, cha
 		@@ATSN@@	Put an `@'
 */
 char *parse_url_subst(const char *src, const char *fname) {
-#ifdef HAVE_SYS_UTSNAME_H
 	static struct utsname system_info;
-#else
-	static struct {
-		char *sysname;
-		char *machine;
-		char *release;
-	} system_info;
-#endif
 	static int sysinfo_init=0;
 	uint32_t cmd=0, x, strsz;
 	const char *loc=src, *ploc=loc;
@@ -166,31 +158,9 @@ char *parse_url_subst(const char *src, const char *fname) {
 	ret_s=ret=calloc(1024,1);
 
 	if (!sysinfo_init) {
-#ifdef HAVE_SYS_UTSNAME_H
 		uname(&system_info);
 		strtolower(system_info.sysname);
 		strtolower(system_info.machine);
-#else
-#ifdef __WIN32__
-		system_info.sysname="windows";
-		{
-			uint32_t winver;
-			SYSTEM_INFO winsysinfo;
-
-			GetSystemInfo(&winsysinfo);
-			winver=GetVersion();
-
-			system_info.release=malloc(32);
-			system_info.machine=malloc(64);
-			snprintf(system_info.release, 32, "%i.%i", winver&0xff, (winver&0xff00)>>8);
-			snprintf(system_info.machine, 64, "%lu", (unsigned long) winsysinfo.dwProcessorType);
-		}
-#else
-		system_info.sysname="(unknown)";
-		system_info.machine="(unknown)";
-		system_info.release="0.0";
-#endif
-#endif
 		sysinfo_init=1;
 	}
 

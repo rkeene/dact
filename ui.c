@@ -86,18 +86,13 @@ void dact_ui_update(void) {
 }
 
 void dact_ui_init(void /*for now*/) {
-	dact_ui_setopt(DACT_UI_OPT_COLOR, 1);
-	dact_ui_status(0,"Initialized.");
+	dact_ui_setopt(DACT_UI_OPT_COLOR, 0);
+	dact_ui_status(0, "Initialized.");
 }
 
 void dact_ui_deinit(void) {
 	if (dact_ui_getopt(DACT_UI_OPT_LEVEL)) fprintf(stderr, "\n");
 }
-
-
-
-
-
 
 void dact_ui_percentdone(int percent) {
 	dact_ui_setopt(DACT_UI_OPT_PERCENT,percent);

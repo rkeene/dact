@@ -55,13 +55,13 @@ void *DC_ALGO=comp_bzlib_algo;
 char *DC_NAME="Bzip2 Compression (MOD)";
 #endif
 
-int comp_bzlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_bzlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_bzlib_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_bzlib_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_bzlib_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_bzlib_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			fprintf(stderr, "Unsupported mode: %i\n", mode);
@@ -69,8 +69,8 @@ int comp_bzlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_blo
 	}
 }
 
-int comp_bzlib_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
-	unsigned int dest_size=(DACT_BLK_SIZE*2);
+int comp_bzlib_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+	unsigned int dest_size=bufsize;
 	int retval;
 
 #ifdef HAVE_OLD_BZ2
@@ -87,8 +87,8 @@ int comp_bzlib_compress(unsigned char *prev_block, unsigned char *curr_block, ch
 	return(dest_size);
 }
 
-int comp_bzlib_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
-	unsigned int dest_size=(DACT_BLK_SIZE*2);
+int comp_bzlib_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+	unsigned int dest_size=bufsize;
 	char *tmpbuf;
 	int retval;
 

@@ -51,13 +51,13 @@ void *DC_ALGO=comp_text_algo;
 char *DC_NAME="Text Compression (MOD)";
 #endif
 
-int comp_text_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_text_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_text_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_text_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_text_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_text_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			printf("Unsupported mode: %i\n", mode);
@@ -65,7 +65,7 @@ int comp_text_algo(int mode, unsigned char *prev_block, unsigned char *curr_bloc
 	}
 }
 
-int comp_text_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_text_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	unsigned char low_byte=255, high_byte=0;
 	unsigned char byte_buf;
 	unsigned int range;
@@ -112,7 +112,7 @@ int comp_text_compress(unsigned char *prev_block, unsigned char *curr_block, cha
 	return(x);
 }
 
-int comp_text_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_text_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	unsigned char high_byte, low_byte;
 	unsigned int range;
 	int i=0,x=0,y;
@@ -122,8 +122,8 @@ int comp_text_decompress(unsigned char *prev_block, unsigned char *curr_block, c
 	range=(unsigned int) (high_byte-low_byte);
 
 	if (range==0) {
-		memset(out_block,low_byte,DACT_BLK_SIZE);
-		return(DACT_BLK_SIZE);
+		memset(out_block, low_byte, bufsize);
+		return(bufsize);
 	}
         for (y=1;y<=8;y++)
                 if ((range>>y)==0) break;
@@ -134,7 +134,7 @@ int comp_text_decompress(unsigned char *prev_block, unsigned char *curr_block, c
 		if (bit_buffer_size()<y) bit_buffer_write((unsigned char) curr_block[x++],8);
 		out_block[i++]=(bit_buffer_read(y)+low_byte);
 		if ((x==blk_size) && (bit_buffer_size()<y)) break;
-		if (i>=(DACT_BLK_SIZE)) break;
+		if (i>=(bufsize)) break;
 	}
 
 	return(i);

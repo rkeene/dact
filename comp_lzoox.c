@@ -57,13 +57,13 @@ uint32_t DC_REQUIRE=DACT_MOD_REQ_ATLEAST|(0x00080d);
 */
 #endif
 
-int comp_lzoox_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_lzoox_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_lzoox_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_lzoox_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_lzoox_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_lzoox_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			printf("Unsupported mode: %i\n", mode);
@@ -71,7 +71,7 @@ int comp_lzoox_algo(int mode, unsigned char *prev_block, unsigned char *curr_blo
 	}
 }
 
-int comp_lzoox_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_lzoox_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	int retsize=0;
 	char *wrkmem;
 
@@ -82,7 +82,7 @@ int comp_lzoox_compress(unsigned char *prev_block, unsigned char *curr_block, ch
 	return(retsize);
 }
 
-int comp_lzoox_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_lzoox_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	int retsize=0, retval;
 
 	if (lzo_init()!=LZO_E_OK) return(-1);

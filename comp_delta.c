@@ -50,13 +50,13 @@ char *DC_NAME="Delta Compression (MOD)";
 #endif
 
 
-int comp_delta_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_delta_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_delta_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_delta_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_delta_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_delta_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			printf("Unsupported mode: %i\n", mode);
@@ -64,7 +64,7 @@ int comp_delta_algo(int mode, unsigned char *prev_block, unsigned char *curr_blo
 	}
 }
 
-int comp_delta_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_delta_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	int i,x=0,y=0;
 	char Val;
 	unsigned char CurrByte, PrevByte;
@@ -87,7 +87,7 @@ int comp_delta_compress(unsigned char *prev_block, unsigned char *curr_block, ch
 		y=bit_buffer_size();
 		while (y>=8 && y!=16) {
 			out_block[++x]=bit_buffer_read(8);
-			if (x>=DACT_BLK_SIZE*2) return(-1);
+			if (x>=blk_size*2) return(-1);
 			y=bit_buffer_size();
 		}
 		
@@ -99,7 +99,7 @@ int comp_delta_compress(unsigned char *prev_block, unsigned char *curr_block, ch
 	return(x+1);
 }
 
-int comp_delta_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_delta_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	int i=0,x=0;
 	unsigned char CurrByte;
 	unsigned char DeltaByte;

@@ -28,7 +28,7 @@ DC_ASK_DEBIAN
 DC_CHK_URANDOM
 
 dnl Checks for header files.
-AC_CHECK_HEADERS(zlib.h getopt.h stdio.h strings.h string.h unistd.h stdint.h inttypes.h bzlib.h sys/time.h sys/utsname.h sys/socket.h sys/wait.h lzoconf.h lzo1x.h lzo1y.h lzo2a.h dirent.h mcrypt.h dlfcn.h)
+AC_CHECK_HEADERS(zlib.h getopt.h stdio.h strings.h string.h unistd.h stdint.h inttypes.h bzlib.h sys/time.h sys/utsname.h sys/socket.h sys/wait.h lzoconf.h lzo1x.h lzo1y.h lzo2a.h dirent.h mcrypt.h dlfcn.h stdarg.h netinet/in.h arpa/inet.h netdb.h errno.h)
 AC_HEADER_TIME
 
 dnl Checks for typedefs.
@@ -52,11 +52,11 @@ AC_CHECK_LIB(z, compress2, AC_DEFINE(HAVE_COMPRESS2, [], [Have more versatile co
 AC_CHECK_LIB(z, gzdopen, AC_DEFINE(HAVE_GZDOPEN, [], [Have gzdopen() ?]))
 AC_CHECK_LIB(bz2, bzBuffToBuffCompress, AC_DEFINE(HAVE_OLD_BZ2, [], [Do not have BZ2_ prefixed to all bzip2 symbols?]))
 AC_CHECK_LIB(bz2, BZ2_bzBuffToBuffCompress, AC_DEFINE(HAVE_NEW_BZ2, [], [Have BZ2_ prefixed to all bzip2 symbols?]))
-AC_CHECK_LIB(bz2, _BZ2_bzBuffToBuffCompress, AC_DEFINE(HAVE_NEW_BZ2, [], [Have BZ2_ prefixed to all bzip2 symbols?]))
 AC_CHECK_LIB(bz2, bzdopen, AC_DEFINE(HAVE_BZDOPEN, [], [Have bzdopen() ?]))
 AC_CHECK_LIB(bz2, BZ2_bzdopen, AC_DEFINE(HAVE_NEW_BZDOPEN, [], [Have BZ2_bzdopen() ?]))
-AC_REPLACE_FUNCS(getopt strsep getpass mkstemp)
+AC_REPLACE_FUNCS(getopt strsep getpass mkstemp uname)
 
 dnl Checks for system services.
+DC_DO_WIN32
 
 AC_OUTPUT(Makefile)

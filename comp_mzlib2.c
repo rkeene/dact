@@ -72,13 +72,13 @@ char *DC_NAME="Second Modified Zlib Compression (MOD)";
 #endif
 
 #ifdef MAKE_MZLIB2
-int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_mzlib2_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_mzlib2_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_mzlib2_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_mzlib2_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			printf("Unsupported mode: %i\n", mode);
@@ -86,12 +86,12 @@ int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_bl
 	}
 }
 #else
-int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	return(-1);
 }
 #endif
 
-int comp_mzlib2_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_mzlib2_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	unsigned long dest_size;
 	unsigned char *tmp_block;
 	uint32_t freq[SQRD_256];
@@ -119,7 +119,7 @@ int comp_mzlib2_compress(unsigned char *prev_block, unsigned char *curr_block, c
 		if ((freq[i]&0xffff)!=0) {
 			out_block[m++]=freq[i]>>24;
 			out_block[m++]=(freq[i]>>16)&0xff;
-			if (m>=(DACT_BLK_SIZE*2)) {
+			if (m>=(blk_size*2)) {
 //SPOTVAR_NUM(m);
 				return(-1);
 			}
@@ -142,7 +142,7 @@ int comp_mzlib2_compress(unsigned char *prev_block, unsigned char *curr_block, c
 			out_block[m++]=repl_val>>8;
 		out_block[m++]=repl_val&0xff;
 SPOTVAR_NUM(m);
-		if (m>=(DACT_BLK_SIZE*2)) return(-1);
+		if (m>=(blk_size*2)) return(-1);
 	}
 
 	dest_size=(int) ((float) ((m*1.02)+15));
@@ -174,9 +174,9 @@ SPOTVAR_NUM(dest_size);
 	return(dest_size);
 }
 
-int comp_mzlib2_decompress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size) {
+int comp_mzlib2_decompress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	uint16_t lookup_table[SQRD_256], curr_val, repl_val;
-	unsigned long dest_size=(DACT_BLK_SIZE*2);
+	unsigned long dest_size=(blk_size*2);
 	unsigned char *tmp_block;
 	unsigned int m=0, hdrsize;
 	int retval, i, low_byte=0;

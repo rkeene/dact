@@ -49,13 +49,13 @@ char *DC_NAME="Bitsums Compression (MOD)";
 
 #endif
 
-int comp_bitsums_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_bitsums_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_bitsums_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_bitsums_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_bitsums_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_bitsums_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			fprintf(stderr, "Unsupported mode: %i\n", mode);
@@ -63,11 +63,11 @@ int comp_bitsums_algo(int mode, unsigned char *prev_block, unsigned char *curr_b
 	}
 }
 
-int comp_bitsums_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_bitsums_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	return(-1);
 }
 
-int comp_bitsums_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_bitsums_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	fprintf(stderr, "Not yet supported.\n");
 	return(0);
 }

@@ -37,19 +37,41 @@
 #include <fcntl.h>
 
 #ifndef NO_NETWORK
+#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
+#endif
+#ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
+#ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
+#endif
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
+#ifdef HAVE_NETDB_H
 #include <netdb.h>
+#endif
+#ifdef HAVE_ERRNO_H
 #include <errno.h>
+#endif
+#ifdef HAVE_STDIO_H
 #include <stdio.h>
+#endif
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
+#endif
 #include "parse.h"
 #include "crc.h"
 
 #ifndef O_BINARY
 #define O_BINARY 0x0
+#endif
+#ifndef S_IFSOCK
+#define S_IFSOCK 0140000
 #endif
 
 
@@ -311,7 +333,8 @@ off_t lseek_net(int filedes, off_t offset, int whence) {
 	int newfd;
 
 	fstat(filedes, &file_status);
-	if (S_ISSOCK(file_status.st_mode)) {
+//	if (S_ISSOCK(file_status.st_mode)) {
+	if ((file_status.st_mode&S_IFSOCK)==S_IFSOCK) {
 		if (whence==SEEK_END) return(-1);
 		if (offset!=0 || whence!=SEEK_SET) return(-1); /* For now ... */
 		if (dact_urls[filedes].url==NULL) return(-1);

@@ -21,7 +21,7 @@
 #ifndef _COMP_FAIL_H
 #define _COMP_FAIL_H
 
-int comp_fail_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
-int comp_fail_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
-int comp_fail_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
+int comp_fail_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
+int comp_fail_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
+int comp_fail_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
 #endif

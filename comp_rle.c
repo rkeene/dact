@@ -52,13 +52,13 @@ uint32_t DC_VER=0x00080d;
 uint32_t DC_REQUIRE=DACT_MOD_REQ_ATLEAST|(0x00080d);
 #endif
 
-int comp_rle_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_rle_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_rle_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_rle_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_rle_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_rle_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			printf("Unsupported mode: %i\n", mode);
@@ -66,7 +66,7 @@ int comp_rle_algo(int mode, unsigned char *prev_block, unsigned char *curr_block
 	}
 }
 
-int comp_rle_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_rle_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	int i,x=0,m;
 	unsigned char sentinel=0xff;
 	unsigned char currchar=0, prevchar;
@@ -106,7 +106,7 @@ int comp_rle_compress(unsigned char *prev_block, unsigned char *curr_block, char
 	return(x);
 }
 
-int comp_rle_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_rle_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	int i,x=0,m;
 	unsigned char sentinel=curr_block[0];
 	unsigned char currchar;
@@ -117,7 +117,7 @@ int comp_rle_decompress(unsigned char *prev_block, unsigned char *curr_block, ch
 		if (currchar==sentinel) {
 			currchar=curr_block[++i];
 			charcnt=curr_block[++i];
-			if ((x+charcnt)>DACT_BLK_SIZE) {
+			if ((x+charcnt)>bufsize) {
 				printf("Error in RLE compression!\n");
 				return(0);
 			}

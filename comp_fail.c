@@ -45,13 +45,13 @@
 	out_block	- Where to put data after compression.
 	blk_size	- Size of prev_block and curr_block.
 */
-int comp_fail_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_fail_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_fail_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_fail_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_fail_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_fail_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			printf("Unsupported mode: %i\n", mode);
@@ -59,11 +59,11 @@ int comp_fail_algo(int mode, unsigned char *prev_block, unsigned char *curr_bloc
 	}
 }
 
-int comp_fail_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_fail_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	return(-1);
 }
 
-int comp_fail_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_fail_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	printf("You tried to decompress a file with an algorithm that is not compiled into your version.  Output will be unusable.\n");
 	return(0);
 }

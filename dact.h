@@ -24,18 +24,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-
-#if defined(WIN32) || defined(__WIN32__)
-#ifndef __MINGW32__
-#warning Including WIN32.H !
 #include "win32.h"
-#endif
-
-#include <stdarg.h>
-#include <windef.h>
-#include <winbase.h>
-#endif
-
 #include "comp_fail.h"
 
 #ifndef DACT_CONTACT
@@ -101,8 +90,8 @@
 
 #ifndef DACT_BLK_SIZE_MAX
 #define DACT_BLK_SIZE_MAX 2147483647
-#define MAX_DACT_BLK_SIZE DACT_BLK_SIZE_MAX
 #endif
+
 #ifndef DACT_BLK_SIZE_DEF
 #define DACT_BLK_SIZE_DEF 8192
 #endif
@@ -122,6 +111,9 @@
 #ifndef HAVE_MKSTEMP
 #include "mkstemp.h"
 #endif
+#ifndef HAVE_UNAME
+#include "uname.h"
+#endif
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -140,13 +132,11 @@
 
 #define DACT_HDR_REG_SIZE 24
 
-struct dact_header {
-	uint32_t	size;
-	unsigned char	algo;
-};
-
-extern uint32_t DACT_BLK_SIZE;
 extern char dact_nonetwork;
+struct dact_header {
+	uint32_t size;
+	unsigned char algo;
+};
 
 #if defined(__FILE__) && defined(__LINE__) && defined(DEBUG)
 #define PRINT_LINE fprintf(stderr, "%s:%07i:%s(): ", __FILE__, __LINE__, __func__)
@@ -179,10 +169,6 @@ extern char dact_nonetwork;
 #define DACT_FAILED_ALGO comp_fail_algo
 #endif
 
-#ifndef HAVE_SYS_SOCKET_H
-#define NO_NETWORK 1
-#endif
-
 #ifdef HAVE_DEV_URANDOM
 #define RANDOM_DEV "/dev/urandom"
 #endif
@@ -209,21 +195,21 @@ extern char dact_nonetwork;
 #endif
 #define DACT_BIN_VER ((DACT_VER_MAJOR<<16)|(DACT_VER_MINOR<<8)|DACT_VER_REVISION)
 
-
+/* We need to determine when we have network support */
+#if !defined(HAVE_SOCKET) || !defined(HAVE_GETHOSTBYNAME) || (!defined(HAVE_INET_ATON) && !defined(HAVE_INET_ADDR))
+#ifndef NO_NETWORK
+#define NO_NETWORK 1
+#endif
+#endif
 
 
 int print_help(int argc, char **argv);
 int dact_blksize_calc(int fsize);
-void dact_config_loadfile(const char *path, char *options);
-int dact_config_execute(const char *cmd, char *options);
 int dact_upgrade_file_checkver(const char *name, const char *url_ver, const char *options);
 int dact_upgrade_file(const char *name, const char *url_get, const char *url_ver, uint32_t version, const char *dest, const char *options);
 int dact_shutdown(int retval);
 char *dact_getoutfilename(const char *orig, const int mode);
 uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const char *options);
-uint32_t dact_blk_decompress(char *ret, const char *srcbuf, const uint32_t size, const char *options, const int algo);
-uint32_t dact_blk_compress(char *algo, char *ret, const char *srcbuf, const uint32_t size, const char *options);
-uint32_t dact_process_file(const int src, const int dest, const int mode, const char *options, const char *filename, uint32_t *crcs, int cipher);
 int main(int argc, char **argv);
 
 #endif/*_DACT_H*/

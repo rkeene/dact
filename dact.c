@@ -68,7 +68,6 @@ int main(int argc, char **argv);
 
 extern char *optarg;
 extern int optind, opterr, optopt;
-uint32_t DACT_BLK_SIZE=0;
 char dact_nonetwork=0;
 
 int print_help(int argc, char **argv) {
@@ -250,9 +249,6 @@ int dact_upgrade(const char *options, uint32_t *crcs) {
 		}
 		free(buf);
 
-#ifdef WIN32
-#error "Windows has no fork(), CreateProcess() instead"
-#endif
 		if (fork()==0) {
 			execl("/usr/bin/apt-get","apt-get","update",NULL);
 			return(-1);  /* Couldn't run binary. */
@@ -326,7 +322,7 @@ int dact_upgrade(const char *options, uint32_t *crcs) {
 		PERROR_L(inFd, "open_net");
 		return(-1);
 	}
-	if (!dact_process_file(inFd, outFd, DACT_MODE_DECMP, options, "dact", crcs,-1)) {
+	if (!dact_process_file(inFd, outFd, DACT_MODE_DECMP, options, "dact", crcs, DACT_BLK_SIZE_DEF, -1)) {
 		close(inFd);
 		close(outFd);
 		unlink(dact_binfile);
@@ -451,7 +447,6 @@ uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const
 /*
  * lseek_net() should make this obsolete.
  *  ... EXCEPT! when reading from stdin.
- *
  */
 		tmpfd=mkstemp(tmpbuf);
 		write_de(tmpfd, magic, 4);
@@ -525,6 +520,7 @@ int main(int argc, char **argv) {
 	int filecnt=0;
 	int in_fd, out_fd;
 	int mode=DACT_MODE_COMPR, ciphernum=-1;
+	uint32_t dact_blk_size=0;
 	uint32_t crcs[6]={0,0,0,0,0,0};
 	uint32_t i,x;
 
@@ -540,14 +536,14 @@ int main(int argc, char **argv) {
 		if (!strcmp(argv[1],"-a")) options[DACT_OPT_UPGRADE]=1;
 	}
 
-	dact_config_loadfile(DACT_CONFIG_FILE, options);
-#if !defined(GO32) && !defined(__WIN32__)
+	dact_config_loadfile(DACT_CONFIG_FILE, options, &dact_blk_size);
+#ifndef NO_BINCHECK
 	dact_binfilebuf[0]='\0';
 	if (getenv("HOME")) {
 		strncpy(dact_binfilebuf,getenv("HOME"),sizeof(dact_binfilebuf)-1);
 	}
 	strncat(dact_binfilebuf,"/.dact/dact.conf",sizeof(dact_binfilebuf)-strlen(dact_binfilebuf)-1);
-	dact_config_loadfile(dact_binfilebuf, options);
+	dact_config_loadfile(dact_binfilebuf, options, &dact_blk_size);
 #endif
 
 	if (options[DACT_OPT_BINCHK]) {
@@ -555,6 +551,7 @@ int main(int argc, char **argv) {
 		if (strcmp(argv[0],dact_binfile)) {
 			if (!access(dact_binfile,X_OK)) {
 				argv[0]=dact_binfile;
+				/* This fixes a strange warning..*/
 #ifndef __MINGW32__
 				execv(dact_binfile, argv);
 #else
@@ -586,7 +583,7 @@ int main(int argc, char **argv) {
 				break;
 			case 'b':
 				i=atoi2(optarg);
-				if (i<DACT_BLK_SIZE_MAX) DACT_BLK_SIZE=i;
+				if (i<DACT_BLK_SIZE_MAX) dact_blk_size=i;
 				break;
 			case 'v':
 				options[DACT_OPT_VERB]++;
@@ -603,7 +600,7 @@ int main(int argc, char **argv) {
 				options[DACT_OPT_COMPLN]++;
 				break;
 			case 'm':
-				dact_config_loadfile(optarg, options);
+				dact_config_loadfile(optarg, options, &dact_blk_size);
 				break;
 			case 'e':
 				i=(atoi(optarg)&0xff);
@@ -616,7 +613,7 @@ int main(int argc, char **argv) {
 				out_file=parse_url_subst(optarg, "");
 				break;
 			case 'M':
-				dact_config_execute(optarg, options);
+				dact_config_execute(optarg, options, &dact_blk_size);
 				break;
 			case 'N':
 				PRINTERR("The `-N\' option must be the first and only argument passed to dact.");
@@ -791,7 +788,7 @@ int main(int argc, char **argv) {
 /* Okay, we're all done, now pass these to something to do the real stuff */
 		if (in_fd!=-1 && (out_fd!=-1 || mode==DACT_MODE_STAT)) {
 			crcs[1]=crcs[0]=0;
-			if (dact_process_file(in_fd, out_fd, mode, options, in_file, crcs, ciphernum)==0) {
+			if (dact_process_file(in_fd, out_fd, mode, options, in_file, crcs, dact_blk_size, ciphernum)==0) {
 				close(in_fd);
 				close(out_fd);
 				if (out_fd!=STDOUT_FILENO) {

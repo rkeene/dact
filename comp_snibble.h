@@ -26,8 +26,8 @@
 #if defined(USE_MODULES) && !defined(AS_MODULE)
 #define comp_snibble_algo DACT_FAILED_ALGO
 #else
-int comp_snibble_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
-int comp_snibble_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
-int comp_snibble_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
+int comp_snibble_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
+int comp_snibble_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
+int comp_snibble_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
 #endif
 #endif

@@ -21,7 +21,7 @@
 #ifndef _COMP_PLAIN_H
 #define _COMP_PLAIN_H
 
-int comp_plain_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
-int comp_plain_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
-int comp_plain_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
+int comp_plain_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
+int comp_plain_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
+int comp_plain_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
 #endif

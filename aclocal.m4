@@ -41,10 +41,18 @@ AC_DEFUN(DC_CHK_MODULE_VAR, [
   ])
 ])
 
+AC_DEFUN(DC_DO_WIN32, [
+  AC_CHECK_HEADERS(windows.h windowsx.h winsock2.h)
+  AC_CHECK_LIB(wsock32, main, [
+    AC_DEFINE(HAVE_LIBWSOCK32, [], [Have libwsock32])
+      LIBS="${LIBS} -lwsock32"
+  ])
+])
+
 AC_DEFUN(DC_DO_NETSET, [
-  AC_SEARCH_LIBS(socket, socket nsl)
-  AC_SEARCH_LIBS(gethostbyname, nsl)
-  AC_SEARCH_LIBS(inet_aton, xnet, AC_DEFINE(HAVE_INET_ATON, [], [Have inet_aton() ?]), AC_SEARCH_LIBS(inet_addr, nsl))
+  AC_SEARCH_LIBS(socket, socket nsl ws2_32 wsock32, AC_DEFINE(HAVE_SOCKET, [], [Have socket()]))
+  AC_SEARCH_LIBS(gethostbyname, nsl ws2_32 wsock32, AC_DEFINE(HAVE_GETHOSTBYNAME, [], [Have gethostbyname()]))
+  AC_SEARCH_LIBS(inet_aton, xnet ws2_32 wsock32, AC_DEFINE(HAVE_INET_ATON, [], [Have inet_aton()]), AC_SEARCH_LIBS(inet_addr, nsl ws2_32 wsock32, AC_DEFINE(HAVE_INET_ADDR, [], [Have inet_addr()])))
 ])
 
 

@@ -61,13 +61,13 @@ void *DC_ALGO=comp_snibble_algo;
 char *DC_NAME="Seminibble Encoding (MOD)";
 #endif
 
-int comp_snibble_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_snibble_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_snibble_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_snibble_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_snibble_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_snibble_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			printf("Unsupported mode: %i\n", mode);
@@ -75,12 +75,12 @@ int comp_snibble_algo(int mode, unsigned char *prev_block, unsigned char *curr_b
 	}
 }
 
-int comp_snibble_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
-	char *curr_cpy;
-	const static unsigned char hash_table[4]={0, 2, 6, 7};
-	const static unsigned char hash_len[8]=  {1, 0, 2, 0, 0, 0, 3, 3};
-	uint32_t freq[4]={0, 0, 0, 0};
+int comp_snibble_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+	const unsigned char hash_table[4]={0, 2, 6, 7};
+	const unsigned char hash_len[8]=  {1, 0, 2, 0, 0, 0, 3, 3};
 	unsigned char lookup_table[4]={0, 0, 0, 0};
+	uint32_t freq[4]={0, 0, 0, 0};
+	char *curr_cpy;
 	int i,x,m,g=0;
 
 	if ((curr_cpy=malloc(blk_size))==NULL) {
@@ -125,12 +125,12 @@ int comp_snibble_compress(unsigned char *prev_block, unsigned char *curr_block, 
 
 }
 
-int comp_snibble_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
-	const static unsigned char lookup_table[8]={0, 0, 1, 0, 0, 0, 2, 3};
+int comp_snibble_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+	const unsigned char lookup_table[8]={0, 0, 1, 0, 0, 0, 2, 3};
 	unsigned int freq[4];
-	unsigned int x,m=0;
-	unsigned int i,g=0,cnt=0,f=0,j=0;
-
+	unsigned int x, m=0;
+	unsigned int i, cnt=0, f=0, j=0;
+	int32_t g=0;
 
 	freq[0]=(curr_block[0]&0xc0)>>6; /* 0 */
 	freq[1]=(curr_block[0]&0x30)>>4; /* 2 */
@@ -157,7 +157,7 @@ int comp_snibble_decompress(unsigned char *prev_block, unsigned char *curr_block
 			m=0;
 			cnt=0;
 		}
-		if (bit_buffer_size()==0 || f==DACT_BLK_SIZE) break;
+		if (bit_buffer_size()==0 || f==bufsize) break;
 	}
 
 	return(f);

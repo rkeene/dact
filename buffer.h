@@ -35,6 +35,6 @@ int byte_buffer_size(void);
 void byte_buffer_purge(void);
 
 #ifndef BYTE_BUFF_SIZE
-#define BYTE_BUFF_SIZE DACT_BLK_SIZE*2
+#define BYTE_BUFF_SIZE 16384
 #endif
 #endif

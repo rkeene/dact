@@ -26,8 +26,8 @@
 #if (defined(USE_MODULES) && !defined(AS_MODULE)) || !defined(HAVE_LIBLZO) || !defined(HAVE_LIBLZO) || !defined(HAVE_LZO1Y_H)
 #define comp_lzooy_algo DACT_FAILED_ALGO
 #else
-int comp_lzooy_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
-int comp_lzooy_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
-int comp_lzooy_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size);
+int comp_lzooy_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
+int comp_lzooy_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
+int comp_lzooy_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
 #endif
 #endif

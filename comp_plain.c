@@ -51,13 +51,13 @@
 	out_block	- Where to put data after compression.
 	blk_size	- Size of prev_block and curr_block.
 */
-int comp_plain_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_plain_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_plain_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_plain_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_plain_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_plain_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			printf("Unsupported mode: %i\n", mode);
@@ -65,12 +65,12 @@ int comp_plain_algo(int mode, unsigned char *prev_block, unsigned char *curr_blo
 	}
 }
 
-int comp_plain_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_plain_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	memcpy(out_block,curr_block,blk_size);
 	return(blk_size);
 }
 
-int comp_plain_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_plain_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	memcpy(out_block,curr_block,blk_size);
 	return(blk_size);
 }

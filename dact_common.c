@@ -60,7 +60,7 @@
 #include <bzlib.h>
 #endif
 
-int dact_config_execute(const char *cmd, char *options) {
+int dact_config_execute(const char *cmd, char *options, uint32_t *blksize) {
 	char *line=NULL, *line_s, *item_buf[4]={NULL, NULL, NULL, NULL};
 	int i;
 
@@ -107,7 +107,9 @@ int dact_config_execute(const char *cmd, char *options) {
 			algorithms[i]=DACT_FAILED_ALGO;
 			break;
 		case 168825941: /* block_size */
-			DACT_BLK_SIZE=atoi2(item_buf[1]);
+			if (blksize!=NULL) {
+				*blksize=atoi2(item_buf[1]);
+			}
 			break;
 		case 162975987: /* use_urls */
 			options[DACT_OPT_URL]=!!strcmp(item_buf[1],"off");
@@ -132,7 +134,7 @@ int dact_config_execute(const char *cmd, char *options) {
 	return(1);
 }
 
-void dact_config_loadfile(const char *path, char *options) {
+void dact_config_loadfile(const char *path, char *options, uint32_t *blksize) {
 	char *line=NULL;
 	FILE *cfd;
 
@@ -140,13 +142,13 @@ void dact_config_loadfile(const char *path, char *options) {
 	if ((cfd=fopen(path,"r"))==NULL) return;
 	while (!feof(cfd)) {
 		fgets(line, 511, cfd);
-		dact_config_execute(line, options);
+		dact_config_execute(line, options, blksize);
 	}
 	free(line);
 	fclose(cfd);
 }
 
-uint32_t dact_blk_decompress(char *ret, const char *srcbuf, const uint32_t size, const char *options, const int algo) {
+uint32_t dact_blk_decompress(char *ret, const char *srcbuf, const uint32_t size, const char *options, const int algo, uint32_t bufsize) {
 	uint32_t retval;
 
 	if (algo==0xff) return(0);
@@ -156,13 +158,13 @@ uint32_t dact_blk_decompress(char *ret, const char *srcbuf, const uint32_t size,
 		return(0);
 	}
 
-	retval=algorithms[algo](DACT_MODE_DECMP, NULL, srcbuf, ret, size);
+	retval=algorithms[algo](DACT_MODE_DECMP, NULL, srcbuf, ret, size, bufsize);
 
 	return(retval);
 }
 
 
-uint32_t dact_blk_compress(char *algo, char *ret, const char *srcbuf, const uint32_t size, const char *options) {
+uint32_t dact_blk_compress(char *algo, char *ret, const char *srcbuf, const uint32_t size, const char *options, uint32_t bufsize) {
 	char *tmpbuf, *smallbuf=NULL;
 	int i, highest_algo=0;
 	char smallest_algo;
@@ -173,7 +175,7 @@ uint32_t dact_blk_compress(char *algo, char *ret, const char *srcbuf, const uint
 	if ((verif_bf=malloc(size))==NULL) { PERROR("malloc"); return(0); }
 #endif
 
-	if ((tmpbuf=malloc(size*2))==NULL) { PERROR("malloc"); return(0); }
+	if ((tmpbuf=malloc(bufsize))==NULL) { PERROR("malloc"); return(0); }
 
 	for (i=0;i<256;i++) {
 		if (algorithms[i]!=NULL && algorithms[i]!=DACT_FAILED_ALGO) highest_algo=i;
@@ -181,12 +183,13 @@ uint32_t dact_blk_compress(char *algo, char *ret, const char *srcbuf, const uint
 
 	for (i=0;i<=highest_algo;i++) {
 		if (algorithms[i]!=NULL && algorithms[i]!=DACT_FAILED_ALGO) {
-			x=algorithms[i](DACT_MODE_COMPR, NULL, srcbuf, tmpbuf, size);
+			x=algorithms[i](DACT_MODE_COMPR, NULL, srcbuf, tmpbuf, size, bufsize);
 #ifndef DACT_UNSAFE
 			if ((x<smallest_size || smallest_size==-1) && x!=-1) {
-				m=algorithms[i](DACT_MODE_DECMP, NULL, tmpbuf, verif_bf, x);
+				m=algorithms[i](DACT_MODE_DECMP, NULL, tmpbuf, verif_bf, x, size);
 				if (memcmp(verif_bf, srcbuf,m) || m!=size) {
 					x=-1;
+					DPRINTF("Verifcation failed! [algo=%i, %s]", i, algorithm_names[i]);
 					if (options[DACT_OPT_COMPLN]) {
 						dact_ui_status(DACT_UI_LVL_ALL, "Compression verification failed (ignoring)");
 					}
@@ -229,7 +232,7 @@ uint32_t dact_blk_compress(char *algo, char *ret, const char *srcbuf, const uint
 	return(smallest_size);
 }
 
-uint32_t dact_process_file(const int src, const int dest, const int mode, const char *options, const char *filename, uint32_t *crcs, int cipher) {
+uint32_t dact_process_file(const int src, const int dest, const int mode, const char *options, const char *filename, uint32_t *crcs, uint32_t dact_blksize, int cipher) {
 	struct stat filestats;
 	FILE *extd_urlfile;
 	char *file_extd_urls[256];
@@ -239,7 +242,7 @@ uint32_t dact_process_file(const int src, const int dest, const int mode, const 
 	char version[3]={DACT_VER_MAJOR, DACT_VER_MINOR, DACT_VER_REVISION};
 	char file_opts=0;
 	uint32_t bytes_read, retsize;
-	uint32_t filesize=0, blk_cnt=0, file_extd_size=0, blksize=0, fileoutsize=0;
+	uint32_t filesize=0, blk_cnt=0, file_extd_size=0, blksize=0, fileoutsize=0, out_bufsize=0;
 	uint32_t magic=0, file_extd_read=0, file_extd_urlcnt=0;
 	int blksize_size;
 	int x=0, new_fd, canlseek=0;
@@ -250,23 +253,25 @@ uint32_t dact_process_file(const int src, const int dest, const int mode, const 
 /*
  * Calculate the default block size.
  */
-		if (DACT_BLK_SIZE==0) {
-			DACT_BLK_SIZE=dact_blksize_calc(filestats.st_size);
+		blksize=dact_blksize;
+		if (blksize==0) {
+			blksize=dact_blksize_calc(filestats.st_size);
 		}
-		if (((in_buf=malloc(DACT_BLK_SIZE))==NULL) || \
-			((out_buf=malloc(DACT_BLK_SIZE*2))==NULL)) {
+		out_bufsize=blksize*2;
+		if (((in_buf=malloc(blksize))==NULL) || \
+			((out_buf=malloc(out_bufsize))==NULL)) {
 				PERROR("malloc");
 				return(0);
 		}
 
-		dact_ui_setup(((float) (filestats.st_size/DACT_BLK_SIZE)+0.9999));
+		dact_ui_setup(((float) (filestats.st_size/blksize)+0.9999));
 		if (cipher!=-1) {
 			dact_hdr_ext_regn(DACT_HDR_CIPHER, cipher, sizeof(cipher));
 			keybuf=malloc(DACT_KEY_SIZE);
 			ciphers[cipher](NULL, NULL, 0, keybuf, DACT_MODE_CINIT+DACT_MODE_CENC);
 			
 		}
-		blksize_size=BYTESIZE(DACT_BLK_SIZE);
+		blksize_size=BYTESIZE(blksize);
 
 		if (!options[DACT_OPT_ORIG] && filename!=NULL)
 			dact_hdr_ext_regs(DACT_HDR_NAME, filename, strlen(filename));
@@ -277,7 +282,7 @@ uint32_t dact_process_file(const int src, const int dest, const int mode, const 
 		write(dest, &version[2], 1);
 		write_de(dest, 0, 4); /* Place holder for ORIG FILE SIZE */
 		write_de(dest, 0, 4); /* Place holder for NUM BLOCKS */
-		write_de(dest, DACT_BLK_SIZE, 4);
+		write_de(dest, blksize, 4);
 		write_de(dest, file_opts, 1); /* XXX: Option byte... Or not? */
 		write_de(dest, file_extd_size, 4); /* Place holder for SIZEOF EXTENDED DTA */
 /* Fill the header with NOPs incase we can't come back and put the CRCs */
@@ -289,12 +294,12 @@ uint32_t dact_process_file(const int src, const int dest, const int mode, const 
 			PRINTERR("----+------+---------+---------------------------");
 		}
 
-		memset(in_buf,0,DACT_BLK_SIZE);
-		while ( (bytes_read=read_f(src, in_buf, DACT_BLK_SIZE))>0) {
+		memset(in_buf, 0, blksize);
+		while ( (bytes_read=read_f(src, in_buf, blksize))>0) {
 			filesize+=bytes_read;
 			blk_cnt++;
 
-			retsize=dact_blk_compress(&algo, out_buf, in_buf, DACT_BLK_SIZE, options);
+			retsize=dact_blk_compress(&algo, out_buf, in_buf, blksize, options, out_bufsize);
 
 /* CIPHER the data if an encryption algorithm is specified. */
 			if (cipher!=-1) {
@@ -323,7 +328,7 @@ uint32_t dact_process_file(const int src, const int dest, const int mode, const 
 				crcs[0]=ELFCRC(crcs[0], out_buf, retsize);
 /* Do not generate a CRC of the plaintext if encrypting */
 				if (cipher==-1) {
-					crcs[1]=ELFCRC(crcs[1], in_buf, DACT_BLK_SIZE);
+					crcs[1]=ELFCRC(crcs[1], in_buf, blksize);
 				}
 
 				if (!options[DACT_OPT_HDONLY]) {
@@ -343,7 +348,7 @@ uint32_t dact_process_file(const int src, const int dest, const int mode, const 
 				free(out_buf);
 				return(0);
 			}
-			memset(in_buf,0,DACT_BLK_SIZE);
+			memset(in_buf, 0, blksize);
 		}
 
 		if (bytes_read<0) {
@@ -393,7 +398,7 @@ uint32_t dact_process_file(const int src, const int dest, const int mode, const 
 		read(src, &version[2], 1);
 		read_de(src, &filesize, 4, sizeof(filesize));
 		read_de(src, &blk_cnt, 4, sizeof(blk_cnt));
-		read_de(src, &DACT_BLK_SIZE, 4, sizeof(DACT_BLK_SIZE));
+		read_de(src, &blksize, 4, sizeof(blksize));
 		read(src, &file_opts, 1);
 		read_de(src, &file_extd_size, 4, sizeof(file_extd_size));
 
@@ -485,7 +490,7 @@ XXX: Todo, make this do something...
 				close(src);
 				crcs[4]=crcs[2];
 				crcs[5]=crcs[3];
-				return(dact_process_file(new_fd, dest, mode, options, filename, crcs, cipher));
+				return(dact_process_file(new_fd, dest, mode, options, filename, crcs, blksize, cipher));
 			}
 		}
 
@@ -515,16 +520,16 @@ XXX: Todo, make this do something...
 			}
 		}
 
-
-		if (((out_buf=malloc(DACT_BLK_SIZE))==NULL) ) {
+		out_bufsize=blksize;
+		if (((out_buf=malloc(out_bufsize))==NULL) ) {
 				PERROR("malloc");
 				return(0);
 		}
 
 
-		blksize_size=BYTESIZE(DACT_BLK_SIZE);
+		blksize_size=BYTESIZE(blksize);
 
-		dact_ui_setup((int)(((float) filesize/(float) DACT_BLK_SIZE)+0.9999));
+		dact_ui_setup((int)(((float) filesize/(float) blksize)+0.9999));
 
 		if (cipher!=-1) {
 			keybuf=malloc(DACT_KEY_SIZE);
@@ -585,7 +590,7 @@ XXX: Todo, make this do something...
 #endif
 
 
-			if ((bytes_read=dact_blk_decompress(out_buf, in_buf, blksize, 0, algo))==0) {
+			if ((bytes_read=dact_blk_decompress(out_buf, in_buf, blksize, 0, algo, out_bufsize))==0) {
 				if (cipher!=-1) {
 					PRINTERR("Decompression resulted in 0-byte block.  Invalid key?");
 				} else {
@@ -602,7 +607,7 @@ XXX: Todo, make this do something...
 			dact_ui_incrblkcnt(1);
 
 			if (fileoutsize>filesize && filesize!=0) {
-				write(dest, out_buf, DACT_BLK_SIZE-(fileoutsize-filesize));
+				write(dest, out_buf, blksize-(fileoutsize-filesize));
 			} else {
 				write(dest, out_buf, bytes_read);
 			}
@@ -637,7 +642,7 @@ XXX: Todo, make this do something...
 		read(src, &version[2], 1);
 		read_de(src, &filesize, 4, sizeof(filesize));
 		read_de(src, &blk_cnt, 4, sizeof(blk_cnt));
-		read_de(src, &DACT_BLK_SIZE, 4, sizeof(DACT_BLK_SIZE));
+		read_de(src, &blksize, 4, sizeof(blksize));
 		read(src, &file_opts, 1);
 		read_de(src, &file_extd_size, 4, sizeof(file_extd_size));
 
@@ -662,8 +667,8 @@ XXX: Todo, make this do something...
 		fileoutsize=lseek_net(src, 0, SEEK_END);
 
 		printf("Dact Version      :   %i.%i.%i\n",version[0],version[1],version[2]);
-		printf("Block Size        :   %i\n", DACT_BLK_SIZE);
-		printf("Block Header Size :   %i\n", BYTESIZE(DACT_BLK_SIZE)+1);
+		printf("Block Size        :   %i\n", blksize);
+		printf("Block Header Size :   %i\n", BYTESIZE(blksize)+1);
 		printf("Compressed Size   :   %i\n", fileoutsize);
 		printf("Uncompressed Size :   %i\n", filesize);
 		printf("Ratio             :   %2.3f to 1.0\n", ((float) filesize)/((float) fileoutsize) );
@@ -750,7 +755,7 @@ XXX: Todo, make this do something...
 		}
 
 		blk_cnt=0;
-		blksize_size=BYTESIZE(DACT_BLK_SIZE);
+		blksize_size=BYTESIZE(blksize);
 		if (options[DACT_OPT_VERB]) {
 			lseek_net(src, DACT_HDR_REG_SIZE+file_extd_size, SEEK_SET);
 			printf("\n");

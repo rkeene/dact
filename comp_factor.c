@@ -45,13 +45,13 @@ uint32_t DC_TYPE=DACT_MOD_TYPE_COMP;
 void *DC_ALGO=comp_factor_algo;
 char *DC_NAME="Factor Compression (MOD)";
 #endif
-int comp_factor_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_factor_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_factor_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_factor_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_factor_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_factor_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			fprintf(stderr, "Unsupported mode: %i\n", mode);
@@ -59,11 +59,11 @@ int comp_factor_algo(int mode, unsigned char *prev_block, unsigned char *curr_bl
 	}
 }
 
-int comp_factor_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_factor_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	return(-1);
 }
 
-int comp_factor_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_factor_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	fprintf(stderr, "Not yet supported.\n");
 	return(0);
 }

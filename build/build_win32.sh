@@ -1,5 +1,10 @@
 #! /bin/sh
 
+if echo " $* " | grep ' debug ' >/dev/null; then
+	DEBUG="--enable-debug"
+else
+	DEBUG="--disable-debug"
+fi
 if [ ! -x configure ]; then cd ../; fi
 WIN32="${HOME}/root/windows-i386"
 CFLAGS="-I${WIN32}/include"
@@ -11,7 +16,10 @@ if [ ! -z "${CROSS}" ]; then
 	CROSSCMD="${CROSS}-"
 fi
 export CFLAGS LDFLAGS CPPFLAGS
-./configure --host=${CROSS} --prefix=c:/dact/ --disable-debug && \
+make distclean
+./configure --host=${CROSS} --prefix=c:/dact/ ${DEBUG} && \
 make && \
-${CROSSCMD}strip dact.exe && \
-cp dact.exe "/web/rkeene/files/oss/dact/snapshot/binary/dact-${DATE}.exe"
+${CROSSCMD}strip dact.exe
+if echo " $* " | grep ' web ' >/dev/null; then
+	cp dact.exe "/web/rkeene/files/oss/dact/snapshot/binary/dact-${DATE}.exe"
+fi

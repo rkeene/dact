@@ -62,13 +62,13 @@ void *DC_ALGO=comp_zlib_algo;
 char *DC_NAME="Zlib Compression (MOD)";
 #endif
 
-int comp_zlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_zlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_zlib_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_zlib_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_zlib_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_zlib_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			printf("Unsupported mode: %i\n", mode);
@@ -76,7 +76,7 @@ int comp_zlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_bloc
 	}
 }
 
-int comp_zlib_compress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size) {
+int comp_zlib_compress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	unsigned long dest_size;
 	int retval;
 	dest_size=(int) ((float) (blk_size*1.01)+13);
@@ -94,7 +94,7 @@ int comp_zlib_compress(unsigned char *prev_block, unsigned char *curr_block, uns
 	return(dest_size);
 }
 
-int comp_zlib_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_zlib_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	unsigned long dest_size;
 	unsigned char *tmpbuf;
 	int retval;
@@ -105,7 +105,7 @@ int comp_zlib_decompress(unsigned char *prev_block, unsigned char *curr_block, c
 	tmpbuf[1]=218;
 	memcpy(tmpbuf+2, curr_block, blk_size);
 
-	dest_size=(DACT_BLK_SIZE*2);
+	dest_size=bufsize;
 	retval=uncompress(out_block,&dest_size,tmpbuf,blk_size+2);
 
 	free(tmpbuf);

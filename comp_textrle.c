@@ -47,13 +47,13 @@ void *DC_ALGO=comp_textrle_algo;
 char *DC_NAME="Text RLE Compression (MOD)";
 #endif
 
-int comp_textrle_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_textrle_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
-			return(comp_textrle_compress(prev_block,curr_block,out_block,blk_size));
+			return(comp_textrle_compress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break; /* Heh */
 		case DACT_MODE_DECMP:
-			return(comp_textrle_decompress(prev_block,curr_block,out_block,blk_size));
+			return(comp_textrle_decompress(prev_block, curr_block, out_block, blk_size, bufsize));
 			break;
 		default:
 			printf("Unsupported mode: %i\n", mode);
@@ -61,7 +61,7 @@ int comp_textrle_algo(int mode, unsigned char *prev_block, unsigned char *curr_b
 	}
 }
 
-int comp_textrle_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_textrle_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	int i,x=0,m;
 	unsigned char sentinel=0xff;
 	unsigned char currchar=0, prevchar;
@@ -87,7 +87,7 @@ int comp_textrle_compress(unsigned char *prev_block, unsigned char *curr_block, 
 	return(x);
 }
 
-int comp_textrle_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size) {
+int comp_textrle_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	int i,x=0,m;
 	unsigned char sentinel=curr_block[0];
 	unsigned char currchar;
@@ -98,7 +98,7 @@ int comp_textrle_decompress(unsigned char *prev_block, unsigned char *curr_block
 		if (currchar==sentinel) {
 			currchar=curr_block[++i];
 			charcnt=curr_block[++i];
-			if ((x+charcnt)>DACT_BLK_SIZE) {
+			if ((x+charcnt)>bufsize) {
 				printf("Error in RLE compression!\n");
 				return(0);
 			}
