@@ -336,20 +336,39 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 
 off_t lseek_net(int filedes, off_t offset, int whence) {
 	struct stat file_status;
+	char tmpbuf[1024];
+	off_t retval, rset=0, i;
+	size_t n;
+	ssize_t read_val;
 	int newfd;
 
 	fstat(filedes, &file_status);
-//	if (S_ISSOCK(file_status.st_mode)) {
 	if ((file_status.st_mode&S_IFSOCK)==S_IFSOCK) {
-		if (whence==SEEK_END) return(-1);
-		if (offset!=0 || whence!=SEEK_SET) return(-1); /* For now ... */
-		if (dact_urls[filedes].url==NULL) return(-1);
-		if ((newfd=open_net(dact_urls[filedes].url,dact_urls[filedes].flags,dact_urls[filedes].mode))<0) return(-1);
-		close(filedes);
-		dup2(newfd,filedes);
-		return(0);
+		if (whence!=SEEK_CUR || offset<=0) {
+			if (whence!=SEEK_SET) return(-1); /* For now ... */
+			if (dact_urls[filedes].url==NULL) return(-1);
+			if ((newfd=open_net(dact_urls[filedes].url,dact_urls[filedes].flags,dact_urls[filedes].mode))<0) return(-1);
+			close(filedes);
+			dup2(newfd,filedes);
+			if (offset==0) return(0);
+		}
+	} else {
+		retval=lseek(filedes, offset, whence);
+		if (!(retval<0 && whence==SEEK_CUR && offset>0)) {
+			return(retval);
+		}
 	}
-	return(lseek(filedes,offset,whence));
+
+	retval=0;
+	for (i=0; i<offset; i++) {
+		n=offset-rset;
+		if (n>sizeof(tmpbuf)) n=sizeof(tmpbuf);
+		read_val=read(filedes, tmpbuf, n);
+		if (read_val<=0) { retval=-1; break; }
+		rset+=read_val;
+	}
+	retval=offset+1;
+	return(retval);
 }
 
 #else
@@ -367,6 +386,23 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 	return(open(pathname,flags|O_BINARY|O_LARGEFILE,mode));
 }
 off_t lseek_net(int filedes, off_t offset, int whence) {
-	return(lseek(filedes,offset,whence));
+	char tmpbuf[1024];
+	off_t retval, rset=0, i;
+	size_t n;
+	ssize_t read_val;
+
+	retval=lseek(filedes, offset, whence);
+	if (retval<0 && whence==SEEK_CUR && offset>0) {
+		retval=0;
+		for (i=0; i<offset; i++) {
+			n=offset-rset;
+			if (n>sizeof(tmpbuf)) n=sizeof(tmpbuf);
+			read_val=read(filedes, tmpbuf, n);
+			if (read_val<=0) { retval=-1; break; }
+			rset+=read_val;
+		}
+		retval=offset+1;
+	}
+	return(retval);
 }
 #endif

@@ -21,7 +21,7 @@
 #ifndef __ENDIAN_LOCAL_H
 #define __ENDIAN_LOCAL_H
 
-int write_de(const int dst, const uint32_t num, const int sze);
+int write_de(const int dst, const uint64_t num, const int sze);
 int read_de(const int src, void *dest, const int sze, const int out_sze);
 
 /*

@@ -372,6 +372,7 @@ uint64_t dact_process_file(const int src, const int dest, const int mode, const 
 		free(in_buf);
 		free(out_buf);
 
+		/* Put the filesize and file block count in the header, if possible. */
 		if (lseek_net(dest, 7, SEEK_SET)<0) {
 /* If we can't rewind the stream, put magic+fileisze */
 			write_de(dest, DACT_MAGIC_PEOF, 4);
@@ -531,23 +532,27 @@ XXX: Todo, make this do something...
 /* See if we can rewind our stream, so when we get to the end, we can come back! */
 			if (lseek_net(src, 1, SEEK_SET)==1) { /* MAJOR BUG HERE! was: lseek(src,1,SEEK_SET)==0 which will always be false. */
 				canlseek=1;
-				lseek_net(src, -8, SEEK_END);
-				read_de(src, &magic, 4, sizeof(magic));
-				if (magic!=DACT_MAGIC_PEOF) {
-					dact_ui_status(DACT_UI_LVL_GEN, "File is corrupt.");
-					return(0);
-				}
 #ifndef DACT_DONT_SUPPORT_OLDDACT
 				if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
 					PRINTERR("**WARNING** This file uses the old DACT file header, support will go away in future versions for this.");
+					lseek_net(src, -8, SEEK_END);
+					read_de(src, &magic, 4, sizeof(magic));
 					read_de(src, &filesize, 4, sizeof(filesize));
 					hdr_reg_size=24;
 				} else {
+					lseek_net(src, -12, SEEK_END);
+					read_de(src, &magic, 4, sizeof(magic));
 					read_de(src, &filesize, 8, sizeof(filesize));
 				}
 #else
+				lseek_net(src, -12, SEEK_END);
+				read_de(src, &magic, 4, sizeof(magic));
 				read_de(src, &filesize, 8, sizeof(filesize));
 #endif
+				if (magic!=DACT_MAGIC_PEOF) {
+					dact_ui_status(DACT_UI_LVL_GEN, "File is corrupt.");
+					filesize=0;
+				}
 				lseek_net(src, hdr_reg_size+file_extd_size, SEEK_SET);
 			} else {
 				canlseek=0;
@@ -713,22 +718,28 @@ XXX: Todo, make this do something...
 		}
 
 		if (filesize==0) {
-			lseek_net(src, -8, SEEK_END);
-			read_de(src, &magic, 4, sizeof(magic));
+			if (lseek_net(src, 1, SEEK_SET)==1) {
 #ifndef DACT_DONT_SUPPORT_OLDDACT
-			if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
-				PRINTERR("**WARNING** This file uses the old DACT file header, support will go away in future versions for this.");
-				read_de(src, &filesize, 4, sizeof(filesize));
-				hdr_reg_size=24;
-			} else {
-				read_de(src, &filesize, 8, sizeof(filesize));
-			}
+				if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
+					PRINTERR("**WARNING** This file uses the old DACT file header, support will go away in future versions for this.");
+					lseek_net(src, -8, SEEK_END);
+					read_de(src, &magic, 4, sizeof(magic));
+					read_de(src, &filesize, 4, sizeof(filesize));
+					hdr_reg_size=24;
+				} else {
+					lseek_net(src, -12, SEEK_END);
+					read_de(src, &magic, 4, sizeof(magic));
+					read_de(src, &filesize, 8, sizeof(filesize));
+				}
 #else
-			read_de(src, &filesize, 8, sizeof(filesize));
+				lseek_net(src, -12, SEEK_END);
+				read_de(src, &magic, 4, sizeof(magic));
+				read_de(src, &filesize, 8, sizeof(filesize));
 #endif
-			if (magic!=DACT_MAGIC_PEOF) {
-				PRINTERR("Bad magic, corrupt stream.");
-				return(0);
+				if (magic!=DACT_MAGIC_PEOF) {
+					PRINTERR("Bad end-of-file magic.  Corrupt or incomplete file?");
+					filesize=0;
+				}
 			}
 		}
 		fileoutsize=lseek_net(src, 0, SEEK_END);

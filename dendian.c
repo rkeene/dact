@@ -31,8 +31,8 @@
 #endif
 #include "dendian.h"
 
-int write_de(const int dst, const uint32_t num, const int sze) {
-	unsigned char buf[4]={0, 0, 0, 0};
+int write_de(const int dst, const uint64_t num, const int sze) {
+	unsigned char buf[8]={0};
 	int i,x=0,v;
 
 	for (i=0;i<sze;i++) {
@@ -64,7 +64,7 @@ int read_de(const int src, void *dest, const int sze, const int out_sze) {
 			PERROR("read");
 			return(-1);
 		}
-		ret|=ch<<(8*(sze-i-1));
+		ret|=((uint64_t) ch)<<(8*(sze-i-1));
 	}
 	switch (out_sze) {
 		case 1: tmpvar8=ret; memcpy(dest, &tmpvar8, out_sze); break;
