@@ -1,6 +1,5 @@
 Makefile.dep
 contrib
-work
 Makefile
 config.h
 dact.conf
@@ -9,3 +8,4 @@ config.cache
 config.status
 dact
 autom4te.cache
+.*

@@ -1,0 +1,18 @@
+{MAGIC(4bytes)}
+{VERSION(3bytes)[maj,min,rev]}
+{ORIG_FILE_SIZE(4bytes)}
+{NUM_BLOCKS(4bytes)}
+{BLOCK_SIZE_UNCOMPR(4bytes)},
+{OPTIONS(1byte)}
+{EXTD_SIZE(4bytes)}
+(EXTD):{
+	{OPTION(1byte)}
+	{OPTION_SIZE(2bytes)}
+	{OPTION_VAL(OPTION_SIZE bytes)}
+}
+(BLOCK):{
+	{ALGO(1byte)}
+	{BLOCK_SIZE([BYTESIZE(BLOCK_SIZE)] bytes)}
+	{BLOCK(BLOCK_SIZE bytes)}
+}
+
