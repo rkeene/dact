@@ -26,7 +26,6 @@
 #endif
 
 #include "win32.h"
-#include "comp_fail.h"
 
 #ifndef DACT_CONTACT
 #define DACT_CONTACT "<dact@rkeene.org>"
@@ -68,9 +67,10 @@
 #define DACT_OPT_HDONLY	9
 #define DACT_OPT_SZSPD	10
 #define DACT_OPT_NOCRC	11
-#define DACT_OPT_NETWORK	12
+#define DACT_OPT_NETWORK 12
 #define DACT_OPT_URL	13
-#define DACT_OPT_UPGRADE	14
+#define DACT_OPT_UPGRADE 14
+#define DACT_OPT_SFX	15
 
 /* These should only be changed at the risk of breaking files. 
  * (in other words, they should not be changed if possible.
@@ -88,6 +88,7 @@
 #define DACT_HDR_CIPHER	9
 #define DACT_HDR_NOP	10
 #define DACT_HDR_IDXDATA	11
+#define DACT_HDR_SFXLEN	12
 
 #ifndef DACT_BLK_SIZE_MAX
 #define DACT_BLK_SIZE_MAX 4194304
@@ -135,14 +136,17 @@
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
 #endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
+#include "comp_fail.h"
+#include "dact_common.h"
 
 #define DACT_MAGIC_NUMBER 0x444354C3
 #define DACT_MAGIC_OFFSET 0
 #define DACT_MAGIC_SIZE   4
 #define DACT_MAGIC_PEOF   0xFF3FDE08
-
-extern char dact_nonetwork;
 
 #if defined(__FILE__) && defined(__LINE__) && defined(DEBUG)
 #define PRINT_LINE fprintf(stderr, "%s:%07i:%s(): ", __FILE__, __LINE__, __func__)
@@ -195,11 +199,10 @@ extern char dact_nonetwork;
 #define DACT_BIN_DIR "@@HOME@@/.dact/@@OSNM@@-@@ARCH@@/"
 #endif
 #ifndef DACT_BIN
-#ifdef EXEEXT
-#define DACT_BIN DACT_BIN_DIR "dact" EXEEXT
-#else
-#define DACT_BIN DACT_BIN_DIR "dact.bin"
+#ifndef EXEEXT
+#define EXEEXT ".bin"
 #endif
+#define DACT_BIN DACT_BIN_DIR "dact" EXEEXT
 #endif
 #define DACT_BIN_VER ((DACT_VER_MAJOR<<16)|(DACT_VER_MINOR<<8)|DACT_VER_REVISION)
 
@@ -215,7 +218,7 @@ int print_help(int argc, char **argv);
 int dact_upgrade_file_checkver(const char *name, const char *url_ver, const char *options);
 int dact_upgrade_file(const char *name, const char *url_get, const char *url_ver, uint32_t version, const char *dest, const char *options);
 int dact_shutdown(int retval);
-char *dact_getoutfilename(const char *orig, const int mode);
+char *dact_getoutfilename(const char *orig, const int mode, const char *ext);
 uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const char *options);
 int main(int argc, char **argv);
 

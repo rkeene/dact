@@ -52,6 +52,7 @@
 #include "header.h"
 #include "parse.h"
 #include "net.h"
+#include "sfx.h"
 #include "ui.h"
 #ifdef HAVE_ZLIB_H
 #include <zlib.h>
@@ -59,6 +60,8 @@
 #ifdef HAVE_BZLIB_H
 #include <bzlib.h>
 #endif
+
+char dact_nonetwork=0;
 
 uint32_t dact_blksize_calc(int fsize) {
 	uint32_t ret=0;
@@ -260,17 +263,28 @@ uint64_t dact_process_file(const int src, const int dest, const int mode, const 
 	int hdr_reg_size=28;
 	int blksize_size;
 	int x=0, new_fd, canlseek=0;
+	ssize_t offset=0;
 
-	fstat(src,&filestats);
+	if (fstat(src, &filestats)<0) {
+		PERROR("fstat");
+		return(0);
+	}
 
 	if (mode==DACT_MODE_COMPR) {
-/*
- * Calculate the default block size.
- */
 		blksize=dact_blksize;
 		if (blksize==0) {
 			blksize=dact_blksize_calc(filestats.st_size);
 		}
+
+		if (options[DACT_OPT_SFX]) {
+			offset=sfx_init_compress(dest);
+			if (offset<0) {
+				PRINTERR("Couldn't initialize self-extracting header.");
+				return(0);
+			}
+			dact_hdr_ext_regn(DACT_HDR_SFXLEN, offset, sizeof(offset));
+		}
+
 		out_bufsize=blksize*2;
 		if (((in_buf=malloc(blksize))==NULL) || \
 			((out_buf=malloc(out_bufsize))==NULL)) {
@@ -285,6 +299,7 @@ uint64_t dact_process_file(const int src, const int dest, const int mode, const 
 			ciphers[cipher](NULL, NULL, 0, keybuf, DACT_MODE_CINIT+DACT_MODE_CENC);
 			
 		}
+
 		blksize_size=BYTESIZE(blksize);
 
 		if (!options[DACT_OPT_ORIG] && filename!=NULL)
@@ -373,7 +388,7 @@ uint64_t dact_process_file(const int src, const int dest, const int mode, const 
 		free(out_buf);
 
 		/* Put the filesize and file block count in the header, if possible. */
-		if (lseek_net(dest, 7, SEEK_SET)<0) {
+		if (lseek_net(dest, offset+7, SEEK_SET)<0) {
 /* If we can't rewind the stream, put magic+fileisze */
 			write_de(dest, DACT_MAGIC_PEOF, 4);
 			write_de(dest, filesize, 8);
@@ -382,7 +397,7 @@ uint64_t dact_process_file(const int src, const int dest, const int mode, const 
 			write_de(dest, blk_cnt, 4);
 		} 
 
-		if (lseek_net(dest, hdr_reg_size, SEEK_SET)>0) {
+		if (lseek_net(dest, offset+hdr_reg_size, SEEK_SET)>0) {
 			if (!options[DACT_OPT_NOCRC]) {
 				dact_hdr_ext_regn(DACT_HDR_CRC0, crcs[0], 4);
 				dact_hdr_ext_regn(DACT_HDR_CRC1, crcs[1], 4);
@@ -487,10 +502,13 @@ XXX: Todo, make this do something...
 					free(hdr_buf);
 					break;
 				case DACT_HDR_CIPHER:
-					read_de(src,&cipher,x,sizeof(cipher));
+					read_de(src, &cipher, x, sizeof(cipher));
 					break;
 				case DACT_HDR_NOP:
 					x=-2;
+					break;
+				case DACT_HDR_SFXLEN:
+					read_de(src, &offset, x, sizeof(offset));
 					break;
 				default:
 					hdr_buf=malloc(x);
@@ -530,7 +548,7 @@ XXX: Todo, make this do something...
 */
 		if (filesize==0) {
 /* See if we can rewind our stream, so when we get to the end, we can come back! */
-			if (lseek_net(src, 1, SEEK_SET)==1) { /* MAJOR BUG HERE! was: lseek(src,1,SEEK_SET)==0 which will always be false. */
+			if (lseek_net(src, offset+1, SEEK_SET)==(offset+1)) { /* MAJOR BUG HERE! was: lseek(src,1,SEEK_SET)==0 which will always be false. */
 				canlseek=1;
 #ifndef DACT_DONT_SUPPORT_OLDDACT
 				if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
@@ -553,7 +571,7 @@ XXX: Todo, make this do something...
 					dact_ui_status(DACT_UI_LVL_GEN, "File is corrupt.");
 					filesize=0;
 				}
-				lseek_net(src, hdr_reg_size+file_extd_size, SEEK_SET);
+				lseek_net(src, offset+hdr_reg_size+file_extd_size, SEEK_SET);
 			} else {
 				canlseek=0;
 			}
@@ -718,7 +736,7 @@ XXX: Todo, make this do something...
 		}
 
 		if (filesize==0) {
-			if (lseek_net(src, 1, SEEK_SET)==1) {
+			if (lseek_net(src, offset+1, SEEK_SET)==(offset+1)) {
 #ifndef DACT_DONT_SUPPORT_OLDDACT
 				if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
 					PRINTERR("**WARNING** This file uses the old DACT file header, support will go away in future versions for this.");
@@ -743,6 +761,7 @@ XXX: Todo, make this do something...
 			}
 		}
 		fileoutsize=lseek_net(src, 0, SEEK_END);
+		fileoutsize-=offset;
 
 		printf("Dact Version      :   %i.%i.%i\n",version[0],version[1],version[2]);
 		printf("Block Size        :   %i\n", blksize);
@@ -750,7 +769,7 @@ XXX: Todo, make this do something...
 		printf("Compressed Size   :   %llu\n", fileoutsize);
 		printf("Uncompressed Size :   %llu\n", filesize);
 		printf("Ratio             :   %2.3f to 1.0\n", ((float) filesize)/((float) fileoutsize) );
-		lseek_net(src, hdr_reg_size, SEEK_SET);
+		lseek_net(src, offset+hdr_reg_size, SEEK_SET);
 		while (file_extd_read<file_extd_size) {
 			x=0;
 			read(src, &ch, 1);
@@ -809,6 +828,10 @@ XXX: Todo, make this do something...
 				case DACT_HDR_NOP:
 					x=-2;
 					break;
+				case DACT_HDR_SFXLEN:
+					read_de(src, &offset, x, sizeof(offset));
+					printf("Program length    :   %lu\n", offset);
+					break;
 				default:
 					hdr_buf=malloc(x);
 					read_f(src, hdr_buf, x);
@@ -835,7 +858,7 @@ XXX: Todo, make this do something...
 		blk_cnt=0;
 		blksize_size=BYTESIZE(blksize);
 		if (options[DACT_OPT_VERB]) {
-			lseek_net(src, hdr_reg_size+file_extd_size, SEEK_SET);
+			lseek_net(src, offset+hdr_reg_size+file_extd_size, SEEK_SET);
 			printf("\n");
 			printf("Break down: \n");
 			printf("  Blk | Algo | Size    | Name\n");

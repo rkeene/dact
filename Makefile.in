@@ -32,7 +32,7 @@ CFLAGS += -DDACT_CONFIG_FILE=\"$(CONF)\" -DEXEEXT=\"$(EXEEXT)\"
 #LDFLAGS += -static
 
 DEBUGALGO = comp_bitsums.c comp_factor.c comp_textrle.c
-OBJS += dact_common.o comp_fail.o comp_plain.o buffer.o header.o sort.o dact.o module.o parse.o dendian.o crc.o net.o ui.o @LIBOBJS@
+OBJS += dact_common.o comp_fail.o comp_plain.o buffer.o header.o sort.o dact.o module.o parse.o dendian.o crc.o net.o ui.o sfx.o libdact.o @LIBOBJS@
 ALGO = comp_snibble.c comp_delta.c comp_text.c comp_rle.c cipher_chaos.c cipher_sub.c cipher_psub.c @ALGO@
 
 TOBUILD = dact libdact.so libdact.a dact.conf
@@ -61,12 +61,12 @@ dact.conf: Makefile
 dact: $(OBJS) $(MODS)
 	$(CC) $(OBJS) $(LDFLAGS) $(LIBS) $(LDLIBS) -o dact$(EXEEXT)
 
-libdact.so: $(OBJS) libdact.o
+libdact.so: $(OBJS)
 @MODS@	@echo $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ @SHARED@ $(filter-out dact.c, $(^:.o=.c)); \
 @MODS@	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ @SHARED@ $(filter-out dact.c, $(^:.o=.c))
 	@true
 
-libdact.a: $(OBJS) libdact.o
+libdact.a: $(OBJS)
 	@AR@ rcu libdact.a $(filter-out dact.o, $^)
 	-@RANLIB@ libdact.a
 

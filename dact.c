@@ -46,6 +46,7 @@
 #include "math.h"
 #include "dact_common.h"
 #include "algorithms.h"
+#include "libdact.h"
 #include "ciphers.h"
 #include "module.h"
 #include "header.h"
@@ -62,13 +63,11 @@
 
 int print_help(int argc, char **argv);
 int dact_shutdown(int retval);
-char *dact_getoutfilename(const char *orig, const int mode);
 uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const char *options);
 int main(int argc, char **argv);
 
 extern char *optarg;
 extern int optind, opterr, optopt;
-char dact_nonetwork=0;
 
 int print_help(int argc, char **argv) {
 	printf("DACT %i.%i.%i-%s by Keene Enterprises <dact@rkeene.org>\n", DACT_VER_MAJOR, DACT_VER_MINOR, DACT_VER_REVISION, DACT_VER_SUB);
@@ -92,6 +91,7 @@ int print_help(int argc, char **argv) {
 	printf("  -V          Display DACT version (%i.%i.%i-%s).\n", DACT_VER_MAJOR, DACT_VER_MINOR, DACT_VER_REVISION, DACT_VER_SUB);
 	printf("  -N          Upgrade DACT.\n");
 	printf("  -a          Upgrade DACT modules.\n");
+	printf("  -x          Create self-extracting DACT file.\n");
 	printf("  -b NN       Use a block size of NN bytes for compression.\n");
 	printf("  -e NN       Exclude algorithm NN from being used.\n");
 	printf("  -m CONF     Load config file CONF.\n");
@@ -371,26 +371,20 @@ int dact_shutdown(int retval) {
 	return(retval);
 }
 
-char *dact_getoutfilename(const char *orig, const int mode) {
+char *dact_getoutfilename(const char *orig, const int mode, const char *ext) {
 	char *ret=NULL;
-	int x=0;
+	size_t retlen;
 
 	switch (mode) {
 		case DACT_MODE_COMPR:
-			ret=malloc(strlen(orig)+5);
-#ifdef GO32
-			strncpy(ret,orig,8);
-			for (x=0;x<strlen(ret);x++) {
-				if (ret[x]=='.') ret[x]='_';
-			}
-			strcat(ret,".dct");
-#else
-			strcpy(ret,orig);
-			strcat(ret,".dct");
-#endif
+			retlen=strlen(orig)+strlen(ext)+10;
+			ret=malloc(retlen);
+			snprintf(ret, retlen, "%s%s", orig, ext);
 			break;
 		case DACT_MODE_DECMP:
 			if (strcmp(&orig[strlen(orig)-4],".dct") && \
+				strcmp(&orig[strlen(orig)-4], ".exe") && \
+				strcmp(&orig[strlen(orig)-4], ".bin") && \
 				strcmp(&orig[strlen(orig)-4], ".bz2") && \
 				strcmp(&orig[strlen(orig)-5], ".tbz2") && \
 				strcmp(&orig[strlen(orig)-4], ".tgz") && \
@@ -398,10 +392,8 @@ char *dact_getoutfilename(const char *orig, const int mode) {
 				return(NULL);
 			}
 /* XXX: I wonder if this breaks easily... */
-			x=(strrchr(orig,'.')-orig);
-			ret=malloc(x+1);
-			strncpy(ret,orig,x);
-			ret[x]=0;
+			ret=strdup(orig);
+			(*strrchr(ret, '.'))='\0';
 			break;
 		case DACT_MODE_STAT:
 			return(NULL);
@@ -502,21 +494,21 @@ uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const
 }
 
 int main(int argc, char **argv) {
-	unsigned char options[20]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	unsigned char options[20]={0};
 	signed char opt;
 	struct stat stat_buf;
 	char **in_files, *in_file=NULL, *out_file=NULL;
 	char dact_binfilebuf[256], *dact_binfile;
+	char *ext=".dct";
 	int filecnt=0;
 	int in_fd, out_fd;
 	int mode=DACT_MODE_COMPR, ciphernum=-1;
 	uint32_t dact_blk_size=0;
-	uint32_t crcs[6]={0,0,0,0,0,0};
+	uint32_t crcs[6]={0};
 	uint32_t i,x;
 
-
 	dact_ui_init();
-
+	dact_init();
 
 /* hack, to make upgrade work even if DACT_OPT_BINCHK is enabled, we must
  *      get the new version before executing it.
@@ -551,7 +543,7 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	while ((opt=getopt(argc,argv,"adfsvcnhiNVHCM:E:p:I:m:e:lb:u:U:TPOD:o:"))!=-1) {
+	while ((opt=getopt(argc,argv,"adfsvcnhixNVHCM:E:p:I:m:e:lb:u:U:TPOD:o:"))!=-1) {
 		switch (opt) {
 			case 'a':
 				options[DACT_OPT_UPGRADE]=1;
@@ -567,6 +559,14 @@ int main(int argc, char **argv) {
 				break;
 			case 'i':
 				dact_ui_setopt(DACT_UI_OPT_PASSSTDIN, 1);
+				break;
+			case 'x':
+				if (strcmp(EXEEXT, "")==0) {
+					ext=".bin";
+				} else {
+					ext=EXEEXT;
+				}
+				options[DACT_OPT_SFX]=!options[DACT_OPT_SFX];
 				break;
 			case 'c':
 				options[DACT_OPT_STDOUT]=!options[DACT_OPT_STDOUT];
@@ -718,7 +718,7 @@ int main(int argc, char **argv) {
 		in_file=in_files[filecnt];
 		if (in_file!=NULL) {
 /* Determine resulting file name */
-			if (out_file==NULL) out_file=dact_getoutfilename(in_file,mode);
+			if (out_file==NULL) out_file=dact_getoutfilename(in_file, mode, ext);
 			if (strcmp("-",in_file)==0) {
 				in_fd=STDIN_FILENO;
 			} else {
