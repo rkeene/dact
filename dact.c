@@ -63,7 +63,6 @@
 
 int print_help(int argc, char **argv);
 int dact_shutdown(int retval);
-uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const char *options);
 int main(int argc, char **argv);
 
 extern char *optarg;
@@ -400,97 +399,6 @@ char *dact_getoutfilename(const char *orig, const int mode, const char *ext) {
 			break;
 	}
 	return(ret);
-}
-
-uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const char *options) {
-	char *buf, tmpbuf[128]="/tmp/dactXXXXXX";
-	uint32_t filesize=0, x;
-	int tmpfd=0;
-#if defined(HAVE_LIBBZ2) && (defined(HAVE_BZDOPEN) || defined(HAVE_NEW_BZDOPEN))
-	BZFILE *bzfd;
-#endif
-#if defined(HAVE_LIBZ) && defined(HAVE_GZDOPEN)
-	gzFile gzfd;
-#endif
-
-	filesize=0;  /* Fix a warning, that is all. */
-
-/*
- * bad and broke stuff XXX FIXME XXX FIXME XXX FIXME
- * There has to be a better way to do this... I just want
- * to rewind my socket/pipe 4 bytes... 4 bytes is all I ask
- * Is that so much to ask for?  Well?!  Is it?!  I don't
- * think it is.
- * I give up on this.
- *
- * Someone please fix it.
- *  -- Roy Keene <dact@rkeene.org>
- */
-	if (lseek_net(src, 0, SEEK_SET)<0) {
-/*
- * lseek_net() should make this obsolete.
- *  ... EXCEPT! when reading from stdin.
- */
-		tmpfd=mkstemp(tmpbuf);
-		write_de(tmpfd, magic, 4);
-		buf=malloc(1024);
-		while (1) {
-			x=read_f(src, buf, 1024);
-			write(tmpfd, buf, x);
-			if (x<1024) break;
-		}
-		close(src);
-		src=tmpfd;
-		lseek_net(src, 0, SEEK_SET); /* Now bitch. */
-		free(buf);
-	}
-#if defined(HAVE_LIBZ) && defined(HAVE_GZDOPEN)
-
-	if ((magic&0xffff0000)==0x1f8b0000) { /* gzip */
-		dact_ui_status(DACT_UI_LVL_GEN, "Gunzipping...");
-		buf=malloc(1024);
-
-		gzfd=gzdopen(src, "r");
-/*XXX: need to dact_ui_setup() */
-		while (1) {
-			dact_ui_incrblkcnt(1);
-			x=gzread(gzfd,buf,1024);
-			filesize+=write(dest, buf, x);
-			if (x<1024) break;
-		}
-		free(buf);
-		if (tmpfd!=0) unlink(tmpbuf);
-		return(filesize);
-	}
-#endif
-
-#if defined(HAVE_LIBBZ2) && (defined(HAVE_BZDOPEN) || defined(HAVE_NEW_BZDOPEN))
-	if ((magic&0xffffff00)==0x425a6800) { /* bzip2 */ 
-		dact_ui_status(DACT_UI_LVL_GEN, "Bunzipping...");
-		buf=malloc(1024);
-
-#ifdef HAVE_NEW_BZDOPEN
-		bzfd=BZ2_bzdopen(src, "r");
-#else
-		bzfd=bzdopen(src, "r");
-#endif
-/*XXX: need to dact_ui_setup() */
-		while(1) {
-			dact_ui_incrblkcnt(1);
-#ifdef HAVE_NEW_BZDOPEN
-			x=BZ2_bzread(bzfd, buf, 1024);
-#else
-			x=bzread(bzfd, buf, 1024);
-#endif
-			filesize+=write(dest, buf, x);
-			if (x<1024) break;
-		}
-		free(buf);
-		if (tmpfd!=0) unlink(tmpbuf);
-		return(filesize);
-	}
-#endif
-	return(0);
 }
 
 int main(int argc, char **argv) {

@@ -219,7 +219,6 @@ int dact_upgrade_file_checkver(const char *name, const char *url_ver, const char
 int dact_upgrade_file(const char *name, const char *url_get, const char *url_ver, uint32_t version, const char *dest, const char *options);
 int dact_shutdown(int retval);
 char *dact_getoutfilename(const char *orig, const int mode, const char *ext);
-uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const char *options);
 int main(int argc, char **argv);
 
 #endif/*_DACT_H*/

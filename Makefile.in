@@ -107,7 +107,7 @@ install: all install-bin
 	-$(INSTALL) -m 644 libdact.$(SHOBJEXT).def $(libdir)/libdact.$(SHOBJEXT).def
 	-$(INSTALL) -m 644 libdact.$(SHOBJEXT).a $(libdir)/libdact.$(SHOBJEXT).a
 	-$(INSTALL) -m 644 libdact.a $(libdir)/libdact.a
-@MODS@	for so in *.so; do $(INSTALL) -m 755 $$so $(datadir)/dact/$$so; done
+@MODS@	for so in $(MODS); do $(INSTALL) -m 755 $$so $(datadir)/dact/$$so; done
 	./patch-magic-file $(datadir)/magic
 
 install-bin-local: dact$(EXEEXT)
@@ -119,7 +119,7 @@ install-local: all install-bin-local
 	$(INSTALL) -m 644 dact.conf $(HOME)/.dact/dact.conf
 	-$(INSTALL) -m 644 libdact.a $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/dact$(EXEEXT)
 	-$(INSTALL) -m 755 libdact.$(SHOBJEXT) $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/dact$(EXEEXT)
-@MODS@	for so in *.so; do $(INSTALL) -m 755 $$so $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/$$so; done
+@MODS@	for so in $(MODS); do $(INSTALL) -m 755 $$so $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/$$so; done
 
 uninstall:
 	rm -f $(bindir)/dact$(EXEEXT)
