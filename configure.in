@@ -14,6 +14,8 @@ DC_PROG_GCC
 
 dnl Check for largefile support
 AC_SYS_LARGEFILE
+AC_FUNC_FSEEKO
+AC_TYPE_OFF_T
 
 dnl Checks for libraries.
 

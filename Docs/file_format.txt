@@ -1,6 +1,6 @@
 {MAGIC(4bytes)}
 {VERSION(3bytes)[maj,min,rev]}
-{ORIG_FILE_SIZE(4bytes)}
+{ORIG_FILE_SIZE(8bytes)}                -- Was 4bytes before 0.8.38
 {NUM_BLOCKS(4bytes)}
 {BLOCK_SIZE_UNCOMPR(4bytes)},
 {OPTIONS(1byte)}

@@ -70,6 +70,9 @@
 #ifndef S_IFSOCK
 #define S_IFSOCK 0140000
 #endif
+#ifndef O_LARGEFILE
+#define O_LARGEFILE 0x0
+#endif
 
 
 //extern int errno;
@@ -320,7 +323,7 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 		free(read_buf_s);
 		close(fd);
 	} else {
-		fd=open(pathname,flags|O_BINARY,mode);
+		fd=open(pathname,flags|O_BINARY|O_LARGEFILE,mode);
 		if (dact_urls[fd].url!=NULL) free(dact_urls[fd].url);
 		dact_urls[fd].url=strdup(pathname);
 		dact_urls[fd].flags=flags;
@@ -353,12 +356,15 @@ off_t lseek_net(int filedes, off_t offset, int whence) {
 #ifndef O_BINARY
 #define O_BINARY 0x0
 #endif
+#ifndef O_LARGEFILE
+#define O_LARGEFILE 0x0
+#endif
 
 int createlisten(int port) { return(-1); }
 void closeconnection(int sockfd) { return; }
 int createconnection_tcp(char *host, int port) { return(-1); }
 int open_net(const char *pathname, int flags, mode_t mode) {
-	return(open(pathname,flags|O_BINARY,mode));
+	return(open(pathname,flags|O_BINARY|O_LARGEFILE,mode));
 }
 off_t lseek_net(int filedes, off_t offset, int whence) {
 	return(lseek(filedes,offset,whence));

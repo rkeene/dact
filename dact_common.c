@@ -257,6 +257,7 @@ uint64_t dact_process_file(const int src, const int dest, const int mode, const 
 	uint64_t filesize=0, fileoutsize=0, out_bufsize=0;
 	uint32_t blk_cnt=0, file_extd_size=0, blksize=0, blksize_uncomp=0;
 	uint32_t magic=0, file_extd_read=0, file_extd_urlcnt=0;
+	int hdr_reg_size=28;
 	int blksize_size;
 	int x=0, new_fd, canlseek=0;
 
@@ -293,7 +294,7 @@ uint64_t dact_process_file(const int src, const int dest, const int mode, const 
 		write(dest, &version[0], 1);
 		write(dest, &version[1], 1);
 		write(dest, &version[2], 1);
-		write_de(dest, 0, 4); /* Place holder for ORIG FILE SIZE */
+		write_de(dest, 0, 8); /* Place holder for ORIG FILE SIZE */
 		write_de(dest, 0, 4); /* Place holder for NUM BLOCKS */
 		write_de(dest, blksize, 4);
 		write_de(dest, file_opts, 1); /* XXX: Option byte... Or not? */
@@ -374,13 +375,13 @@ uint64_t dact_process_file(const int src, const int dest, const int mode, const 
 		if (lseek_net(dest, 7, SEEK_SET)<0) {
 /* If we can't rewind the stream, put magic+fileisze */
 			write_de(dest, DACT_MAGIC_PEOF, 4);
-			write_de(dest, filesize, 4);
+			write_de(dest, filesize, 8);
 		} else {
-			write_de(dest, filesize, 4);
+			write_de(dest, filesize, 8);
 			write_de(dest, blk_cnt, 4);
 		} 
 
-		if (lseek_net(dest, DACT_HDR_REG_SIZE, SEEK_SET)>0) {
+		if (lseek_net(dest, hdr_reg_size, SEEK_SET)>0) {
 			if (!options[DACT_OPT_NOCRC]) {
 				dact_hdr_ext_regn(DACT_HDR_CRC0, crcs[0], 4);
 				dact_hdr_ext_regn(DACT_HDR_CRC1, crcs[1], 4);
@@ -409,7 +410,17 @@ uint64_t dact_process_file(const int src, const int dest, const int mode, const 
 		read(src, &version[0], 1);
 		read(src, &version[1], 1);
 		read(src, &version[2], 1);
-		read_de(src, &filesize, 4, sizeof(filesize));
+#ifndef DACT_DONT_SUPPORT_OLDDACT
+		if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
+			PRINTERR("**WARNING** This file uses the old DACT file header, support will go away in future versions for this.");
+			read_de(src, &filesize, 4, sizeof(filesize));
+			hdr_reg_size=24;
+		} else {
+			read_de(src, &filesize, 8, sizeof(filesize));
+		}
+#else
+		read_de(src, &filesize, 8, sizeof(filesize));
+#endif
 		read_de(src, &blk_cnt, 4, sizeof(blk_cnt));
 		read_de(src, &blksize_uncomp, 4, sizeof(blksize_uncomp));
 		read(src, &file_opts, 1);
@@ -526,8 +537,18 @@ XXX: Todo, make this do something...
 					dact_ui_status(DACT_UI_LVL_GEN, "File is corrupt.");
 					return(0);
 				}
-				read_de(src, &filesize, 4, sizeof(filesize));
-				lseek_net(src, DACT_HDR_REG_SIZE+file_extd_size, SEEK_SET);
+#ifndef DACT_DONT_SUPPORT_OLDDACT
+				if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
+					PRINTERR("**WARNING** This file uses the old DACT file header, support will go away in future versions for this.");
+					read_de(src, &filesize, 4, sizeof(filesize));
+					hdr_reg_size=24;
+				} else {
+					read_de(src, &filesize, 8, sizeof(filesize));
+				}
+#else
+				read_de(src, &filesize, 8, sizeof(filesize));
+#endif
+				lseek_net(src, hdr_reg_size+file_extd_size, SEEK_SET);
 			} else {
 				canlseek=0;
 			}
@@ -565,8 +586,9 @@ XXX: Todo, make this do something...
 
 			read_f(src, in_buf, blksize);
 
-#ifndef DACT_DONT_SUPPORT_OLDCRC
-			if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 38)) {
+#ifndef DACT_DONT_SUPPORT_OLDDACT
+			if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
+				PRINTERR("**WARNING** This file uses the old DACT file header, support will go away in future versions for this.");
 				crcs[0]=elfcrc(crcs[0],in_buf,blksize);
 			} else {
 				crcs[0]=crc(crcs[0],in_buf,blksize);
@@ -621,8 +643,9 @@ XXX: Todo, make this do something...
 
 /* If ciphering, don't try to calculate this (the plaintext) CRC. */
 			if (cipher==-1) {
-#ifndef DACT_DONT_SUPPORT_OLDCRC
-				if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 38)) {
+#ifndef DACT_DONT_SUPPORT_OLDDACT
+				if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
+					PRINTERR("**WARNING** This file uses the old DACT file header, support will go away in future versions for this.");
 					crcs[1]=elfcrc(crcs[1],out_buf,bytes_read);
 				} else {
 					crcs[1]=crc(crcs[1],out_buf,bytes_read);
@@ -664,7 +687,17 @@ XXX: Todo, make this do something...
 		read(src, &version[0], 1);
 		read(src, &version[1], 1);
 		read(src, &version[2], 1);
-		read_de(src, &filesize, 4, sizeof(filesize));
+#ifndef DACT_DONT_SUPPORT_OLDDACT
+		if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
+			PRINTERR("**WARNING** This file uses the old DACT file header, support will go away in future versions for this.");
+			read_de(src, &filesize, 4, sizeof(filesize));
+			hdr_reg_size=24;
+		} else {
+			read_de(src, &filesize, 8, sizeof(filesize));
+		}
+#else
+		read_de(src, &filesize, 8, sizeof(filesize));
+#endif
 		read_de(src, &blk_cnt, 4, sizeof(blk_cnt));
 		read_de(src, &blksize, 4, sizeof(blksize));
 		read(src, &file_opts, 1);
@@ -682,7 +715,17 @@ XXX: Todo, make this do something...
 		if (filesize==0) {
 			lseek_net(src, -8, SEEK_END);
 			read_de(src, &magic, 4, sizeof(magic));
-			read_de(src, &filesize, 4, sizeof(filesize));
+#ifndef DACT_DONT_SUPPORT_OLDDACT
+			if (DACT_VERS(version[0], version[1], version[2])<DACT_VERS(0, 8, 39)) {
+				PRINTERR("**WARNING** This file uses the old DACT file header, support will go away in future versions for this.");
+				read_de(src, &filesize, 4, sizeof(filesize));
+				hdr_reg_size=24;
+			} else {
+				read_de(src, &filesize, 8, sizeof(filesize));
+			}
+#else
+			read_de(src, &filesize, 8, sizeof(filesize));
+#endif
 			if (magic!=DACT_MAGIC_PEOF) {
 				PRINTERR("Bad magic, corrupt stream.");
 				return(0);
@@ -696,7 +739,7 @@ XXX: Todo, make this do something...
 		printf("Compressed Size   :   %llu\n", fileoutsize);
 		printf("Uncompressed Size :   %llu\n", filesize);
 		printf("Ratio             :   %2.3f to 1.0\n", ((float) filesize)/((float) fileoutsize) );
-		lseek_net(src, DACT_HDR_REG_SIZE, SEEK_SET);
+		lseek_net(src, hdr_reg_size, SEEK_SET);
 		while (file_extd_read<file_extd_size) {
 			x=0;
 			read(src, &ch, 1);
@@ -781,7 +824,7 @@ XXX: Todo, make this do something...
 		blk_cnt=0;
 		blksize_size=BYTESIZE(blksize);
 		if (options[DACT_OPT_VERB]) {
-			lseek_net(src, DACT_HDR_REG_SIZE+file_extd_size, SEEK_SET);
+			lseek_net(src, hdr_reg_size+file_extd_size, SEEK_SET);
 			printf("\n");
 			printf("Break down: \n");
 			printf("  Blk | Algo | Size    | Name\n");

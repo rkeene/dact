@@ -36,6 +36,9 @@
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
 
+/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
+#undef HAVE_FSEEKO
+
 /* Have gethostbyname() */
 #undef HAVE_GETHOSTBYNAME
 
@@ -213,6 +216,9 @@
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
 
+/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
+#undef _LARGEFILE_SOURCE
+
 /* Define for large files, on AIX-style hosts. */
 #undef _LARGE_FILES
 
@@ -230,6 +236,9 @@
 
 /* Define to `signed short' if <sys/types.h> does not define. */
 #undef int64_t
+
+/* Define to `long' if <sys/types.h> does not define. */
+#undef off_t
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef uint

@@ -24,6 +24,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 #include "win32.h"
 #include "comp_fail.h"
 
@@ -37,8 +38,8 @@
 
 #define DACT_VER_MAJOR 0
 #define DACT_VER_MINOR 8
-#define DACT_VER_REVISION 38
-#define DACT_VERSION "0.8.38"
+#define DACT_VER_REVISION 39
+#define DACT_VERSION "0.8.39"
 #ifdef DEBUG
 #define DACT_VER_SUB	"dev"
 #else
@@ -121,8 +122,6 @@
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
-#else
-#include "dact_stdint.h"
 #endif
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
@@ -143,13 +142,7 @@
 #define DACT_MAGIC_SIZE   4
 #define DACT_MAGIC_PEOF   0xFF3FDE08
 
-#define DACT_HDR_REG_SIZE 24
-
 extern char dact_nonetwork;
-struct dact_header {
-	uint32_t size;
-	unsigned char algo;
-};
 
 #if defined(__FILE__) && defined(__LINE__) && defined(DEBUG)
 #define PRINT_LINE fprintf(stderr, "%s:%07i:%s(): ", __FILE__, __LINE__, __func__)
