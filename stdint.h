@@ -18,10 +18,14 @@
  *      email: dact@rkeene.org
  */
 
-#ifndef _STDINT_H
-#define _STDINT_H
-
 #include "config.h"
+
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+
+#if !defined(_STDINT_H) && !defined(HAVE_STDINT_H)
+#define _STDINT_H
 
 #ifndef uint32_t
 
