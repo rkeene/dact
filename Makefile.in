@@ -84,25 +84,30 @@ mrproper: distclean
 	rm -rf Makefile.dep configure autom4te.cache/ config.h.in
 
 install-bin: dact
+	-$(INSTALL) -d $(bindir)
 	$(INSTALL) -m 755 dact$(EXEEXT) $(bindir)/dact$(EXEEXT)
 
 install: all install-bin
+	-$(INSTALL) -d $(mandir)/man1
+	-$(INSTALL) -d $(libdir)
+	-$(INSTALL) -d $(datadir)/dact
+	-$(INSTALL) -d $(sysconfdir)
 	$(INSTALL) -m 644 dact.conf $(CONF)
 	$(INSTALL) -m 644 Docs/dact.1 $(mandir)/man1/dact.1
 @MODS@	-$(INSTALL) -m 755 libdact.so $(libdir)/libdact.so
 	-$(INSTALL) -m 644 libdact.a $(libdir)/libdact.a
-@MODS@	mkdir -p -m 755 $(datadir)/dact
 @MODS@	for so in *.so; do $(INSTALL) -m 755 $$so $(datadir)/dact/$$so; done
 	./patch-magic-file $(datadir)/magic
 
 install-bin-local: dact
-	mkdir -p  $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`
+	-$(INSTALL) -d $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`
 	$(INSTALL) -m 755 dact$(EXEEXT) $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/dact$(EXEEXT)
 
 install-local: all install-bin-local
+	-$(INSTALL) -d $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`
 	$(INSTALL) -m 644 dact.conf $(HOME)/.dact/dact.conf
 	-$(INSTALL) -m 644 libdact.a $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/dact$(EXEEXT)
-@MODS@	$(INSTALL) -m 755 libdact.so $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/dact$(EXEEXT)
+@MODS@	-$(INSTALL) -m 755 libdact.so $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/dact$(EXEEXT)
 @MODS@	for so in *.so; do $(INSTALL) -m 755 $$so $(HOME)/.dact/`uname -s | tr A-Z a-z`-`uname -m`/$$so; done
 
 uninstall:
@@ -116,6 +121,6 @@ depend: Makefile.dep
 Makefile.dep: *.c *.h Makefile
 	@echo "building Makefile.dep"
 	@$(CC) $(CFLAGS) $(CPPFLAGS) -MM $(ALGO) $(OBJS:.o=.c) $(MODS:.so=.c) dact.c > Makefile.dep
-	@$(CC) $(CFLAGS) $(CPPFLAGS) -MM $(ALGO) $(OBJS:.o=.c) $(MODS:.so=.c) dact.c  | sed -e "s/^\([^ ]*\)\.o: /\1.so: /g" >> Makefile.dep
+	@$(CC) $(CFLAGS) $(CPPFLAGS) -MM $(ALGO) $(filter-out libdact.c, $(OBJS:.o=.c)) $(MODS:.so=.c) dact.c  | sed -e "s/^\([^ ]*\)\.o: /\1.so: /g" >> Makefile.dep
 
 include Makefile.dep
