@@ -311,7 +311,7 @@ m4trace:configure.in:27: -1- AH_OUTPUT([DACT_DEBIAN_UPGRADE_PROC], [/* Use the D
 m4trace:configure.in:28: -1- AC_DEFINE_TRACE_LITERAL([HAVE_DEV_URANDOM])
 m4trace:configure.in:28: -1- AH_OUTPUT([HAVE_DEV_URANDOM], [/* Have random device? */
 #undef HAVE_DEV_URANDOM])
-m4trace:configure.in:31: -1- AC_CHECK_HEADERS([zlib.h getopt.h stdio.h strings.h string.h unistd.h stdint.h inttypes.h bzlib.h sys/utsname.h sys/socket.h sys/wait.h lzoconf.h lzo1x.h lzo1y.h lzo2a.h dirent.h mcrypt.h dlfcn.h])
+m4trace:configure.in:31: -1- AC_CHECK_HEADERS([zlib.h getopt.h stdio.h strings.h string.h unistd.h stdint.h inttypes.h bzlib.h sys/time.h sys/utsname.h sys/socket.h sys/wait.h lzoconf.h lzo1x.h lzo1y.h lzo2a.h dirent.h mcrypt.h dlfcn.h])
 m4trace:configure.in:31: -1- AH_OUTPUT([HAVE_ZLIB_H], [/* Define to 1 if you have the <zlib.h> header file. */
 #undef HAVE_ZLIB_H])
 m4trace:configure.in:31: -1- AH_OUTPUT([HAVE_GETOPT_H], [/* Define to 1 if you have the <getopt.h> header file. */
@@ -330,6 +330,8 @@ m4trace:configure.in:31: -1- AH_OUTPUT([HAVE_INTTYPES_H], [/* Define to 1 if you
 #undef HAVE_INTTYPES_H])
 m4trace:configure.in:31: -1- AH_OUTPUT([HAVE_BZLIB_H], [/* Define to 1 if you have the <bzlib.h> header file. */
 #undef HAVE_BZLIB_H])
+m4trace:configure.in:31: -1- AH_OUTPUT([HAVE_SYS_TIME_H], [/* Define to 1 if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H])
 m4trace:configure.in:31: -1- AH_OUTPUT([HAVE_SYS_UTSNAME_H], [/* Define to 1 if you have the <sys/utsname.h> header file. */
 #undef HAVE_SYS_UTSNAME_H])
 m4trace:configure.in:31: -1- AH_OUTPUT([HAVE_SYS_SOCKET_H], [/* Define to 1 if you have the <sys/socket.h> header file. */
@@ -379,48 +381,28 @@ m4trace:configure.in:31: -1- AH_OUTPUT([HAVE_STDINT_H], [/* Define to 1 if you h
 #undef HAVE_STDINT_H])
 m4trace:configure.in:31: -1- AH_OUTPUT([HAVE_UNISTD_H], [/* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H])
-m4trace:configure.in:34: -1- AC_DEFINE_TRACE_LITERAL([uint])
-m4trace:configure.in:34: -1- AH_OUTPUT([uint], [/* Define to `unsigned int\' if <sys/types.h> does not define. */
+m4trace:configure.in:32: -1- AC_HEADER_TIME
+m4trace:configure.in:32: -1- AC_DEFINE_TRACE_LITERAL([TIME_WITH_SYS_TIME])
+m4trace:configure.in:32: -1- AH_OUTPUT([TIME_WITH_SYS_TIME], [/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
+#undef TIME_WITH_SYS_TIME])
+m4trace:configure.in:35: -1- AC_DEFINE_TRACE_LITERAL([uint])
+m4trace:configure.in:35: -1- AH_OUTPUT([uint], [/* Define to `unsigned int\' if <sys/types.h> does not define. */
 #undef uint])
-m4trace:configure.in:39: -1- AC_C_INLINE
-m4trace:configure.in:39: -1- AH_OUTPUT([inline], [/* Define to `__inline__\' or `__inline\' if that\'s what the C compiler
+m4trace:configure.in:40: -1- AC_C_INLINE
+m4trace:configure.in:40: -1- AH_OUTPUT([inline], [/* Define to `__inline__\' or `__inline\' if that\'s what the C compiler
    calls it, or to nothing if \'inline\' is not supported under any name.  */
 #ifndef __cplusplus
 #undef inline
 #endif])
-m4trace:configure.in:40: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_LONG])
-m4trace:configure.in:40: -1- AH_OUTPUT([SIZEOF_LONG], [/* The size of a `long\', as computed by sizeof. */
+m4trace:configure.in:41: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_LONG])
+m4trace:configure.in:41: -1- AH_OUTPUT([SIZEOF_LONG], [/* The size of a `long\', as computed by sizeof. */
 #undef SIZEOF_LONG])
-m4trace:configure.in:41: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_INT])
-m4trace:configure.in:41: -1- AH_OUTPUT([SIZEOF_INT], [/* The size of a `int\', as computed by sizeof. */
+m4trace:configure.in:42: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_INT])
+m4trace:configure.in:42: -1- AH_OUTPUT([SIZEOF_INT], [/* The size of a `int\', as computed by sizeof. */
 #undef SIZEOF_INT])
-m4trace:configure.in:42: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_SHORT])
-m4trace:configure.in:42: -1- AH_OUTPUT([SIZEOF_SHORT], [/* The size of a `short\', as computed by sizeof. */
+m4trace:configure.in:43: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_SHORT])
+m4trace:configure.in:43: -1- AH_OUTPUT([SIZEOF_SHORT], [/* The size of a `short\', as computed by sizeof. */
 #undef SIZEOF_SHORT])
-m4trace:configure.in:44: -1- AC_C_INLINE
-m4trace:configure.in:44: -1- AH_OUTPUT([inline], [/* Define to `__inline__\' or `__inline\' if that\'s what the C compiler
-   calls it, or to nothing if \'inline\' is not supported under any name.  */
-#ifndef __cplusplus
-#undef inline
-#endif])
-m4trace:configure.in:44: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_LONG])
-m4trace:configure.in:44: -1- AH_OUTPUT([SIZEOF_LONG], [/* The size of a `long\', as computed by sizeof. */
-#undef SIZEOF_LONG])
-m4trace:configure.in:44: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_INT])
-m4trace:configure.in:44: -1- AH_OUTPUT([SIZEOF_INT], [/* The size of a `int\', as computed by sizeof. */
-#undef SIZEOF_INT])
-m4trace:configure.in:44: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_SHORT])
-m4trace:configure.in:44: -1- AH_OUTPUT([SIZEOF_SHORT], [/* The size of a `short\', as computed by sizeof. */
-#undef SIZEOF_SHORT])
-m4trace:configure.in:44: -1- AC_DEFINE_TRACE_LITERAL([uint32_t])
-m4trace:configure.in:44: -1- AH_OUTPUT([uint32_t], [/* Define to `unsigned int\' if <sys/types.h> does not define. */
-#undef uint32_t])
-m4trace:configure.in:44: -1- AC_DEFINE_TRACE_LITERAL([uint32_t])
-m4trace:configure.in:44: -1- AH_OUTPUT([uint32_t], [/* Define to `unsigned long\' if <sys/types.h> does not define. */
-#undef uint32_t])
-m4trace:configure.in:44: -1- AC_DEFINE_TRACE_LITERAL([uint32_t])
-m4trace:configure.in:44: -1- AH_OUTPUT([uint32_t], [/* Define to `unsigned short\' if <sys/types.h> does not define. */
-#undef uint32_t])
 m4trace:configure.in:45: -1- AC_C_INLINE
 m4trace:configure.in:45: -1- AH_OUTPUT([inline], [/* Define to `__inline__\' or `__inline\' if that\'s what the C compiler
    calls it, or to nothing if \'inline\' is not supported under any name.  */
@@ -436,15 +418,15 @@ m4trace:configure.in:45: -1- AH_OUTPUT([SIZEOF_INT], [/* The size of a `int\', a
 m4trace:configure.in:45: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_SHORT])
 m4trace:configure.in:45: -1- AH_OUTPUT([SIZEOF_SHORT], [/* The size of a `short\', as computed by sizeof. */
 #undef SIZEOF_SHORT])
-m4trace:configure.in:45: -1- AC_DEFINE_TRACE_LITERAL([int32_t])
-m4trace:configure.in:45: -1- AH_OUTPUT([int32_t], [/* Define to `signed int\' if <sys/types.h> does not define. */
-#undef int32_t])
-m4trace:configure.in:45: -1- AC_DEFINE_TRACE_LITERAL([int32_t])
-m4trace:configure.in:45: -1- AH_OUTPUT([int32_t], [/* Define to `signed long\' if <sys/types.h> does not define. */
-#undef int32_t])
-m4trace:configure.in:45: -1- AC_DEFINE_TRACE_LITERAL([int32_t])
-m4trace:configure.in:45: -1- AH_OUTPUT([int32_t], [/* Define to `signed short\' if <sys/types.h> does not define. */
-#undef int32_t])
+m4trace:configure.in:45: -1- AC_DEFINE_TRACE_LITERAL([uint32_t])
+m4trace:configure.in:45: -1- AH_OUTPUT([uint32_t], [/* Define to `unsigned int\' if <sys/types.h> does not define. */
+#undef uint32_t])
+m4trace:configure.in:45: -1- AC_DEFINE_TRACE_LITERAL([uint32_t])
+m4trace:configure.in:45: -1- AH_OUTPUT([uint32_t], [/* Define to `unsigned long\' if <sys/types.h> does not define. */
+#undef uint32_t])
+m4trace:configure.in:45: -1- AC_DEFINE_TRACE_LITERAL([uint32_t])
+m4trace:configure.in:45: -1- AH_OUTPUT([uint32_t], [/* Define to `unsigned short\' if <sys/types.h> does not define. */
+#undef uint32_t])
 m4trace:configure.in:46: -1- AC_C_INLINE
 m4trace:configure.in:46: -1- AH_OUTPUT([inline], [/* Define to `__inline__\' or `__inline\' if that\'s what the C compiler
    calls it, or to nothing if \'inline\' is not supported under any name.  */
@@ -460,15 +442,15 @@ m4trace:configure.in:46: -1- AH_OUTPUT([SIZEOF_INT], [/* The size of a `int\', a
 m4trace:configure.in:46: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_SHORT])
 m4trace:configure.in:46: -1- AH_OUTPUT([SIZEOF_SHORT], [/* The size of a `short\', as computed by sizeof. */
 #undef SIZEOF_SHORT])
-m4trace:configure.in:46: -1- AC_DEFINE_TRACE_LITERAL([uint16_t])
-m4trace:configure.in:46: -1- AH_OUTPUT([uint16_t], [/* Define to `unsigned int\' if <sys/types.h> does not define. */
-#undef uint16_t])
-m4trace:configure.in:46: -1- AC_DEFINE_TRACE_LITERAL([uint16_t])
-m4trace:configure.in:46: -1- AH_OUTPUT([uint16_t], [/* Define to `unsigned long\' if <sys/types.h> does not define. */
-#undef uint16_t])
-m4trace:configure.in:46: -1- AC_DEFINE_TRACE_LITERAL([uint16_t])
-m4trace:configure.in:46: -1- AH_OUTPUT([uint16_t], [/* Define to `unsigned short\' if <sys/types.h> does not define. */
-#undef uint16_t])
+m4trace:configure.in:46: -1- AC_DEFINE_TRACE_LITERAL([int32_t])
+m4trace:configure.in:46: -1- AH_OUTPUT([int32_t], [/* Define to `signed int\' if <sys/types.h> does not define. */
+#undef int32_t])
+m4trace:configure.in:46: -1- AC_DEFINE_TRACE_LITERAL([int32_t])
+m4trace:configure.in:46: -1- AH_OUTPUT([int32_t], [/* Define to `signed long\' if <sys/types.h> does not define. */
+#undef int32_t])
+m4trace:configure.in:46: -1- AC_DEFINE_TRACE_LITERAL([int32_t])
+m4trace:configure.in:46: -1- AH_OUTPUT([int32_t], [/* Define to `signed short\' if <sys/types.h> does not define. */
+#undef int32_t])
 m4trace:configure.in:47: -1- AC_C_INLINE
 m4trace:configure.in:47: -1- AH_OUTPUT([inline], [/* Define to `__inline__\' or `__inline\' if that\'s what the C compiler
    calls it, or to nothing if \'inline\' is not supported under any name.  */
@@ -484,87 +466,111 @@ m4trace:configure.in:47: -1- AH_OUTPUT([SIZEOF_INT], [/* The size of a `int\', a
 m4trace:configure.in:47: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_SHORT])
 m4trace:configure.in:47: -1- AH_OUTPUT([SIZEOF_SHORT], [/* The size of a `short\', as computed by sizeof. */
 #undef SIZEOF_SHORT])
-m4trace:configure.in:47: -1- AC_DEFINE_TRACE_LITERAL([int16_t])
-m4trace:configure.in:47: -1- AH_OUTPUT([int16_t], [/* Define to `signed int\' if <sys/types.h> does not define. */
+m4trace:configure.in:47: -1- AC_DEFINE_TRACE_LITERAL([uint16_t])
+m4trace:configure.in:47: -1- AH_OUTPUT([uint16_t], [/* Define to `unsigned int\' if <sys/types.h> does not define. */
+#undef uint16_t])
+m4trace:configure.in:47: -1- AC_DEFINE_TRACE_LITERAL([uint16_t])
+m4trace:configure.in:47: -1- AH_OUTPUT([uint16_t], [/* Define to `unsigned long\' if <sys/types.h> does not define. */
+#undef uint16_t])
+m4trace:configure.in:47: -1- AC_DEFINE_TRACE_LITERAL([uint16_t])
+m4trace:configure.in:47: -1- AH_OUTPUT([uint16_t], [/* Define to `unsigned short\' if <sys/types.h> does not define. */
+#undef uint16_t])
+m4trace:configure.in:48: -1- AC_C_INLINE
+m4trace:configure.in:48: -1- AH_OUTPUT([inline], [/* Define to `__inline__\' or `__inline\' if that\'s what the C compiler
+   calls it, or to nothing if \'inline\' is not supported under any name.  */
+#ifndef __cplusplus
+#undef inline
+#endif])
+m4trace:configure.in:48: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_LONG])
+m4trace:configure.in:48: -1- AH_OUTPUT([SIZEOF_LONG], [/* The size of a `long\', as computed by sizeof. */
+#undef SIZEOF_LONG])
+m4trace:configure.in:48: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_INT])
+m4trace:configure.in:48: -1- AH_OUTPUT([SIZEOF_INT], [/* The size of a `int\', as computed by sizeof. */
+#undef SIZEOF_INT])
+m4trace:configure.in:48: -1- AC_DEFINE_TRACE_LITERAL([SIZEOF_SHORT])
+m4trace:configure.in:48: -1- AH_OUTPUT([SIZEOF_SHORT], [/* The size of a `short\', as computed by sizeof. */
+#undef SIZEOF_SHORT])
+m4trace:configure.in:48: -1- AC_DEFINE_TRACE_LITERAL([int16_t])
+m4trace:configure.in:48: -1- AH_OUTPUT([int16_t], [/* Define to `signed int\' if <sys/types.h> does not define. */
 #undef int16_t])
-m4trace:configure.in:47: -1- AC_DEFINE_TRACE_LITERAL([int16_t])
-m4trace:configure.in:47: -1- AH_OUTPUT([int16_t], [/* Define to `signed long\' if <sys/types.h> does not define. */
+m4trace:configure.in:48: -1- AC_DEFINE_TRACE_LITERAL([int16_t])
+m4trace:configure.in:48: -1- AH_OUTPUT([int16_t], [/* Define to `signed long\' if <sys/types.h> does not define. */
 #undef int16_t])
-m4trace:configure.in:47: -1- AC_DEFINE_TRACE_LITERAL([int16_t])
-m4trace:configure.in:47: -1- AH_OUTPUT([int16_t], [/* Define to `signed short\' if <sys/types.h> does not define. */
+m4trace:configure.in:48: -1- AC_DEFINE_TRACE_LITERAL([int16_t])
+m4trace:configure.in:48: -1- AH_OUTPUT([int16_t], [/* Define to `signed short\' if <sys/types.h> does not define. */
 #undef int16_t])
-m4trace:configure.in:50: -2- AC_DEFINE_TRACE_LITERAL([HAVE_COMPRESS2])
-m4trace:configure.in:50: -2- AH_OUTPUT([HAVE_COMPRESS2], [/* Have more versatile compress2() ? */
+m4trace:configure.in:51: -2- AC_DEFINE_TRACE_LITERAL([HAVE_COMPRESS2])
+m4trace:configure.in:51: -2- AH_OUTPUT([HAVE_COMPRESS2], [/* Have more versatile compress2() ? */
 #undef HAVE_COMPRESS2])
-m4trace:configure.in:50: -1- AC_CHECK_LIB([z], [compress2], [
+m4trace:configure.in:51: -1- AC_CHECK_LIB([z], [compress2], [
 cat >>confdefs.h <<\_ACEOF
 @%:@define HAVE_COMPRESS2 
 _ACEOF
 ])
-m4trace:configure.in:51: -2- AC_DEFINE_TRACE_LITERAL([HAVE_GZDOPEN])
-m4trace:configure.in:51: -2- AH_OUTPUT([HAVE_GZDOPEN], [/* Have gzdopen() ? */
+m4trace:configure.in:52: -2- AC_DEFINE_TRACE_LITERAL([HAVE_GZDOPEN])
+m4trace:configure.in:52: -2- AH_OUTPUT([HAVE_GZDOPEN], [/* Have gzdopen() ? */
 #undef HAVE_GZDOPEN])
-m4trace:configure.in:51: -1- AC_CHECK_LIB([z], [gzdopen], [
+m4trace:configure.in:52: -1- AC_CHECK_LIB([z], [gzdopen], [
 cat >>confdefs.h <<\_ACEOF
 @%:@define HAVE_GZDOPEN 
 _ACEOF
 ])
-m4trace:configure.in:52: -2- AC_DEFINE_TRACE_LITERAL([HAVE_OLD_BZ2])
-m4trace:configure.in:52: -2- AH_OUTPUT([HAVE_OLD_BZ2], [/* Do not have BZ2_ prefixed to all bzip2 symbols? */
+m4trace:configure.in:53: -2- AC_DEFINE_TRACE_LITERAL([HAVE_OLD_BZ2])
+m4trace:configure.in:53: -2- AH_OUTPUT([HAVE_OLD_BZ2], [/* Do not have BZ2_ prefixed to all bzip2 symbols? */
 #undef HAVE_OLD_BZ2])
-m4trace:configure.in:52: -1- AC_CHECK_LIB([bz2], [bzBuffToBuffCompress], [
+m4trace:configure.in:53: -1- AC_CHECK_LIB([bz2], [bzBuffToBuffCompress], [
 cat >>confdefs.h <<\_ACEOF
 @%:@define HAVE_OLD_BZ2 
-_ACEOF
-])
-m4trace:configure.in:53: -2- AC_DEFINE_TRACE_LITERAL([HAVE_NEW_BZ2])
-m4trace:configure.in:53: -2- AH_OUTPUT([HAVE_NEW_BZ2], [/* Have BZ2_ prefixed to all bzip2 symbols? */
-#undef HAVE_NEW_BZ2])
-m4trace:configure.in:53: -1- AC_CHECK_LIB([bz2], [BZ2_bzBuffToBuffCompress], [
-cat >>confdefs.h <<\_ACEOF
-@%:@define HAVE_NEW_BZ2 
 _ACEOF
 ])
 m4trace:configure.in:54: -2- AC_DEFINE_TRACE_LITERAL([HAVE_NEW_BZ2])
 m4trace:configure.in:54: -2- AH_OUTPUT([HAVE_NEW_BZ2], [/* Have BZ2_ prefixed to all bzip2 symbols? */
 #undef HAVE_NEW_BZ2])
-m4trace:configure.in:54: -1- AC_CHECK_LIB([bz2], [_BZ2_bzBuffToBuffCompress], [
+m4trace:configure.in:54: -1- AC_CHECK_LIB([bz2], [BZ2_bzBuffToBuffCompress], [
 cat >>confdefs.h <<\_ACEOF
 @%:@define HAVE_NEW_BZ2 
 _ACEOF
 ])
-m4trace:configure.in:55: -2- AC_DEFINE_TRACE_LITERAL([HAVE_BZDOPEN])
-m4trace:configure.in:55: -2- AH_OUTPUT([HAVE_BZDOPEN], [/* Have bzdopen() ? */
+m4trace:configure.in:55: -2- AC_DEFINE_TRACE_LITERAL([HAVE_NEW_BZ2])
+m4trace:configure.in:55: -2- AH_OUTPUT([HAVE_NEW_BZ2], [/* Have BZ2_ prefixed to all bzip2 symbols? */
+#undef HAVE_NEW_BZ2])
+m4trace:configure.in:55: -1- AC_CHECK_LIB([bz2], [_BZ2_bzBuffToBuffCompress], [
+cat >>confdefs.h <<\_ACEOF
+@%:@define HAVE_NEW_BZ2 
+_ACEOF
+])
+m4trace:configure.in:56: -2- AC_DEFINE_TRACE_LITERAL([HAVE_BZDOPEN])
+m4trace:configure.in:56: -2- AH_OUTPUT([HAVE_BZDOPEN], [/* Have bzdopen() ? */
 #undef HAVE_BZDOPEN])
-m4trace:configure.in:55: -1- AC_CHECK_LIB([bz2], [bzdopen], [
+m4trace:configure.in:56: -1- AC_CHECK_LIB([bz2], [bzdopen], [
 cat >>confdefs.h <<\_ACEOF
 @%:@define HAVE_BZDOPEN 
 _ACEOF
 ])
-m4trace:configure.in:56: -2- AC_DEFINE_TRACE_LITERAL([HAVE_NEW_BZDOPEN])
-m4trace:configure.in:56: -2- AH_OUTPUT([HAVE_NEW_BZDOPEN], [/* Have BZ2_bzdopen() ? */
+m4trace:configure.in:57: -2- AC_DEFINE_TRACE_LITERAL([HAVE_NEW_BZDOPEN])
+m4trace:configure.in:57: -2- AH_OUTPUT([HAVE_NEW_BZDOPEN], [/* Have BZ2_bzdopen() ? */
 #undef HAVE_NEW_BZDOPEN])
-m4trace:configure.in:56: -1- AC_CHECK_LIB([bz2], [BZ2_bzdopen], [
+m4trace:configure.in:57: -1- AC_CHECK_LIB([bz2], [BZ2_bzdopen], [
 cat >>confdefs.h <<\_ACEOF
 @%:@define HAVE_NEW_BZDOPEN 
 _ACEOF
 ])
-m4trace:configure.in:57: -1- AC_LIBSOURCE([getopt.c])
-m4trace:configure.in:57: -1- AC_LIBSOURCE([strsep.c])
-m4trace:configure.in:57: -1- AC_LIBSOURCE([getpass.c])
-m4trace:configure.in:57: -1- AC_LIBSOURCE([mkstemp.c])
-m4trace:configure.in:57: -1- AC_CHECK_FUNCS([getopt strsep getpass mkstemp], [], [_AC_LIBOBJ($ac_func)])
-m4trace:configure.in:57: -1- AH_OUTPUT([HAVE_GETOPT], [/* Define to 1 if you have the `getopt\' function. */
+m4trace:configure.in:58: -1- AC_LIBSOURCE([getopt.c])
+m4trace:configure.in:58: -1- AC_LIBSOURCE([strsep.c])
+m4trace:configure.in:58: -1- AC_LIBSOURCE([getpass.c])
+m4trace:configure.in:58: -1- AC_LIBSOURCE([mkstemp.c])
+m4trace:configure.in:58: -1- AC_CHECK_FUNCS([getopt strsep getpass mkstemp], [], [_AC_LIBOBJ($ac_func)])
+m4trace:configure.in:58: -1- AH_OUTPUT([HAVE_GETOPT], [/* Define to 1 if you have the `getopt\' function. */
 #undef HAVE_GETOPT])
-m4trace:configure.in:57: -1- AH_OUTPUT([HAVE_STRSEP], [/* Define to 1 if you have the `strsep\' function. */
+m4trace:configure.in:58: -1- AH_OUTPUT([HAVE_STRSEP], [/* Define to 1 if you have the `strsep\' function. */
 #undef HAVE_STRSEP])
-m4trace:configure.in:57: -1- AH_OUTPUT([HAVE_GETPASS], [/* Define to 1 if you have the `getpass\' function. */
+m4trace:configure.in:58: -1- AH_OUTPUT([HAVE_GETPASS], [/* Define to 1 if you have the `getpass\' function. */
 #undef HAVE_GETPASS])
-m4trace:configure.in:57: -1- AH_OUTPUT([HAVE_MKSTEMP], [/* Define to 1 if you have the `mkstemp\' function. */
+m4trace:configure.in:58: -1- AH_OUTPUT([HAVE_MKSTEMP], [/* Define to 1 if you have the `mkstemp\' function. */
 #undef HAVE_MKSTEMP])
-m4trace:configure.in:57: -1- AC_SUBST([LIB@&t@OBJS])
-m4trace:configure.in:61: -1- AC_CONFIG_FILES([Makefile])
-m4trace:configure.in:61: -1- _m4_warn([obsolete], [AC_OUTPUT should be used without arguments.
+m4trace:configure.in:58: -1- AC_SUBST([LIB@&t@OBJS])
+m4trace:configure.in:62: -1- AC_CONFIG_FILES([Makefile])
+m4trace:configure.in:62: -1- _m4_warn([obsolete], [AC_OUTPUT should be used without arguments.
 You should run autoupdate.], [])
-m4trace:configure.in:61: -1- AC_SUBST([LIB@&t@OBJS], [$ac_libobjs])
-m4trace:configure.in:61: -1- AC_SUBST([LTLIBOBJS], [$ac_ltlibobjs])
+m4trace:configure.in:62: -1- AC_SUBST([LIB@&t@OBJS], [$ac_libobjs])
+m4trace:configure.in:62: -1- AC_SUBST([LTLIBOBJS], [$ac_ltlibobjs])

@@ -28,7 +28,8 @@ DC_ASK_DEBIAN
 DC_CHK_URANDOM
 
 dnl Checks for header files.
-AC_CHECK_HEADERS(zlib.h getopt.h stdio.h strings.h string.h unistd.h stdint.h inttypes.h bzlib.h sys/utsname.h sys/socket.h sys/wait.h lzoconf.h lzo1x.h lzo1y.h lzo2a.h dirent.h mcrypt.h dlfcn.h)
+AC_CHECK_HEADERS(zlib.h getopt.h stdio.h strings.h string.h unistd.h stdint.h inttypes.h bzlib.h sys/time.h sys/utsname.h sys/socket.h sys/wait.h lzoconf.h lzo1x.h lzo1y.h lzo2a.h dirent.h mcrypt.h dlfcn.h)
+AC_HEADER_TIME
 
 dnl Checks for typedefs.
 AC_CHECK_TYPE(uint, unsigned int)
