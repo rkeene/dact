@@ -84,7 +84,7 @@ libdact.a: $(OBJS)
 
 .PHONY: clean distclean install-bin install mrproper install-local install-bin-local uninstall depend
 clean:
-	rm -f dact dact$(EXEEXT) $(OBJS) libdact.$(SHOBJEXT) libdact.$(SHOBJEXT).def libdact.$(SHOBJEXT).a libdact.o libdact.a core *~ $(ALGO:.c=.o) $(ALGO:.c=.so) $(SHLIBOBJS)
+	rm -f dact dact$(EXEEXT) libdact.$(SHOBJEXT) libdact.$(SHOBJEXT).def libdact.$(SHOBJEXT).a libdact.a core *~ $(ALGO:.c=.so) *.o
 
 distclean: clean
 	rm -f Makefile config.h config.status config.log config.cache
