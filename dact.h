@@ -37,8 +37,8 @@
 
 #define DACT_VER_MAJOR 0
 #define DACT_VER_MINOR 8
-#define DACT_VER_REVISION 41
-#define DACT_VERSION "0.8.41"
+#define DACT_VER_REVISION 42
+#define DACT_VERSION "0.8.42"
 #ifdef DEBUG
 #define DACT_VER_SUB	"dev"
 #else
