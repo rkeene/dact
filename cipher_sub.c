@@ -64,7 +64,7 @@ char *DC_NAME="subst (MOD)";
 #endif
 
 
-int cipher_sub(const char *inblock, char *outblock, const int blksize, char *key, const int mode) {
+int cipher_sub(const unsigned char *inblock, unsigned char *outblock, const int blksize, unsigned char *key, const int mode) {
 	switch (mode) {
 		case (DACT_MODE_CINIT+DACT_MODE_CDEC):
 		case (DACT_MODE_CINIT+DACT_MODE_CENC):
@@ -82,11 +82,11 @@ int cipher_sub(const char *inblock, char *outblock, const int blksize, char *key
 }
 
 
-int cipher_sub_init(const int mode, char *key) {
+int cipher_sub_init(const int mode, unsigned char *key) {
 	return(cipher_sub_init_getkey(mode-DACT_MODE_CINIT,key));
 }
 
-int cipher_sub_init_getkey(const int mode, char *key) {
+int cipher_sub_init_getkey(const int mode, unsigned char *key) {
 	char *fname;
 	char keybuf[1024], *ptrbuf;
 	int fd,x=257;
@@ -98,7 +98,7 @@ int cipher_sub_init_getkey(const int mode, char *key) {
 		if (x==257) {
 			memcpy(key,keybuf,257); /* For backward compatability with DACT 0.8.1*/
 		} else {
-			memcpy(key,ptrbuf=demime64(keybuf),257);
+			memcpy(key,ptrbuf=demime64((unsigned char *) keybuf),257);
 			free(ptrbuf);
 		}
 		close(fd);

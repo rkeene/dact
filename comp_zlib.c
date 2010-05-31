@@ -62,7 +62,7 @@ void *DC_ALGO=comp_zlib_algo;
 char *DC_NAME="Zlib Compression (MOD)";
 #endif
 
-int comp_zlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_zlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
 			return(comp_zlib_compress(prev_block, curr_block, out_block, blk_size, bufsize));
@@ -98,7 +98,7 @@ int comp_zlib_compress(unsigned char *prev_block, unsigned char *curr_block, uns
 	return(dest_size);
 }
 
-int comp_zlib_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_zlib_decompress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	unsigned long dest_size;
 	int real_blksize=blk_size;
 	unsigned char *tmpbuf;

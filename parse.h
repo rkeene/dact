@@ -26,7 +26,7 @@
 #endif
 
 uint32_t atoi2(const char *n);
-int parse_url(const char *url, char *scheme, char *username, char *password, char *host, int *port, unsigned char *file);
+int parse_url(const char *url, char *scheme, char *username, char *password, char *host, int *port, char *file);
 void strtolower(char *str);
 char *parse_url_subst(const char *src, const char *fname);
 char *parse_url_subst_dist(void);

@@ -28,9 +28,9 @@
 #else
 
 
-int cipher_sub(const char *inblock, char *outblock, const int blksize, char *key, const int mode);
-int cipher_sub_init(const int mode, char *key);
-int cipher_sub_init_getkey(const int mode, char *key);
+int cipher_sub(const unsigned char *inblock, unsigned char *outblock, const int blksize, unsigned char *key, const int mode);
+int cipher_sub_init(const int mode, unsigned char *key);
+int cipher_sub_init_getkey(const int mode, unsigned char *key);
 int cipher_sub_encrypt(const unsigned char *inblk, unsigned char *outblk, int blksize, unsigned char *key);
 int cipher_sub_decrypt(const unsigned char *inblk, unsigned char *outblk, int blksize, unsigned char *key);
 char *generatekey(void);

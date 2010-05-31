@@ -106,7 +106,7 @@ int print_help(int argc, char **argv) {
 	return(0);
 }
 
-int dact_upgrade_file(const char *name, const char *url_get, const char *url_ver, uint32_t version, const char *dest, const char *options) {
+int dact_upgrade_file(const char *name, const char *url_get, const char *url_ver, uint32_t version, const char *dest, const unsigned char *options) {
 	int newver, ifd=-1, ofd=-1, x=-1;
 	char *real_dest, *real_url_get, buf[4096];
 
@@ -144,7 +144,7 @@ int dact_upgrade_file(const char *name, const char *url_get, const char *url_ver
 	return(x);
 }
 
-int dact_upgrade_file_checkver(const char *name, const char *url_ver, const char *options) {
+int dact_upgrade_file_checkver(const char *name, const char *url_ver, const unsigned char *options) {
 #ifdef CHECK_VERSION
 	uint32_t rem_ver[4]={0, 0, 0, 0};
 	int fd;
@@ -172,7 +172,7 @@ int dact_upgrade_file_checkver(const char *name, const char *url_ver, const char
 #endif
 }
 
-int dact_upgrade(char *options) {
+int dact_upgrade(unsigned char *options) {
 #ifdef DACT_DEBIAN_UPGRADE_PROC
 	char *buf;
 	int status=0, i;
@@ -519,8 +519,8 @@ int main(int argc, char **argv) {
 				break;
 			case 'E':
 				strtolower(optarg);
-				x=hash_fourbyte(optarg, ' ');
-				if (x==hash_fourbyte("list", ' ')) {
+				x=hash_fourbyte((unsigned char *) optarg, ' ');
+				if (x==hash_fourbyte((unsigned char *) "list", ' ')) {
 					PRINT_LINE; fprintf(stderr, "dact: Num | Name\n");
 					for (i=0;i<CIPHER_COUNT;i++) {
 						if (ciphers_name[i]!=NULL && ciphers[i]!=DACT_FAILED_ALGO) {
@@ -531,7 +531,7 @@ int main(int argc, char **argv) {
 				}
 				for (i=0;i<CIPHER_COUNT;i++) {
 					if (ciphers_name[i]!=NULL && ciphers[i]!=DACT_FAILED_ALGO) {
-						if (x==hash_fourbyte(ciphers_name[i], ' ')) {
+						if (x==hash_fourbyte((unsigned char *) ciphers_name[i], ' ')) {
 							break;
 						}
 					}

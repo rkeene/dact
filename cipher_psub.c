@@ -76,7 +76,7 @@ int cipher_psub_init(const int mode, unsigned char *key) {
 }
 
 int cipher_psub_init_getkey(const int mode, unsigned char *key) {
-	unsigned char *phrase;
+	char *phrase;
 	char *keyreg;
 
 	phrase=dact_ui_getuserinput("Passphrase: ",128,1);
@@ -100,7 +100,7 @@ char *cipher_psub_generatekey(const char *passphrase) {
 	for (m=0;m<strlen(passphrase);m+=3) {
 		memcpy(hbuf,passphrase+m,3);
 		hbuf[3]='\0';
-		d=hash_fourbyte(hbuf, '\0');
+		d=hash_fourbyte((unsigned char *) hbuf, '\0');
 		for (i=0;i<num;i++) {
 			d=(sin(tan(d))*(255*5));
 			x=((abs((int) d)&0x3ff)-255);

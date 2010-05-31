@@ -171,7 +171,7 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 	if (!parse_url(pathname,scheme,username,password,host,&port,file)) {
 		if ((fd=createconnection_tcp(host,port))<0) return(-1);
 
-		switch (elfcrc(0, scheme, strlen(scheme))) {
+		switch (elfcrc(0, (unsigned char *) scheme, strlen(scheme))) {
 			case 457648: /* http */
 				if ((flags&O_WRONLY)==O_WRONLY || (flags&O_RDWR)==O_RDWR) {
 					close(fd);
@@ -189,7 +189,7 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 					strcat(smallbuf,username);
 					strcat(smallbuf,":");
 					strcat(smallbuf,password);
-					tmpbuf=mime64(smallbuf);
+					tmpbuf=mime64((unsigned char *) smallbuf);
 					write(fd, "Authorization: Basic ", 21);
 					write(fd, tmpbuf, strlen(tmpbuf));
 					free(tmpbuf);
@@ -253,7 +253,7 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 					read_buf[x]=0;
 
 					while ((smallbuf=strsep(&read_buf,"\n"))!=NULL) {
-						switch (elfcrc(0, smallbuf, 4)) {
+						switch (elfcrc(0, (unsigned char *) smallbuf, 4)) {
 							case 231456: /* 550 */
 								if (ftpfd!=-1) close(ftpfd);
 								close(fd);

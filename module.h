@@ -25,8 +25,8 @@
 
 int init_modules (void);
 int unload_modules (void);
-int load_module (char *modulename, const char *options);
-int load_modules_all(const char *options);
+int load_module (char *modulename, const unsigned char *options);
+int load_modules_all(const unsigned char *options);
 
 #define DACT_MOD_OK 0
 #define DACT_MOD_FAIL (-1)

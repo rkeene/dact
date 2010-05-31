@@ -80,7 +80,7 @@ int unload_modules (void) {
 	return(DACT_MOD_OK);
 }
 
-int load_modules_all(const char *options) {
+int load_modules_all(const unsigned char *options) {
 #ifdef HAVE_DIRENT_H
 	struct dirent *dinfo;
 	char *mdircpy, *tmpbuf, *mbuf, *fname, fullfname[1024];
@@ -108,7 +108,7 @@ int load_modules_all(const char *options) {
 	return(DACT_MOD_OK);
 }
 
-int load_module (char *modulename, const char *options) {
+int load_module (char *modulename, const unsigned char *options) {
 	char modulefile[256], *tmpbuf, *mbuf, *mdircpy;
 	void *mh=NULL;
 	uint32_t algo_num, module_type=DACT_MOD_TYPE_COMP;
@@ -120,12 +120,12 @@ int load_module (char *modulename, const char *options) {
 		mbuf=mdircpy;
 		while ((tmpbuf=strsep(&mbuf, ":"))) {
 			snprintf(modulefile, sizeof(modulefile)-1, "%s/%s.so",tmpbuf,modulename);
-			if ((mh=dlopen(modulefile, RTLD_GLOBAL|RTLD_LAZY))!=NULL) break;
+			if ((mh=dlopen(modulefile, RTLD_GLOBAL|RTLD_NOW))!=NULL) break;
 		}
 		free(mdircpy);
 	} else {
 		strncpy(modulefile, modulename, sizeof(modulefile)-1);
-		if ((mh=dlopen(modulefile, RTLD_GLOBAL|RTLD_LAZY))==NULL) {
+		if ((mh=dlopen(modulefile, RTLD_GLOBAL|RTLD_NOW))==NULL) {
 			PRINTERR("Could not load module.");
 			return(DACT_MOD_FAIL);
 		}
@@ -186,7 +186,7 @@ int load_module (char *modulename, const char *options) {
 
 
 
-	if (modules_count>255) {
+	if (modules_count<255) {
 		modules[modules_count++]=mh;
 	}
 
@@ -226,8 +226,8 @@ int modules_count = 0;
 
 int init_modules(void) { return(DACT_MOD_FAIL); }
 int unload_modules(void) { return(DACT_MOD_FAIL); }
-int load_module(char *modulename, const char *options) { return(DACT_MOD_FAIL); }
-int load_modules_all(const char *options) { return(DACT_MOD_FAIL); }
+int load_module(char *modulename, const unsigned char *options) { return(DACT_MOD_FAIL); }
+int load_modules_all(const unsigned char *options) { return(DACT_MOD_FAIL); }
 
 
 

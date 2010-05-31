@@ -72,7 +72,7 @@ char *DC_NAME="Second Modified Zlib Compression (MOD)";
 #endif
 
 #ifdef MAKE_MZLIB2
-int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
 			return(comp_mzlib2_compress(prev_block, curr_block, out_block, blk_size, bufsize));
@@ -86,12 +86,12 @@ int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_bl
 	}
 }
 #else
-int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	return(-1);
 }
 #endif
 
-int comp_mzlib2_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_mzlib2_compress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	unsigned long dest_size;
 	unsigned char *tmp_block;
 	uint32_t freq[SQRD_256];

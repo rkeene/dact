@@ -215,8 +215,8 @@
 
 
 int print_help(int argc, char **argv);
-int dact_upgrade_file_checkver(const char *name, const char *url_ver, const char *options);
-int dact_upgrade_file(const char *name, const char *url_get, const char *url_ver, uint32_t version, const char *dest, const char *options);
+int dact_upgrade_file_checkver(const char *name, const char *url_ver, const unsigned char *options);
+int dact_upgrade_file(const char *name, const char *url_get, const char *url_ver, uint32_t version, const char *dest, const unsigned char *options);
 int dact_shutdown(int retval);
 char *dact_getoutfilename(const char *orig, const int mode, const char *ext);
 int main(int argc, char **argv);

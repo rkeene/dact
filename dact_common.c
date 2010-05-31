@@ -75,7 +75,7 @@ uint32_t dact_blksize_calc(int fsize) {
 	return(ret);
 }
 
-int dact_config_execute(const char *cmd, char *options, uint32_t *blksize) {
+int dact_config_execute(const char *cmd, unsigned char *options, uint32_t *blksize) {
 	char *line=NULL, *line_s, *item_buf[4]={NULL, NULL, NULL, NULL};
 	int i;
 
@@ -89,7 +89,7 @@ int dact_config_execute(const char *cmd, char *options, uint32_t *blksize) {
 	}
 	if (item_buf[0]==NULL || item_buf[1]==NULL) return(0); /* This means all commands must have arguments. */
 
-	switch (elfcrc(0, item_buf[0], strlen(item_buf[0]))) {
+	switch (elfcrc(0, (unsigned char *) item_buf[0], strlen(item_buf[0]))) {
 		case 164209419: /* binary_check */
 			options[DACT_OPT_BINCHK]=!!strcmp(item_buf[1],"off");
 			break;
@@ -149,7 +149,7 @@ int dact_config_execute(const char *cmd, char *options, uint32_t *blksize) {
 	return(1);
 }
 
-void dact_config_loadfile(const char *path, char *options, uint32_t *blksize) {
+void dact_config_loadfile(const char *path, unsigned char *options, uint32_t *blksize) {
 	char *line=NULL;
 	FILE *cfd;
 
@@ -163,7 +163,7 @@ void dact_config_loadfile(const char *path, char *options, uint32_t *blksize) {
 	fclose(cfd);
 }
 
-uint32_t dact_blk_decompress(char *ret, const char *srcbuf, const uint32_t size, const char *options, const int algo, uint32_t bufsize) {
+uint32_t dact_blk_decompress(unsigned char *ret, const unsigned char *srcbuf, const uint32_t size, const unsigned char *options, const int algo, uint32_t bufsize) {
 	uint32_t retval;
 
 	if (algo==0xff) return(0);
@@ -179,7 +179,7 @@ uint32_t dact_blk_decompress(char *ret, const char *srcbuf, const uint32_t size,
 }
 
 
-uint32_t dact_blk_compress(char *algo, char *ret, const char *srcbuf, const uint32_t size, const char *options, uint32_t bufsize) {
+uint32_t dact_blk_compress(unsigned char *algo, unsigned char *ret, const unsigned char *srcbuf, const uint32_t size, const unsigned char *options, uint32_t bufsize) {
 	char *tmpbuf, *smallbuf=NULL;
 	int i, highest_algo=0;
 	char smallest_algo;
@@ -247,13 +247,14 @@ uint32_t dact_blk_compress(char *algo, char *ret, const char *srcbuf, const uint
 	return(smallest_size);
 }
 
-uint64_t dact_process_file(const int src, const int dest, const int mode, const char *options, const char *filename, uint32_t *crcs, uint32_t dact_blksize, int cipher) {
+uint64_t dact_process_file(const int src, const int dest, const int mode, const unsigned char *options, const char *filename, uint32_t *crcs, uint32_t dact_blksize, int cipher) {
 	struct stat filestats;
 	FILE *extd_urlfile;
 	char *file_extd_urls[256];
 	unsigned char algo;
 	char ch;
-	char *in_buf, *out_buf, *hdr_buf, *keybuf=NULL, *tmpbuf=NULL;
+	char *hdr_buf, *keybuf=NULL, *tmpbuf=NULL;
+	unsigned char *in_buf, *out_buf;
 	char version[3]={DACT_VER_MAJOR, DACT_VER_MINOR, DACT_VER_REVISION};
 	char file_opts=0;
 	uint32_t bytes_read, retsize;
@@ -830,7 +831,7 @@ XXX: Todo, make this do something...
 					break;
 				case DACT_HDR_SFXLEN:
 					read_de(src, &offset, x, sizeof(offset));
-					printf("Program length    :   %lu\n", offset);
+					printf("Program length    :   %lu\n", (unsigned long) offset);
 					break;
 				default:
 					hdr_buf=malloc(x);
@@ -883,7 +884,7 @@ XXX: Todo, make this do something...
 	return(0);
 }
 
-uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const char *options) {
+uint32_t dact_process_other(int src, const int dest, const uint32_t magic, const unsigned char *options) {
 	char *buf, tmpbuf[128]="/tmp/dactXXXXXX";
 	uint32_t filesize=0, x;
 	int tmpfd=0;

@@ -55,7 +55,7 @@ void *DC_ALGO=comp_bzlib_algo;
 char *DC_NAME="Bzip2 Compression (MOD)";
 #endif
 
-int comp_bzlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_bzlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
 			return(comp_bzlib_compress(prev_block, curr_block, out_block, blk_size, bufsize));
@@ -69,14 +69,14 @@ int comp_bzlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_blo
 	}
 }
 
-int comp_bzlib_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_bzlib_compress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	unsigned int dest_size=bufsize;
 	int retval;
 
 #ifdef HAVE_OLD_BZ2
-	retval=bzBuffToBuffCompress(out_block, &dest_size, curr_block, blk_size, 9, 0, 9);
+	retval=bzBuffToBuffCompress((char *) out_block, &dest_size, (char *) curr_block, blk_size, 9, 0, 9);
 #else
-	retval=BZ2_bzBuffToBuffCompress(out_block, &dest_size, curr_block, blk_size, 9, 0, 9);
+	retval=BZ2_bzBuffToBuffCompress((char *) out_block, &dest_size, (char *) curr_block, blk_size, 9, 0, 9);
 #endif
 /* Remove the "BZh9" header. */
 	dest_size-=4;
@@ -87,7 +87,7 @@ int comp_bzlib_compress(unsigned char *prev_block, unsigned char *curr_block, ch
 	return(dest_size);
 }
 
-int comp_bzlib_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_bzlib_decompress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	unsigned int dest_size=bufsize;
 	char *tmpbuf;
 	int retval;
@@ -98,9 +98,9 @@ int comp_bzlib_decompress(unsigned char *prev_block, unsigned char *curr_block, 
 	memcpy(tmpbuf+4, curr_block, blk_size);
 
 #ifdef HAVE_OLD_BZ2
-	retval=bzBuffToBuffDecompress(out_block, &dest_size, tmpbuf, blk_size+4, 0, 0);
+	retval=bzBuffToBuffDecompress((char *) out_block, &dest_size, tmpbuf, blk_size+4, 0, 0);
 #else
-	retval=BZ2_bzBuffToBuffDecompress(out_block, &dest_size, tmpbuf, blk_size+4, 0, 0);
+	retval=BZ2_bzBuffToBuffDecompress((char *) out_block, &dest_size, tmpbuf, blk_size+4, 0, 0);
 #endif
 
 	free(tmpbuf);

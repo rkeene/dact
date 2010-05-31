@@ -66,7 +66,7 @@ uint32_t atoi2(const char *n) {
  * `host'		will never exceed 512 bytes
  * `file'		will never exceed 1024 bytes
  */
-int parse_url(const char *url, char *scheme, char *username, char *password, char *host, int *port, unsigned char *file) {
+int parse_url(const char *url, char *scheme, char *username, char *password, char *host, int *port, char *file) {
 	char *local_url=NULL, *local_url_s, *fbuf;
 	int i;
 
@@ -168,7 +168,8 @@ char *parse_url_subst(const char *src, const char *fname) {
 
 	ret[0]='\0';
 	while (strstr(loc,"@@")) {
-		cmd=elfcrc(0, loc=strstr(loc, "@@")+2, 4);
+		loc = strstr(loc, "@@") + 2;
+		cmd=elfcrc(0, (unsigned char *) loc, 4);
 		loc+=6;
 		if (loc>eloc) { loc=eloc-1; continue; }
 
@@ -365,7 +366,7 @@ void strtolower(char *str) {
 }
 
 char *mime64(unsigned char *str) {
-	int x=strlen(str);
+	int x=strlen((char *) str);
 	return(mimes64(str,&x));
 }
 
@@ -407,9 +408,9 @@ char *demime64(unsigned char *str) {
 	bit_buf_sze=bit_buffer_size(); /* Save the bit buffer, in case in use */
 	bit_buf_sto=bit_buffer_read(bit_buf_sze);
 
-	if ((ret=malloc((int) ((((float)strlen(str))*0.75)+6)))==NULL) return(NULL);
+	if ((ret=malloc((int) ((((float)strlen((char *) str))*0.75)+6)))==NULL) return(NULL);
 
-	while (i<strlen(str)) {
+	while (i<strlen((char *) str)) {
 		if (str[i]=='=') break;
 		while (bit_buffer_size()>=8) ret[x++]=bit_buffer_read(8);
 		if ((bit_buffer_size()+6)<=32) bit_buffer_write(strchr(mimeabet,str[i++])-mimeabet,6);

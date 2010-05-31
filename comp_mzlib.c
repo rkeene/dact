@@ -55,7 +55,7 @@ void *DC_ALGO=comp_mzlib_algo;
 char *DC_NAME="Modifed Zlib Compression (MOD)";
 #endif
 
-int comp_mzlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_mzlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	switch(mode) {
 		case DACT_MODE_COMPR:
 			return(comp_mzlib_compress(prev_block, curr_block, out_block, blk_size, bufsize));
@@ -69,9 +69,9 @@ int comp_mzlib_algo(int mode, unsigned char *prev_block, unsigned char *curr_blo
 	}
 }
 
-int comp_mzlib_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_mzlib_compress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	unsigned long dest_size;
-	char *tmp_block;
+	unsigned char *tmp_block;
 	int retval;
 	int i;
 
@@ -109,7 +109,7 @@ int comp_mzlib_compress(unsigned char *prev_block, unsigned char *curr_block, ch
 	return(dest_size);
 }
 
-int comp_mzlib_decompress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
+int comp_mzlib_decompress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize) {
 	unsigned long dest_size=(blk_size*2);
 	int retval;
 	int i;

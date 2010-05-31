@@ -26,8 +26,8 @@
 #if (defined(USE_MODULES) && !defined(AS_MODULE)) || !defined(DEBUG)
 #define comp_mzlib2_algo DACT_FAILED_ALGO
 #else
-int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
-int comp_mzlib2_compress(unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize);
-int comp_mzlib2_decompress(unsigned char *prev_block, unsigned char *curr_block,unsigned char *out_block, int blk_size, int bufsize);
+int comp_mzlib2_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize);
+int comp_mzlib2_compress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize);
+int comp_mzlib2_decompress(unsigned char *prev_block, unsigned char *curr_block, unsigned char *out_block, int blk_size, int bufsize);
 #endif
 #endif

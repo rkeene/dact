@@ -51,7 +51,7 @@ uint32_t crc(const uint32_t prev, unsigned char *val, const uint32_t n) {
 	for (i=0; i<n; i++) {
 		s1 = (s1 + *s) % 65521;
 		s2 = (s1 + s2) % 65521;
-		*s++;
+		s++;
 	}
 	ret=(s2<<16)|s1;
 	return(ret);
