@@ -102,15 +102,8 @@ int comp_mzlib2_compress(unsigned char *prev_block, unsigned char *curr_block, u
 	for (i=0;i<blk_size;i+=2) {
 		x=(curr_block[i]<<8)|(curr_block[i+1]);
 		freq[x]++;
-//SPOTVAR_NUM(freq[x]);
 		if (freq[x]==0xffff) return(-1);
 	}
-
-//	for (i=0;i<SQRD_256;i++) {
-//		if (freq[i]!=0) {
-//			PRINT_LINE; fprintf(stderr, "%04x: 0x%02x and 0x%02x are near each other %i times\n",i,i>>8,i&0xff,freq[i]);
-//		}
-//	}
 
 	int_sort_fast(freq, SQRD_256, 0);
 
@@ -119,7 +112,6 @@ int comp_mzlib2_compress(unsigned char *prev_block, unsigned char *curr_block, u
 			out_block[m++]=freq[i]>>24;
 			out_block[m++]=(freq[i]>>16)&0xff;
 			if (m>=(blk_size*2)) {
-//SPOTVAR_NUM(m);
 				return(-1);
 			}
 			lookup_table[freq[i]>>16]=i;

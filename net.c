@@ -74,7 +74,6 @@
 #endif
 
 
-//extern int errno;
 struct dact_url_info {
 	char *url;
 	int flags;
@@ -201,7 +200,6 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 				if (strncmp("200 ",read_buf,4) && strncmp("302 ",read_buf,4)) {
 					free(read_buf_s);
 					close(fd);
-//					errno=ENOENT;
 					return(-ENOENT);
 				}
 				retrmode=read_buf[0];
@@ -244,7 +242,6 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 					if ((x=read(fd, read_buf, 1024))<1024) {
 						if (x<0) {
 							free(read_buf_s);
-//							errno=EIO;
 							return(-EIO);
 						}
 						/* It's waiting for input... */
@@ -257,21 +254,18 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 								if (ftpfd!=-1) close(ftpfd);
 								close(fd);
 								free(read_buf_s);
-//								errno=ENOENT;
 								return(-ENOENT);
 								break;
 							case 230944: /* 530 */
 								if (ftpfd!=-1) close(ftpfd);
 								close(fd);
 								free(read_buf_s);
-//								errno=EIO;
 								return(-EIO);
 								break;
 							case 231504: /* 553 */
 								if (ftpfd!=-1) close(ftpfd);
 								close(fd);
 								free(read_buf_s);
-//								errno=EPERM;
 								return(-EPERM);
 								break;
 							case 218400: /* 220 */
@@ -310,7 +304,6 @@ int open_net(const char *pathname, int flags, mode_t mode) {
 								write(fd, "\n", 1);
 								if ((ftpfd=createconnection_tcp(host,port))<0) {
 									close(fd);
-//									errno=ENOENT;
 									return(-ENOENT);
 								}
 								break;
