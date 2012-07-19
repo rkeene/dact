@@ -293,11 +293,11 @@ AC_DEFUN(DC_CHK_OS_INFO, [
 		hpux*)
 			SHOBJEXT="sl"
 			;;
-		mingw32msvc*)
+		mingw32|mingw32msvc*)
 			SHOBJEXT="dll"
 			SHOBJFLAGS="-DPIC"
-			CFLAGS="$CFLAGS -mno-cygwin -mms-bitfields"
-			CPPFLAGS="$CPPFLAGS -mno-cygwin -mms-bitfields"
+			CFLAGS="$CFLAGS -mms-bitfields"
+			CPPFLAGS="$CPPFLAGS -mms-bitfields"
 			SHOBJLDFLAGS='-shared -Wl,--enable-auto-image-base -Wl,--output-def,$[@].def,--out-implib,$[@].a'
 			;;
 		cygwin*)
