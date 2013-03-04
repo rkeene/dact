@@ -155,6 +155,7 @@
 
 #define PERROR_L(errnum, error) { PRINT_LINE; fprintf(stderr, "dact: %s: %s\n", error, strerror(abs(errnum))); }
 #define PRINTERR(error) { PRINT_LINE; fprintf(stderr, "dact: " error "\n"); }
+#define PRINTERRF(error...) { PRINT_LINE; fprintf(stderr, "dact: " error); fprintf(stderr, "\n"); }
 #define PERROR(error) PERROR_L(errno, error)
 /* #define PERROR(error) { PRINT_LINE; perror("dact: " error); } */
 
