@@ -125,7 +125,7 @@ int load_module (char *modulename, const unsigned char *options) {
 	} else {
 		strncpy(modulefile, modulename, sizeof(modulefile)-1);
 		if ((mh=dlopen(modulefile, RTLD_GLOBAL|RTLD_NOW))==NULL) {
-			PRINTERR("Could not load module.");
+			PRINTERRF("Could not load module: %s", dlerror());
 			return(DACT_MOD_FAIL);
 		}
 	}
