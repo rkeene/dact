@@ -1,43 +1,54 @@
 #! /bin/sh
 
-if test $1 = "prefix"; then
-	prefix=$2
+if test "$1" = "prefix"; then
+	prefix="$2"
+
 	shift
 	shift
 fi
 
-if test -w "$1" -a ! "$1" = ""; then
-  MAGIC="$1"
-elif test -w ${prefix}/usr/share/magic; then
-  MAGIC="${prefix}/usr/share/magic"
-elif test -w ${prefix}/usr/local/share/magic; then
-  MAGIC="${prefix}/usr/local/share/magic"
-elif test -w ${prefix}/etc/magic; then
-  MAGIC="${prefix}/etc/magic"
+if [ -d "${prefix}/etc/file/magic" ]; then
+	MAGIC="${prefix}/etc/file/magic/dact"
+	LONG=belong
+	SHORT=beshort
+	BS='\b'
 else
-  echo "Cannot find magic file to patch."
-  exit
+	for MAGIC in "$1" "${prefix}/$1" "${prefix}/usr/share/magic" "${prefix}/usr/local/share/magic" "${prefix}/etc/magic" __fail__; do
+		if [ "$MAGIC" = '__fail__' ]; then
+			echo "Cannot find magic file to patch."
+
+			exit 1
+		fi
+
+		if [ -z "$MAGIC" ]; then
+			continue
+		fi
+
+		if [ -w "$MAGIC" -a ! -d "$MAGIC" ]; then
+			break
+		fi
+	done
+
+	if grep '^[^#].*belong' "$MAGIC" 2>/dev/null >/dev/null; then
+		LONG=belong
+		SHORT=beshort
+	else
+		LONG=long
+		SHORT=short
+	fi
+
+	if grep '\\b' "$MAGIC" 2>/dev/null >/dev/null; then
+		BS='\b'
+	else
+		BS=""
+	fi
 fi
 
-if grep "^[^#].*belong" $MAGIC 2>/dev/null >/dev/null; then
-  LONG=belong
-  SHORT=beshort
-else
-  LONG=long
-  SHORT=short
+if grep DACT "$MAGIC" 2>/dev/null >/dev/null; then
+	exit 0
 fi
 
-if grep "\\\\b" $MAGIC 2>/dev/null >/dev/null; then
-  BS="\\b"
-else
-  BS=""
-fi
-
-if grep DACT $MAGIC 2>/dev/null >/dev/null; then
-	exit
-else
 echo "
-
 #------------------------------------------------------------------------------
 # dact:  file(1) magic for DACT compressed files
 #
@@ -47,5 +58,6 @@ echo "
 >6	byte		>-1		$BS%i)
 >7	$LONG		>0		$BS, original size: %i bytes
 >15	$LONG		>30		$BS, block size: %i bytes
-" >> $MAGIC
-fi
+" >> "$MAGIC"
+
+exit 0
