@@ -35,19 +35,26 @@
 #include <fcntl.h>
 
 int mkstemp(char *template) {
-	int retfd=-1;
-	int i, temp_len;
+	unsigned int idx, try;
+	int retfd = -1;
+	char *str;
 
-	temp_len=strlen(template);
-	if (temp_len<6) return(-1);
-	if (strcmp(template+(temp_len-6), "XXXXXX")!=0) return(-1);
-
-	srand(getpid()+temp_len);
-	for (i=0; i<6; i++) {
-		template[temp_len-i-1]='A'+((rand()+i)%26);
-		retfd=open(template, O_EXCL|O_CREAT|O_RDWR, 0600);
-		if (retfd>=0) break;
+	str = strstr(template, "XXXXXX");
+	if (str == NULL) {
+		return(-1);
 	}
-	
+
+	srand(getpid());
+	for (try = 0; try < 10; try++) {
+		for (idx = 0; idx < 6; idx++) {
+			str[idx] = 'A' + ((rand() + idx) % 26);
+		}
+
+		retfd = open(template, O_EXCL | O_CREAT | O_RDWR, 0600);
+		if (retfd >= 0) {
+			break;
+		}
+	}
+
 	return(retfd);
 }
