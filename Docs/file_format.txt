@@ -3,11 +3,12 @@
 {ORIG_FILE_SIZE(8bytes)}                -- Was 4bytes before 0.8.38
 {NUM_BLOCKS(4bytes)}
 {BLOCK_SIZE_UNCOMPR(4bytes)},
-{OPTIONS(1byte)}
-{EXTD_SIZE(4bytes)}
+{GLOBAL_OPTIONS(1byte)}
+{EXTD_SIZE(4bytes)}                     -- 8bytes if GLOBAL_OPTIONS includes LARGE_EXTD_AREA
 (EXTD):{
 	{OPTION(1byte)}
-	{OPTION_SIZE(2bytes)}
+	{OPTION_IS_CRITICAL(1byte)}     -- Only present if the EXTD_AREA_INCLUDES_CRITICAL bit is set in GLOBAL_OPTIONS
+	{OPTION_SIZE(4bytes)}           -- 8bytes if GLOBAL_OPTIONS includes LARGE_EXTD_AREA
 	{OPTION_VAL(OPTION_SIZE bytes)}
 }
 (BLOCK):{
@@ -15,4 +16,57 @@
 	{BLOCK_SIZE([BYTESIZE(BLOCK_SIZE)] bytes)}
 	{BLOCK(BLOCK_SIZE bytes)}
 }
-
+*OPTIONAL: {MAGIC_PEOF(4 bytes), if found:}
+                  {ORIG_FILE_SIZE(8bytes)}   -- Was 4bytes before 0.8.38
+------
+MAGIC = {0x44, 0x43, 0x54, 0xC3}
+MAGIC_PEOF = {0xFF, 0x3F, 0xDE, 0x08}
+------
+GLOBAL_OPTIONS (bitmask):
+	0x1       LARGE_EXTD_AREA  (added in 0.9.0)
+	0x2       EXTD_AREA_INCLUDES_CRITICAL (added in 0.9.0)
+	0x4       RESERVED
+	0x8       RESERVED
+	0x10      RESERVED
+	0x20      RESERVED
+	0x40      RESERVED
+	0x80      RESERVED
+------
+EXTD Area OPTIONS:
+	0         CRC (adler32) of uncompressed file in network byte order (Integer)
+	1         CRC (adler32) of compressed file in netwokr byte order (Integer)
+	2         Time stamp of original file (ASCII of ISO8601)
+	3         Basic UNIX permissions of original file (Integer)
+	4         Original filename (ASCII)
+	5         MD5 of original file (binary, 16 bytes)
+	6         Description (ASCII)
+	7         URL (ASCII) to download data from instead of local copy (may
+	          occur multiple times, will be tried in order -- first
+	          working URL is used)
+	8         URL file (ASCII) path to file containing new-line separated
+	          URLs (may occur multiple times, will be tried in order --
+	          first working URL is used)
+	9         Cipher (Integer)
+	10        No-op
+	11        IDXDATA (Not used) ?
+	12        SFX length (Not used) ?
+	13        SHA256 of original file (binary)
+------
+ALGO values:
+	0         Uncompressed
+	1         RLE Compression
+	2         Delta Compression
+	3         Text Compression
+	4         Zlib Compression
+	5         Modified Zlib Compression
+	6         Seminibble Encoding
+	7         Range Encoding
+	8         Second Modified Zlib Compression
+	9         Bzip2 Compression
+	10        Factor Compression
+	11        Bitsums Compression
+	12        Text RLE Compression
+	13        LZO-1x Compression
+	14        LZO-1y Compression
+	15        LZO-2a Compression
+	255       Reserved / Invalid
