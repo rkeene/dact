@@ -17,7 +17,7 @@ REQS=""
 #     @@UTIL@@ becomes the utility name ${UTIL}
 #     @@VERS@@ becomes the utility version
 #     @@DATE@@ becomes the current date
-DOCS="AUTHORS README TODO INSTALL ChangeLog TODO.ideas Docs/config_help.txt Docs/dact.txt Docs/INSTALL"
+DOCS="AUTHORS README Docs/TODO INSTALL ChangeLog Docs/TODO.ideas Docs/config_help.txt Docs/dact.txt Docs/INSTALL"
 DOC_HDR="HEADER"
 
 # This script is executed immediately prior to creation of the
