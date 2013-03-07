@@ -1,0 +1,12 @@
+@SYMPREFIX@dact_register_hook
+@SYMPREFIX@dact_load_module
+@SYMPREFIX@dact_load_all_modules
+@SYMPREFIX@dact_set_option
+@SYMPREFIX@dact_parse_config
+@SYMPREFIX@dact_parse_cmdline
+@SYMPREFIX@dact_CtxDecompress
+@SYMPREFIX@dact_CtxCompress
+@SYMPREFIX@dact_BuffToBuffDecompress
+@SYMPREFIX@dact_BuffToBuffCompress
+@SYMPREFIX@dact_Decompress
+@SYMPREFIX@dact_Compress

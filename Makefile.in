@@ -1,0 +1,11 @@
+CC = @CC@
+CFLAGS = @CFLAGS@
+LDFLAGS = @LDFLAGS@
+CPPFLAGS = @CPPFLAGS@
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+libdir = @libdir@
+
+all: libdact.@SHOBJEXT@ libdact.@AREXT@ dact@EXE@
