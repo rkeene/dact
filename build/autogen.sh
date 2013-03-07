@@ -66,7 +66,7 @@ done
 echo '{' > libdact.vers
 echo '  global:' >> libdact.vers
 for symbol in `cat libdact.syms.in | sed 's/^@''SYMPREFIX@//'`; do
-	echo "          $${symbol};"
+	echo "          ${symbol};"
 done >> libdact.vers
 echo '  local:' >> libdact.vers
 echo '          *;' >> libdact.vers
