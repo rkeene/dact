@@ -1,3 +1,4 @@
+# Tools
 CC = @CC@
 AR = @AR@
 RANLIB = @RANLIB@
@@ -7,36 +8,53 @@ CPPFLAGS = @CPPFLAGS@
 SHOBJFLAGS = @SHOBJFLAGS@
 SHOBJLDFLAGS = @SHOBJLDFLAGS@
 
+# Paths
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 bindir = @bindir@
 libdir = @libdir@
 
+# Target objects
 LIBOBJS = libdact.o
 SHLIBOBJS = libdact_shr.o
+SRCOBJS = $(LIBOBJS:.o=.c)
 
+# Default build target
 all: libdact.@SHOBJEXT@ libdact.@AREXT@
 
+# Specific build rules
 libdact.@SHOBJEXT@: $(SHLIBOBJS)
 	$(CC) $(CFLAGS) $(SHOBJLDFLAGS) -o libdact.@SHOBJEXT@ $(LDFLAGS) $(SHLIBOBJS)
 	@WEAKENSYMS@ libdact.@SHOBJEXT@
 	@REMOVESYMS@ libdact.@SHOBJEXT@
 
-libdact.@AREXT@: $(LIBOBJS)
-	$(AR) cr libdact.@AREXT@ $(LIBOBJS)
+libdact.@AREXT@: libdact_combined_shr.o
+	@WEAKENSYMS@ libdact_combined_shr.o
+	@REMOVESYMS@ libdact_combined_shr.o
+	$(AR) cr libdact.@AREXT@ libdact_combined_shr.o
 	$(RANLIB) libdact.@AREXT@
 
+libdact_combined.c: $(SRCOBJS)
+	cat $(SRCOBJS) > libdact_combined.c
+
+# Generic build rules
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o "$@" -c "$^"
 
 %_shr.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SHOBJFLAGS) -o "$@" -c "$^"
 
+# Dependencies
+libdact_combined.o: libdact_combined.c
+libdact_combined_shr.o: libdact_combined.c
 libdact.o: libdact.c
+libdact_shr.o: libdact.c
 
+# Cleanup targets
 clean:
 	rm -f $(LIBOBJS) $(SHLIBOBJS)
 	rm -f libdact.@SHOBJEXT@ libdact.@AREXT@ dact@EXE@
+	rm -f libdact_combined_shr.o libdact_combined.c
 
 distclean: clean
 	rm -f config.h Makefile libdact.syms
@@ -45,4 +63,5 @@ distclean: clean
 mrproper: distclean
 	./build/autogen.sh distclean
 
+# Make directive targets
 .PHONY: all clean distclean mrproper
