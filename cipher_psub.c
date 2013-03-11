@@ -45,10 +45,10 @@
 
 #if defined(USE_MODULES) && defined(AS_MODULE)
 #include "module.h"
-uint32_t DC_NUM=3;
-uint32_t DC_TYPE=DACT_MOD_TYPE_ENC;
-void *DC_ALGO=cipher_psub;
-char *DC_NAME="psubst (MOD)";
+uint32_t DACT_MOD_NUM=3;
+uint32_t DACCT_MOD_TYPE=DACT_MOD_TYPE_ENC;
+void *DACT_MOD_ALGO=cipher_psub;
+char *DACT_MOD_NAME="psubst (MOD)";
 #endif
 
 

@@ -40,15 +40,15 @@
 
 #if defined(AS_MODULE) && defined(USE_MODULES)
 #include "module.h"
-uint32_t DC_NUM=1;
-uint32_t DC_TYPE=DACT_MOD_TYPE_COMP;
-void *DC_ALGO=comp_rle_algo;
-char *DC_NAME="RLE Compression (MOD)";
-char *DC_SIGN="RGlnaXRhbFNpZ25hdHVyZQ==";
-char *DC_URL_GET="http://www.rkeene.org/projects/compression/dact/@@OSNM@@-@@ARCH@@/comp_rle.dll";
-char *DC_URL_VER="http://www.rkeene.org/projects/compression/dact/@@OSNM@@-@@ARCH@@/comp_rle.ver";
-uint32_t DC_VER=0x00080d;
-uint32_t DC_REQUIRE=DACT_MOD_REQ_ATLEAST|(0x00080d);
+uint32_t DACT_MOD_NUM=1;
+uint32_t DACCT_MOD_TYPE=DACT_MOD_TYPE_COMP;
+void *DACT_MOD_ALGO=comp_rle_algo;
+char *DACT_MOD_NAME="RLE Compression (MOD)";
+char *DACT_MOD_SIGN="RGlnaXRhbFNpZ25hdHVyZQ==";
+char *DACT_MOD_URL_GET="http://www.rkeene.org/projects/compression/dact/@@OSNM@@-@@ARCH@@/comp_rle.dll";
+char *DACT_MOD_URL_VER="http://www.rkeene.org/projects/compression/dact/@@OSNM@@-@@ARCH@@/comp_rle.ver";
+uint32_t DACT_MOD_VER=0x00080d;
+uint32_t DACT_MOD_REQUIRE=DACT_MOD_REQ_ATLEAST|(0x00080d);
 #endif
 
 int comp_rle_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {

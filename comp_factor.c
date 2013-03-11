@@ -39,10 +39,10 @@
 */
 #if defined(AS_MODULE) && defined(USE_MODULES)
 #include "module.h"
-uint32_t DC_NUM=10;
-uint32_t DC_TYPE=DACT_MOD_TYPE_COMP;
-void *DC_ALGO=comp_factor_algo;
-char *DC_NAME="Factor Compression (MOD)";
+uint32_t DACT_MOD_NUM=10;
+uint32_t DACCT_MOD_TYPE=DACT_MOD_TYPE_COMP;
+void *DACT_MOD_ALGO=comp_factor_algo;
+char *DACT_MOD_NAME="Factor Compression (MOD)";
 #endif
 int comp_factor_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
 	switch(mode) {

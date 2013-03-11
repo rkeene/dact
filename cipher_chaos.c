@@ -42,10 +42,10 @@
 
 #if defined(USE_MODULES) && defined(AS_MODULE)
 #include "module.h"
-uint32_t DC_NUM=0;
-uint32_t DC_TYPE=DACT_MOD_TYPE_ENC;
-void *DC_ALGO=cipher_chaos;
-char *DC_NAME="chaos (MOD)";
+uint32_t DACT_MOD_NUM=0;
+uint32_t DACCT_MOD_TYPE=DACT_MOD_TYPE_ENC;
+void *DACT_MOD_ALGO=cipher_chaos;
+char *DACT_MOD_NAME="chaos (MOD)";
 #endif
 
 

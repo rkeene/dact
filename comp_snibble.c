@@ -54,10 +54,10 @@
 
 #if defined(USE_MODULES) && defined(AS_MODULE)
 #include "module.h"
-uint32_t DC_NUM=6;
-uint32_t DC_TYPE=DACT_MOD_TYPE_COMP;
-void *DC_ALGO=comp_snibble_algo;
-char *DC_NAME="Seminibble Encoding (MOD)";
+uint32_t DACT_MOD_NUM=6;
+uint32_t DACCT_MOD_TYPE=DACT_MOD_TYPE_COMP;
+void *DACT_MOD_ALGO=comp_snibble_algo;
+char *DACT_MOD_NAME="Seminibble Encoding (MOD)";
 #endif
 
 int comp_snibble_algo(int mode, unsigned char *prev_block, unsigned char *curr_block, char *out_block, int blk_size, int bufsize) {
