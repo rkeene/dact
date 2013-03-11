@@ -42,7 +42,7 @@
 #if defined(AS_MODULE) && defined(USE_MODULES)
 #include "module.h"
 uint32_t DACT_MOD_NUM=11;
-uint32_t DACCT_MOD_TYPE=DACT_MOD_TYPE_COMP;
+uint32_t DACT_MOD_TYPE=DACT_MOD_TYPE_COMP;
 void *DACT_MOD_ALGO=comp_bitsums_algo;
 char *DACT_MOD_NAME="Bitsums Compression (MOD)";
 

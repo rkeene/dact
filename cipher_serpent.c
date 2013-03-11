@@ -37,7 +37,7 @@
 #if defined(USE_MODULES) && defined(AS_MODULE)
 #include "module.h"
 uint32_t DACT_MOD_NUM=2;
-uint32_t DACCT_MOD_TYPE=DACT_MOD_TYPE_ENC;
+uint32_t DACT_MOD_TYPE=DACT_MOD_TYPE_ENC;
 void *DACT_MOD_ALGO=cipher_serpent;
 char *DACT_MOD_NAME="serpent (MOD)";
 #endif

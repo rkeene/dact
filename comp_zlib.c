@@ -56,7 +56,7 @@
 #if defined(USE_MODULES) && defined(AS_MODULE)
 #include "module.h"
 uint32_t DACT_MOD_NUM=4;
-uint32_t DACCT_MOD_TYPE=DACT_MOD_TYPE_COMP;
+uint32_t DACT_MOD_TYPE=DACT_MOD_TYPE_COMP;
 void *DACT_MOD_ALGO=comp_zlib_algo;
 char *DACT_MOD_NAME="Zlib Compression (MOD)";
 #endif
