@@ -23,20 +23,24 @@ SRCOBJS = $(LIBOBJS:.o=.c)
 all: libdact.@SHOBJEXT@ libdact.@AREXT@
 
 # Specific build rules
+## Build shared object
 libdact.@SHOBJEXT@: $(SHLIBOBJS) libdact.vers
 	$(CC) $(CFLAGS) $(SHOBJLDFLAGS) -o libdact.@SHOBJEXT@ $(LDFLAGS) $(SHLIBOBJS)
 	@WEAKENSYMS@ libdact.@SHOBJEXT@
 	@REMOVESYMS@ libdact.@SHOBJEXT@
 
+## Build static object
 libdact.@AREXT@: libdact_combined_shr.o
 	@WEAKENSYMS@ libdact_combined_shr.o
 	@REMOVESYMS@ libdact_combined_shr.o
 	$(AR) cr libdact.@AREXT@ libdact_combined_shr.o
 	$(RANLIB) libdact.@AREXT@
 
+## Build amalgamation of source to build a single object file
 libdact_combined.c: $(SRCOBJS)
 	cat $(SRCOBJS) > libdact_combined.c
 
+## Build GNU LD version script to strip symbols
 libdact.vers: libdact.syms.in
 	echo '{' > libdact.vers
 	echo '  global:' >> libdact.vers
@@ -46,6 +50,15 @@ libdact.vers: libdact.syms.in
 	echo '  local:' >> libdact.vers
 	echo '          *;' >> libdact.vers
 	echo '};' >> libdact.vers
+
+## Build structures of registered components
+### Compression algorithms
+algorithms.h algorithms.c: algorithms.h.in algorithms.c.in registration/compression
+	false
+
+### Encryption algorithms
+ciphers.h ciphers.c: ciphers.h.in ciphers.c.in registration/compression
+	false
 
 # Generic build rules
 %.o: %.c
