@@ -63,14 +63,8 @@ done
 
 # Create "libdact.vers" (GNU ld version script) from "libdact.syms.in" which
 # is a list of public symbols
-echo '{' > libdact.vers
-echo '  global:' >> libdact.vers
-for symbol in `cat libdact.syms.in | sed 's/^@''SYMPREFIX@//'`; do
-	echo "          ${symbol};"
-done >> libdact.vers
-echo '  local:' >> libdact.vers
-echo '          *;' >> libdact.vers
-echo '};' >> libdact.vers
+rm -f libdact.vers
+make -f Makefile.in libdact.vers
 
 # Terminate
 exit 0
