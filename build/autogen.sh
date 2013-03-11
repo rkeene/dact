@@ -32,7 +32,7 @@ wget -o /dev/null -O build/aclocal/shobj.m4 http://rkeene.org/devel/autoconf/sho
 wget -o /dev/null -O build/aclocal/versionscript.m4 http://rkeene.org/devel/autoconf/versionscript.m4
 
 ### Create aclocal.m4 with all appropriate contents
-aclocal --warnings=none -I ./build/aclocal --install 
+aclocal --warnings=none -I "$(pwd)/build/aclocal" --install
 
 ## Create configure script itself
 autoconf
