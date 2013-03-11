@@ -33,8 +33,8 @@ GLOBAL_OPTIONS (bitmask):
 	0x80      RESERVED
 ------
 EXTD Area OPTIONS:
-	0         CRC (adler32) of uncompressed file in network byte order (Integer)
-	1         CRC (adler32) of compressed file in netwokr byte order (Integer)
+	0         CRC (adler32) of compressed file in network byte order (Integer)
+	1         CRC (adler32) of uncompressed file in network byte order (Integer)
 	2         Time stamp of original file (ASCII of ISO8601)
 	3         Basic UNIX permissions of original file (Integer)
 	4         Original filename (ASCII)
