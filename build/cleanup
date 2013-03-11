@@ -5,6 +5,8 @@ if [ -z "${UTIL}" ]; then
 	exit 1
 fi
 
+./build/autogen.sh
+
 if [ ! "${SNAPSHOT}" = "1" ]; then
 	VER_MAJ=`echo $VERS | cut -f 1 -d .`
 	VER_MIN=`echo $VERS | cut -f 2 -d .`
@@ -17,26 +19,5 @@ else
 fi
 
 rm -f makearch.sh .* *.dct *.bak *.swp *.exe makesnapshot.sh *.o joe* bob* f 2>/dev/null >/dev/null
-for i in *.[ch]; do
-        grep -v -e '^//' -e DPRINTF -e SHOWVAL $i > f
-        mv f $i
-done
 
-# from build_win32.sh
-make distclean 2>/dev/null >/dev/null
-WIN32="${HOME}/root/windows-i386"
-CFLAGS="-I${WIN32}/include"
-CPPFLAGS="${CFLAGS}"
-LDFLAGS="-L${WIN32}/lib"
-CROSS=i586-mingw32msvc
-if [ ! -z "${CROSS}" ]; then CROSSCMD="${CROSS}-"; fi
-export CFLAGS LDFLAGS CPPFLAGS
-make distclean
-./configure --host=${CROSS} --prefix="c:/dact/" ${DEBUG} && \
-make && \
-${CROSSCMD}strip dact.exe
-if [ "${SNAPSHOT}" = "1" ]; then
-	cp dact.exe "/web/rkeene/files/oss/dact/snapshot/binary/dact-${VERS}.exe"
-else
-	cp dact.exe "/web/rkeene/files/oss/dact/release/binary/dact-${VERS}.exe"
-fi
+exit 0

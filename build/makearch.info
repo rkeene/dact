@@ -3,7 +3,7 @@ UTIL="dact"
 
 # This is the name of output files that should exist after configure 
 # procedures.
-BINS="dact"
+BINS=""
 
 # This lists the name of files that are required to exist
 REQS=""
