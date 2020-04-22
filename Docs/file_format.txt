@@ -52,21 +52,4 @@ EXTD Area OPTIONS:
 	12        SFX length (Not used) ?
 	13        SHA256 of original file (binary)
 ------
-ALGO values:
-	0         Uncompressed
-	1         RLE Compression
-	2         Delta Compression
-	3         Text Compression
-	4         Zlib Compression
-	5         Modified Zlib Compression
-	6         Seminibble Encoding
-	7         Range Encoding
-	8         Second Modified Zlib Compression
-	9         Bzip2 Compression
-	10        Factor Compression
-	11        Bitsums Compression
-	12        Text RLE Compression
-	13        LZO-1x Compression
-	14        LZO-1y Compression
-	15        LZO-2a Compression
-	255       Reserved / Invalid
+ALGO values:  Specified in "registration/compression"

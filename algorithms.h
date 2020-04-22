@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001, 2002, and 2003  Roy Keene
+ * Copyright (C) 2013  Roy Keene
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -14,153 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- *      email: dact@rkeene.org 
+ *      email: dact@rkeene.org
  */
+#ifndef DACT_ALGORITHMS_H
+#define DACT_ALGORITHMS_H 1
 
-#ifndef _ALGORITHMS_H
-#define _ALOGIRTHMS_H
-/*
-	Algorithms!
-*/
+#include "algorithm-defs.h"
 
-#include "dact.h"
-#include "comp_plain.h"
-#include "comp_rle.h"
-#include "comp_delta.h"
-#ifdef HAVE_LIBZ
-#include "comp_zlib.h"
-#include "comp_mzlib.h"
-#include "comp_mzlib2.h"
-#endif
-#ifdef HAVE_LIBBZ2
-#include "comp_bzlib.h"
-#endif
-#ifdef DEBUG
-#include "comp_factor.h"
-#include "comp_bitsums.h"
-#include "comp_textrle.h"
-#endif
-#include "comp_snibble.h"
-#include "comp_text.h"
-#include "comp_fail.h"
-#include "comp_lzoox.h"
-#include "comp_lzooy.h"
-#include "comp_lzota.h"
+typedef enum {
+	DACT_MODE_COMPR = 1,
+	DACT_MODE_DECMP = 2
+} dact_mode_t;
 
-#ifdef __DACT_C
-int (*(algorithms[256]))()={    comp_plain_algo,
-                                comp_rle_algo,
-                                comp_delta_algo,
-				comp_text_algo,
-#ifdef HAVE_LIBZ
-				comp_zlib_algo,
-				comp_mzlib_algo,
-#else
-				DACT_FAILED_ALGO,
-				DACT_FAILED_ALGO,
-#endif
-				comp_snibble_algo,
-				DACT_FAILED_ALGO,
-#ifdef HAVE_LIBZ
-				comp_mzlib2_algo,
-#else
-				DACT_FAILED_ALGO,
-#endif
-#ifdef HAVE_LIBBZ2
-				comp_bzlib_algo,
-#else
-				DACT_FAILED_ALGO,
-#endif
-#ifdef DEBUG
-				comp_factor_algo,
-				comp_bitsums_algo,
-				comp_textrle_algo,
-#else
-				DACT_FAILED_ALGO,
-				DACT_FAILED_ALGO,
-				DACT_FAILED_ALGO,
-#endif
-				comp_lzoox_algo,
-				comp_lzooy_algo,
-				comp_lzota_algo,
-				NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-				NULL, NULL, 
-                                NULL};
+struct dact_compression_algo {
+	char *name;
+	int id;
 
-char *algorithm_names[256]={	"Uncompressed",
-				"RLE Compression",
-				"Delta Compression",
-				"Text Compression",
-#ifdef HAVE_LIBZ
-				"Zlib Compression",
-				"Modified Zlib Compression",
-#else
-				"Unsupported Algorithm (zlib)",
-				"Unsupported Algorithm (mzlib)",
-#endif
-				"Seminibble Encoding",
-				"Range Encoding",
-#ifdef HAVE_LIBZ
-				"Second Modified Zlib Compression",
-#else
-				"Unsupported Algorithm (mzlib2)",
-#endif
-#ifdef HAVE_LIBBZ2
-				"Bzip2 Compression",
-#else
-				"Unsupported Algorithm (bzlib)",
-#endif
-#ifdef DEBUG
-				"Factor Compression",
-				"Bitsums Compression",
-				"Text RLE Compression",
-#else
-				"Unsupported Algorithm (factor)",
-				"Unsupported Algorithm (bitsums)",
-				"Unsupported Algorithm (textrle)",
-#endif
-#ifdef HAVE_LIBLZO
-				"LZO-1x Compression",
-				"LZO-1y Compression",
-				"LZO-2a Compression",
-#else
-				"Unsupported Algorithm (comp_lzoox)",
-				"Unsupported Algorithm (comp_lzooy)",
-				"Unsupported Algorithm (comp_lzota)",
-#endif
-				NULL
-			};
-#else
-extern int (*(algorithms[256]))();
-extern char *algorithm_names[256];
-#endif
+	int (*function)(dact_mode_t mode, unsigned char *prev, unsigned char *block, unsigned char *out, int size, int bufsize);
+};
+
 #endif

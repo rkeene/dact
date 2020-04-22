@@ -54,11 +54,13 @@ libdact.vers: libdact.syms.in
 
 ## Build structures of registered components
 ### Compression algorithms
-algorithms.h algorithms.c: algorithms.h.in algorithms.c.in registration/compression
-	false
+algorithm-defs.h: registration/compression
+	sed 's@#.*@@' registration/compression | grep -v '^ *$$' | awk '{ print "#define DACT_COMP_ALGO_" toupper($$2) "_ID " $$1 }' > algorithm-defs.h
+
+builtin-algorithms.c: builtin-algorithms.c.in registration/compression
 
 ### Encryption algorithms
-ciphers.h ciphers.c: ciphers.h.in ciphers.c.in registration/compression
+ciphers.h builtin-ciphers.c: ciphers.h.in builtin-ciphers.c.in registration/encryption
 	false
 
 # Generic build rules
@@ -69,6 +71,7 @@ ciphers.h ciphers.c: ciphers.h.in ciphers.c.in registration/compression
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SHOBJFLAGS) -o "$@" -c "$^"
 
 # Dependencies
+algorithms.h: algorithm-defs.h
 libdact_combined.o: libdact_combined.c
 libdact_combined_shr.o: libdact_combined.c
 libdact.o: libdact.c
@@ -85,6 +88,8 @@ distclean: clean
 	rm -f config.status config.log
 
 mrproper: distclean
+	rm -f libdact.vers
+	rm -f algorithm-defs.h builtin-algorithms.c
 	./build/autogen.sh distclean
 
 # Make directive targets

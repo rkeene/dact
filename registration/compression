@@ -1,1 +1,16 @@
-0 plain Plain compression
+0 plain Uncompressed
+1 rle RLE Compression
+2 delta Delta Compression
+3 text Text Compression
+4 zlib Zlib Compression
+5 mzlib Modified Zlib Compression
+6 snibble Seminibble Encoding
+7 range Range Encoding
+8 mzlib2 Second Modified Zlib Compression
+9 bzip2 Bzip2 Compression
+10 factor Factor Compression
+11 bitsums Bitsums Compression
+12 textrle Text RLE Compression
+13 lzoox LZO-1x Compression
+14 lzooy LZO-1y Compression
+15 lzota LZO-2a Compression
